@@ -37,6 +37,8 @@ Dim update_main_init_time
 Dim updata_mistake
 //部落时间
 Dim tribe_time
+//定义如果蜕变超时时候的改变层数设定
+Dim auto_tribe_flat=0
 /*===============设置===================*/
 //层数选择
 Dim layer_number = ReadUIConfig("textedit1")
@@ -117,7 +119,7 @@ Function init()
 	//初始化错误次数
 	error_num_one = 0
 	//初始化发送邮件内容
-	sendmessage_str = "内容为:\n"
+	sendmessage_str = ""
 	sendmessage_str = sendmessage_str & "最高设定层数:"& layer_number_max &"\n"
 	s_layer_number_mix = 1
 	s_layer_number = 1
@@ -130,7 +132,7 @@ Function init()
 	update_main_flat = 0
 	update_main_init_time = update_time
 	updata_mistake = 0
-/////////////////////////////////////	
+/*****************************************************/
     //显示信息
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n"&"层数: "&layer_number_max &"\n"&"升级时间: " & update_time&"\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4, 3000,screenX/2-275,screenY/2-200
 	Touch 500, 500, 200
@@ -156,7 +158,7 @@ Function init()
     //Call hum(3)//日常升级本人
     Call hum(4)//成就
 	Call update_main(1)//升级.初始化模式
-////////////////////////////////////////////////
+/*****************************************************/
 	send_flag = 1  //发送邮箱，必须在检测layer()后
 	update_main_time = TickCount()
 	skills_time = TickCount()//使用技能时间初始化
@@ -230,7 +232,9 @@ Function kill()
 	TracePrint "杀怪冲关"
 	Dim intX,intY
     For 4
-    	Call close_ad(fairy_true)
+        If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If
         //单次击杀点击
         For 16
             dim t_temp=TickCount()
@@ -243,12 +247,13 @@ Function kill()
             //技能
             If skills_true = true Then 
                 Call skills()
-                //火焰延迟
+                //技能等待点击延迟
 				While TickCount() - t_temp < 450
 					Delay 50
                 Wend
                 TracePrint TickCount()-t_temp
-            End If	
+            End If
+            //点击
             For 17
                 Tap shanhai.RndEx(250, 830), shanhai.RndEx(320, 1000)
                 Delay shanhai.RndEx(75, 77)
@@ -308,14 +313,16 @@ If ocrchar_layer >= layer_number_max  and  auto_tribe = False Then
     TracePrint "固定层数蜕变"&ocrchar_layer
     Call hum(2)
 Else 
-   	If (ocrchar_layer -ocrchar_layer_temp < 8 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 50 and ocrchar_layer <= layer_number_max * 0.9) Then 
-        TracePrint "层数相同"&ocrchar_layer -ocrchar_layer_temp
+   	If (ocrchar_layer -ocrchar_layer_temp < 7 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
+        TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
         //防止卡关and自动蜕变
         If TickCount() - auto_tribe_time > 300000 Then 
             TracePrint "自动蜕变"
             TracePrint "自动蜕变"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
-            If ocrchar_layer > layer_number_max * 0.9 Then 
-            	layer_number_max = ocrchar_layer  //自动蜕变层数改变
+            auto_tribe_flat =auto_tribe_flat+1
+            If auto_tribe_flat>=2 Then 
+             	layer_number_max = ocrchar_layer  //自动蜕变层数改变
+             	auto_tribe_flat = 0
             End If
             Call hum(2)
             auto_tribe_time = TickCount()
@@ -323,7 +330,7 @@ Else
             Exit Function
         //自动升级
         Else//If TickCount() - auto_update_time > 80000 Then 
-            TracePrint "升级"//&(TickCount() - auto_update_time)/1000&"秒"
+            TracePrint "自动升级"//&(TickCount() - auto_update_time)/1000&"秒"
             updata_mistake = updata_mistake + 1
 			Call update_main(2)
 			update_main_time = TickCount()
@@ -331,6 +338,7 @@ Else
 //            auto_update_time = TickCount()
         End If
     Else 
+    	TracePrint "层数不同"
     	updata_mistake = 0
         ocrchar_layer_temp = ocrchar_layer
         auto_tribe_time = TickCount()
@@ -1330,8 +1338,9 @@ Function mail(max_layer)
     Dim m_subject = max_layer
     //防止重复
     If max_layer > s_layer_number Then 
-    	sendmessage_str = sendmessage_str & "最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n"
+    	sendmessage_str ="最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
     End If
+    sendmessage_str ="内容为:\n"&sendmessage_str
     Dim m_message = sendmessage_str
     Dim m_tomail = "853879993@qq.com"
     Dim Ret = SendSimpleEmail(m_host,m_username,m_password,m_subject,m_message,m_tomail) 
