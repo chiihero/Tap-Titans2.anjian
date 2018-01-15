@@ -64,8 +64,6 @@ delay_time = delay_time + 0
 delay_time = delay_time*60*1000
 TracePrint  delay_time
 
-
-
 //屏幕分辨率检测
 Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
@@ -192,7 +190,7 @@ Function update_main(update_main_flat)
 	//定时升级
     update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
     ShowMessage "距离上次升级时间" & update_time_main &"秒", 1500, 0, 0
-    If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
+    If (update_time_main >= update_main_init_time) or update_main_flat <> 0  Then 
         //检测部落boss开启
         Dim intX,intY
 		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
@@ -233,65 +231,43 @@ Function kill()
 	Dim intX,intY
     For 4
     	Call close_ad(fairy_true)
+        //单次击杀点击
+        For 16
+            dim t_temp=TickCount()
+            //广告
+			If Gk.Full(280, 810, "FFFFD8", 0.999) Then
+				Call close_ad(fairy_true)
+			End If
+			//启动boss
+            Call boss()
+            //技能
+            If skills_true = true Then 
+                Call skills()
+                //火焰延迟
+				While TickCount() - t_temp < 450
+					Delay 50
+                Wend
+                TracePrint TickCount()-t_temp
+            End If	
+            For 17
+                Tap shanhai.RndEx(250, 830), shanhai.RndEx(320, 1000)
+                Delay shanhai.RndEx(75, 77)
+            Next
+            //技能延迟
+            While TickCount() - t_temp < 2250
+                Delay 50
+//                 	If Gk.Full(76,1654, "FFFFD8", 0.999) And TickCount() - t_temp>1500 Then 
+//                 	 	Exit While
+//                 	End If
+            Wend
+            TracePrint TickCount()-t_temp
+        Next
         //层数
         Call layer()
         //层数处理
         Call layer_check()
         //邮件内容记录
         Call sendmessage(ocrchar_layer)
-        //技能
-        If skills_true  = true Then 
-            //单次击杀点击
-            For 16
-            	dim t_temp=TickCount()
-            	//广告
-				If Gk.Full(280, 810, "FFFFD8", 0.999) Then
-				 	Call close_ad(fairy_true)
-				End If
-                //技能
-                Call skills()
-				//启动boss
-                Call boss()
-                //火焰延迟
-				While TickCount() - t_temp < 450
-					Delay 50
-                Wend
-                TracePrint TickCount()-t_temp
-                For 17
-                    Tap shanhai.RndEx(250, 830), shanhai.RndEx(320, 1000)
-                    Delay shanhai.RndEx(75, 77)
-                Next
-                //技能延迟
-//                If ocrchar_layer < 5000 Then 
-//                	While TickCount() - t_temp < 2500
-//                	Wend
-//                Else 
-                While TickCount() - t_temp < 2250
-                 	Delay 50
-//                 	If Gk.Full(76,1654, "FFFFD8", 0.999) And TickCount() - t_temp>1500 Then 
-//                 	 	Exit While
-//                 	End If
-                Wend
-//                End If
-               
-                TracePrint TickCount()-t_temp
-            Next
-        Else//不开启技能 
-            //单次击杀点击
-            Call boss()	
-            For 30	
-                //点击延迟
-                Call boss()
-                Delay shanhai.RndEx(200, 300)
-                For 16
-                    //点击延迟
-                    TouchDown shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), 1
-                    Delay shanhai.RndEx(10, 30)
-                    TouchUp 1
-                    Delay shanhai.RndEx(30, 50)
-                Next
-            Next	
-        End If	
     Next
 End Function
 //判断层数
@@ -1117,7 +1093,7 @@ Function update(flat)
         Wend
         
         //最后可否升级识别
-        For 5
+        For 4
         	error_num_one=0
         	FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
         	While up2X > -1 And up2Y > -1
@@ -1299,7 +1275,7 @@ End Function
 Function swipe_up
     TracePrint "上滑"
     Dim closeX,closeY
-    For 10
+    For 7
     	Swipe 730, 1322, 730, 1715, 100
     	Delay shanhai.RndEx(200, 255)
     	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
