@@ -336,44 +336,7 @@ Function layer()
      End If
 End Function        
         
-Function layer_check()        
-//自动蜕变
-//If auto_tribe = True Then 
-//    TracePrint "自动蜕变"
-//    ShowMessage "自动蜕变"&"层数等待时间"&(auto_tribe_timeout/1000)&"秒", 1000, 0, 0
-//    If ocrchar_layer - ocrchar_layer_temp < 30 and ocrchar_layer < layer_number_max * 0.9 Then
-//        If TickCount() - auto_update_time > 120000 Then 
-//            TracePrint "升级"&(TickCount() - auto_update_time)/1000&"秒"
-//            Call update_main(2)
-//            t = TickCount()
-//            auto_update_time = TickCount()
-//        End If
-//    ElseIf ocrchar_layer -ocrchar_layer_temp <5 Then 
-//        TracePrint "层数相同"
-//        dim auto_tribe_timeout= TickCount() - auto_tribe_time
-//        If  auto_tribe_timeout> 600000 Then 
-//            TracePrint "层数等待超时"&(auto_tribe_timeout/1000)&"秒"
-//            layer_number_max = ocrchar_layer  //自动蜕变层数改变
-//            Call hum(2)
-//            auto_tribe_time = TickCount()
-//        //自动升级
-//        ElseIf TickCount() - auto_update_time > 80000 Then 
-//            TracePrint "升级"&(TickCount() - auto_update_time)/1000&"秒"
-//            If ocrchar_layer > 5900 Then 
-//                updata_mistake = updata_mistake + 1
-//            End If
-//            Call update_main(2)
-//            t = TickCount()
-//            auto_update_time = TickCount()
-//        End If
-//    Else 
-//        TracePrint "层数不同"
-//        ocrchar_layer_temp = ocrchar_layer
-//        auto_tribe_time = TickCount()
-//        //        		TracePrint "auto_tribe_time="&auto_tribe_time
-//        //        		TracePrint "ocrchar_layer_temp="&ocrchar_layer_temp
-//    End If
-//Else 
+Function layer_check()
 //层数对比,固定层数蜕变
 TracePrint "蜕变&升级"
 If ocrchar_layer >= layer_number_max  and  auto_tribe = False Then 
@@ -403,20 +366,6 @@ Else
 			ocrchar_layer_temp = ocrchar_layer
             auto_update_time = TickCount()
         End If
-//    ElseIf ocrchar_layer - ocrchar_layer_temp < 50 and ocrchar_layer <= layer_number_max * 0.9 Then
-//        If TickCount() - auto_update_time > 80000 Then 
-//            TracePrint "升级"&(TickCount() - auto_update_time)/1000&"秒"
-//            updata_mistake = updata_mistake + 1
-//            Call update_main(2)
-//            t = TickCount()
-//            ocrchar_layer_temp = ocrchar_layer
-//            auto_update_time = TickCount()
-//            If updata_mistake > 10 Then 
-//            	Call hum(2)
-//            	auto_tribe_time = TickCount()
-//            	auto_update_time = TickCount()
-//            End If
-//        End If
     Else 
     	updata_mistake = 0
         ocrchar_layer_temp = ocrchar_layer
@@ -618,12 +567,7 @@ Function tribe(flat)
                 End If
             Wend
             //点击部落boss
-//            ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
-//            error_num_one=0
-//            While ocrchar <> "点击继续"
-//                TracePrint"等待结束"
-//                If error_num_one = 0 Then 
-                    //第一次打boss35秒
+            //第一次打boss35秒
             tribe_time = TickCount()
             DO While TickCount() - tribe_time <= 35000
                 //点击延迟
@@ -636,7 +580,6 @@ Function tribe(flat)
                     Delay shanhai.RndEx(30, 50)
                 Next
             Loop 
-//                Else 
             //之后的boos检测结束
             tribe_time = TickCount()
             DO While TickCount()-tribe_time<5000
@@ -650,15 +593,7 @@ Function tribe(flat)
                     Delay shanhai.RndEx(30, 50)
                 Next
             Loop
-//                End If
-//                ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
-//                TracePrint ocrchar
-//                error_num_one = error_num_one + 1
-//                If error_num_one > 4 Then 
-//                    TracePrint"出错"
-//                    Exit While
-//                End If
-//            Wend
+
             //离开部落boos界面
             error_num_one = 0
             ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
@@ -826,41 +761,6 @@ Function skills
             Exit While
         End If
     Wend
-    //模式一
-//    If TickCount() - skills_time > 12000 or skills_flat = 1 Then 
-//     	TracePrint (TickCount() - skills_time)
-//    	//技能6
-//    	TracePrint "技能2~6"
-//    	Tap shanhai.RndEx(946, 1027), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//		Tap shanhai.RndEx(264, 303), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//    	//技能5
-//    	Tap shanhai.RndEx(772, 848), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 40)
-//    	Tap shanhai.RndEx(946, 1027), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//    	//技能4
-//    	Tap shanhai.RndEx(590, 666), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//    	Tap shanhai.RndEx(772, 848), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//    	//技能3
-//    	Tap shanhai.RndEx(406, 480), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//    	Tap shanhai.RndEx(590, 666), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)    	  
-//    	//技能2
-//    	Tap shanhai.RndEx(264, 303), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//    	Tap shanhai.RndEx(406, 480), shanhai.RndEx(1682, 1755)
-//    	Delay shanhai.RndEx(35, 45)
-//
-//    	Tap shanhai.RndEx(264, 303), shanhai.RndEx(1682, 1755)
-//    	skills_time = TickCount()
-//    	skills_flat = 0
-//    End If
-
 //模式二
 	//技能6
 	If Gk.Full(975,1654, "FFFFFF", 0.999) Then 
@@ -946,50 +846,6 @@ Function prestige
             End If
         End If
     End If
-//	FindStr 753, 1703, 1061, 1836, "蜕变", "FFFFFF", 0.9, main_intX, main_intY
-//	
-//	While main_intX = -1 And main_intY = -1 
-//		Swipe 730, 1471, 730, 1300, 100
-//		Delay 300
-//		FindStr 753, 1703, 1061, 1836, "蜕变", "FFFFFF", 0.9, main_intX, main_intY
-//    	error_num_one = error_num_one + 1
-//    	If error_num_one > 15 Then 
-//        	TracePrint"出错"
-//        	Exit While
-//    	End If
-//    Wend
-//    if main_intX > -1 And main_intY > -1 Then 
-//    	Tap main_intX, main_intY
-//		Delay 1000
-//	End If	
-//    ocr_prestige=Ocr(483,1452,596,1510,"FFFFFF",0.7)
-//    Traceprint ocr_prestige
-//    error_num_two = 0
-//    While ocr_prestige = "蜕变"  
-//        Delay 1000
-//        Tap 537, 1479
-//        Delay 1000
-//        ocr_prestige = Ocr(483, 1452, 596, 1510, "FFFFFF", 0.7)
-//        error_num_two = error_num_two + 1
-//        If error_num_two > 5 Then 
-//            TracePrint"出错"
-//            Call close_ad(fairy_true)//广告
-//            Exit While
-//        End If
-//    Wend	
-//    ocr_prestige2 = Ocr(660, 1238, 825, 1310, "FFFFFF", 0.7)
-//    error_num_three = 0
-//    While ocr_prestige2 = "蜕变"  
-//        Tap 738, 1278
-//        TracePrint"success"
-//        Delay 500
-//        ocr_prestige2 = Ocr(660, 1238, 825, 1310, "FFFFFF", 0.7)
-//        error_num_three = error_num_three + 1
-//        If error_num_three > 5 Then 
-//            TracePrint"出错"
-//            Exit While
-//        End If
-//    Wend
 	//蜕变等待
 	Delay 15000
 	Dim p_temp = ocrchar_layer 
@@ -1310,19 +1166,7 @@ End Function
 
 //区域找蛋
 Function egg
-//    TracePrint "区域找蛋"
-//    Dim intX,intY
-//    FindPic 2,401,128,907,"Attachment:蛋.png","000000",1,0.8,intX,intY
-//    If intX > -1 And intY > -1 Then 
-//    	TracePrint "发现蛋"
-//        TracePrint intX
-//        TracePrint intY
-//        Touch intX, intY, 200
-//    End If
-//    Delay 1000
-//    Touch 500, 500, 200
-//    Delay 1000
-//    Touch 500, 500, 200
+    TracePrint "区域找蛋"
     Dim intX,intY
 	FindColor 38,625,99,697,"E0D2A7-111111",1,1,intX,intY
 	If intX > -1 And intY > -1 Then 
