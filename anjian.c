@@ -6,15 +6,11 @@ Import "GK.lua"
 KeepScreen True
 Device.SetBacklightLevel(0)//设置亮度
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
-//数字0-9
-SetRowsNumber(33)
-SetOffsetInterval (1)
-SetDictEx 1, "Attachment:mq_softsuzhi.txt"
-UseDict(1)
-SetRowsNumber(33)
-SetOffsetInterval (1)
-SetDictEx(0, "Attachment:mq_soft.txt")
-UseDict(0)
+
+//SetRowsNumber(33)
+//SetOffsetInterval (1)
+//SetDictEx(0, "Attachment:mq_soft.txt")
+//UseDict(0)
 //初始化时间
 Dim update_main_time 
 Dim update_time_main
@@ -106,9 +102,6 @@ Else
     temp4="仙女:关闭"
 End If
 
-
-
-
 //========================================初始化结束=================================================//
 //layer_number_max = 4000
 //等待时间
@@ -148,7 +141,9 @@ Function init()
 	Delay 500
 	Touch 500, 500, 200
 	Call Screen()//屏幕适配
-    Call close_ad(fairy_true)//广告
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     Call layer()
     //层数处理
     Call layer_check()
@@ -157,7 +152,9 @@ Function init()
     Call egg()//宠物蛋
     Call chest()//宝箱
     Call Daily_reward()//每日奖励
-    Call close_ad(fairy_true)//广告
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     //Call hum(3)//日常升级本人
     Call hum(4)//成就
 	Call update_main(1)//升级.初始化模式
@@ -182,7 +179,9 @@ Function main
                 EndScript
             End If
         End If
-		Call close_ad(fairy_true)//广告
+        If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If
 		Call update_main(0)//定时升级
         Delay 300
         Call kill()//层数
@@ -192,7 +191,7 @@ End Function
 Function update_main(update_main_flat)
 	//定时升级
     update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
-    ShowMessage "距离上次升级时间" & update_time_main, 1500, 0, 0
+    ShowMessage "距离上次升级时间" & update_time_main &"秒", 1500, 0, 0
     If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
         //检测部落boss开启
         Dim intX,intY
@@ -202,11 +201,13 @@ Function update_main(update_main_flat)
             Delay 1000
         End If
 
-        Call close_ad(fairy_true)
+        If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If
         Call hum(3)//日常升级本人
 		Delay 500
 		//超过5900层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000 or updata_mistake > 1 or update_main_flat=1 Then 
+        If ocrchar_layer < 6000 or updata_mistake > 2 or update_main_flat=1 Then 
         	Call hum(1)//升级
         	Call hero(1)//升级
         Else 
@@ -252,7 +253,7 @@ Function kill()
 				//启动boss
                 Call boss()
                 //火焰延迟
-				While TickCount() - t_temp < 500
+				While TickCount() - t_temp < 450
 					Delay 50
                 Wend
                 TracePrint TickCount()-t_temp
@@ -265,7 +266,7 @@ Function kill()
 //                	While TickCount() - t_temp < 2500
 //                	Wend
 //                Else 
-                While TickCount() - t_temp < 2300
+                While TickCount() - t_temp < 2250
                  	Delay 50
 //                 	If Gk.Full(76,1654, "FFFFD8", 0.999) And TickCount() - t_temp>1500 Then 
 //                 	 	Exit While
@@ -295,7 +296,11 @@ Function kill()
 End Function
 //判断层数
 Function layer()
-    UseDict(1)
+	//数字0-9
+	SetRowsNumber(33)
+	SetOffsetInterval (1)
+	SetDictEx 1, "Attachment:层数.txt"
+	UseDict(1)
     ocrchar=Ocr(489,87,600,122,"FFFFFF-222222",0.8)
     Traceprint "层数"&ocrchar
     If ocrchar = "" Then 
@@ -306,16 +311,15 @@ Function layer()
 //    If ocrchar <> "" Then
 //        ocrchar_layer = ocrchar + 0
     //层数判断错误
-    If ocrchar = null Then 
+    If ocrchar = "" Then 
         ocrchar_layer = layer_temp
         TracePrint "层数检测为空"
-    Else 
+    ElseIf ocrchar <> "" Then 
         ocrchar_layer = ocrchar + 0
         layer_temp = ocrchar_layer
-        ShowMessage ocrchar_layer&"层", 1000, 0, 0
     End If
     //层数显示
-	
+	ShowMessage ocrchar_layer&"层", 1000, 0, 0
     layer = ocrchar_layer
 //     End If
 End Function        
@@ -329,7 +333,7 @@ If ocrchar_layer >= layer_number_max  and  auto_tribe = False Then
     Call hum(2)
 Else 
    	If (ocrchar_layer -ocrchar_layer_temp < 8 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 50 and ocrchar_layer <= layer_number_max * 0.9) Then 
-        TracePrint "层数相同"
+        TracePrint "层数相同"&ocrchar_layer -ocrchar_layer_temp
         //防止卡关and自动蜕变
         If TickCount() - auto_tribe_time > 300000 Then 
             TracePrint "自动蜕变"
@@ -363,7 +367,9 @@ End Function
 Function hum(flat)
     TracePrint	"hum" 
     Dim humX,humY,humX2,humY2
-    Call close_ad(fairy_true)
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     //识别
     FindColor 59,1865,102,1907, "AB9C7C", 1, 1, humX, humY
     If humX > -1 And humY > -1 Then 
@@ -444,7 +450,9 @@ End Function
 Function hero(flat)
     TracePrint	"hero" 
     Dim heroX,heroY,heroX2,heroY2
-    Call close_ad(fairy_true)
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     FindColor 245,1850,294,1879,"8F8C6E",1,1,heroX,heroY
     If heroX > -1 And heroY > -1 Then 	
         TracePrint	"hero已经点开"
@@ -595,7 +603,9 @@ Function tribe(flat)
         End If	
     End If
     Delay 2000
-    Call close_ad(fairy_true)//广告
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
 End Function
 //关广告
 Function close_ad(fairy_temp)
@@ -778,7 +788,9 @@ Function skills
 End Function
 //蜕变
 Function prestige
-	Call close_ad(fairy_true)//广告
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     SetRowsNumber(33)
     SetOffsetInterval (1)
     SetDictEx(0, "Attachment:mq_soft.txt")
@@ -834,7 +846,9 @@ Function prestige
 	Call layer()
 	error_num_one=1
 	While ocrchar_layer > p_temp - 100
-		Call close_ad(fairy_true)
+    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If
 		Delay 500
 		Call layer()
 		If error_num_one > 10 And ocrchar_layer > p_temp-1000  Then 
@@ -848,13 +862,17 @@ Function prestige
         End If
 	Wend
 	//Delay 40000
-	Call close_ad(fairy_true)//广告
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     Call init()  //初始化
 End Function
 //等级升级
 Function update(flat)
     Dim upX,upY,i=0,n=0,up1X,up1Y,up2X,up2Y,checkX,checkY,boxX,boxY,temp,flag=1
-    Call close_ad(fairy_true)
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     TracePrint "升级" &flat
    
     Select Case flat
@@ -871,7 +889,9 @@ Function update(flat)
                 TracePrint "物品栏下箭头x="&boxX&"y="&boxX
                 Call close_ad(fairy_true)
                 Delay 2000
-                Call close_ad(fairy_true)
+    			If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+					Call close_ad(fairy_true)//广告
+				End If
                 FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
                 If boxX = -1 And boxX = -1 Then 
                     TracePrint "error.hum(1)"
@@ -940,7 +960,9 @@ Function update(flat)
                 TracePrint "物品栏下箭头x="&boxX&"y="&boxY
                 Call close_ad(fairy_true)
                 Delay 2000
-                Call close_ad(fairy_true)
+    			If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+					Call close_ad(fairy_true)//广告
+				End If
                 FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
                 If boxX = -1 And boxY = -1 Then 
                     TracePrint "error.hero(1)"
@@ -1025,7 +1047,9 @@ Function update(flat)
             Swipe 730, 1250, 730, 1460, 200
             TracePrint "上滑"
             Delay 100
-            Call close_ad(fairy_true)
+    		If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+				Call close_ad(fairy_true)//广告
+			End If
             FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
             error_num_one = error_num_one + 1
             If error_num_one > 20 Then 
@@ -1061,7 +1085,9 @@ Function update(flat)
                 TracePrint "物品栏下箭头x="&boxX&"y="&boxY
                 Call close_ad(fairy_true)
                 Delay 2000
-                Call close_ad(fairy_true)
+    			If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+					Call close_ad(fairy_true)//广告
+				End If
                 FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
                 If boxX = -1 And boxY = -1 Then 
                     TracePrint "error.hero(2)"
@@ -1116,8 +1142,9 @@ Function update(flat)
         Next
       
     End Select
-
-    Call close_ad(fairy_true)
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
     Delay 150
 
 End Function
@@ -1143,7 +1170,9 @@ Function Daily_reward
     	Delay 500
     	Touch 500, 500, 200
     End If
-	Call close_ad(fairy_true)//广告
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
 End Function
 
 //区域找蛋
@@ -1216,7 +1245,9 @@ Function achievement
         //Swipe 730, 1250, 730, 1460, 200
         TracePrint "上滑"
         Delay 100
-        Call close_ad(fairy_true)
+    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If
         FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
         error_num_one = error_num_one + 1
         If error_num_one > 5 Then 
@@ -1259,69 +1290,49 @@ Function achievement
         End If
     Wend  
 	End If
-	
-   	Call close_ad(fairy_true)//广告
+    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+		Call close_ad(fairy_true)//广告
+	End If
 End Function
 
 //上滑
 Function swipe_up
     TracePrint "上滑"
     Dim closeX,closeY
-    For 5
+    For 10
     	Swipe 730, 1322, 730, 1715, 100
     	Delay shanhai.RndEx(200, 255)
+    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If
 	Next
-	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-    If closeX > -1 And closeY > -1 Then
-        TracePrint "关广告"
-        TouchDown closeX,closeY,1
-        TouchUp 1
-        Delay 300
-    End If
-    For 5
-    	Swipe 730, 1322, 730, 1715, 100
-    	Delay shanhai.RndEx(200, 255)
-	Next
+
 End Function
 //小的下滑
 Function s_swipe_down
     TracePrint "小的下滑"
     Dim closeX,closeY
-	For 5
+	For 10
     	Swipe 1000, 1500, 1000, 1300, 100
     	Delay shanhai.RndEx(200, 255)
+    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If    	
 	Next
-	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-    If closeX > -1 And closeY > -1 Then
-        TracePrint "关广告"
-        TouchDown closeX,closeY,1
-        TouchUp 1
-        Delay 300
-    End If
-    For 5
-    	Swipe 1000, 1500, 1000, 1300, 100
-    	Delay shanhai.RndEx(200, 255)
-	Next
+
 End Function
 //大的下滑
 Function b_swipe_down
     TracePrint "大的下滑"
     Dim closeX,closeY
-    For 15
+    For 30
     	Swipe 1000, 1650, 1000, 1300, 100
     	Delay shanhai.RndEx(200, 255)
+    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+			Call close_ad(fairy_true)//广告
+		End If
 	Next
-    FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-    If closeX > -1 And closeY > -1 Then
-        TracePrint "关广告"
-        TouchDown closeX,closeY,1
-        TouchUp 1
-        Delay 300
-    End If
-    For 15
-    	Swipe 1000, 1650, 1000, 1300, 100
-    	Delay shanhai.RndEx(200, 255)
-	Next
+
 End Function
 Function Screen
     Dim scrX,scrY
