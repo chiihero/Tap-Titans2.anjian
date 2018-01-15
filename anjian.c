@@ -120,7 +120,6 @@ Function init()
 	error_num_one = 0
 	//初始化发送邮件内容
 	sendmessage_str = ""
-	sendmessage_str = sendmessage_str & "最高设定层数:"& layer_number_max &"\n"
 	s_layer_number_mix = 1
 	s_layer_number = 1
 	//初始化识别层数
@@ -207,7 +206,7 @@ Function update_main(update_main_flat)
         Call hum(3)//日常升级本人
 		Delay 500
 		//超过5900层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000 or updata_mistake > 2 or update_main_flat=1 Then 
+        If ocrchar_layer < 6000 or updata_mistake >= 2 or update_main_flat=1 Then 
         	Call hum(1)//升级
         	Call hero(1)//升级
         Else 
@@ -1340,7 +1339,7 @@ Function mail(max_layer)
     If max_layer > s_layer_number Then 
     	sendmessage_str ="最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
     End If
-    sendmessage_str ="内容为:\n"&sendmessage_str
+    sendmessage_str = "内容为:\n"& "最高设定层数:"& layer_number_max &"\n" & sendmessage_str 
     Dim m_message = sendmessage_str
     Dim m_tomail = "853879993@qq.com"
     Dim Ret = SendSimpleEmail(m_host,m_username,m_password,m_subject,m_message,m_tomail) 
@@ -1372,6 +1371,5 @@ End Function
 Function OnScriptExit()
     TracePrint "脚本已经停止！"
     ShowMessage "脚本已经停止！"
-
     KeepScreen False
 End Function
