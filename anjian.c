@@ -572,43 +572,24 @@ End Function
 //关广告
 Function close_ad(fairy_temp)
     TracePrint "广告"
-    //If CmpColorEx("993|1886|3F4423,64|36|6D6858",1) = 1 Then
+    //If CmpColorEx("993|1886|3F4423,64|36|6D6858",1) = 0 Then
 	If CmpColorEx("993|1886|3F4423",1) = 0 Then
     	ShowMessage "广告", 1000, 0, 0
-    	SetRowsNumber(33)
-		SetOffsetInterval (1)
-		SetDictEx(0, "Attachment:mq_soft.txt")
-    	UseDict(0)
-	//    Dim i=0
-    	Dim closeX,closeY
-    	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-    	error_num_one=0
-    	While closeX > -1 And closeY > -1 
-        	TracePrint "关广告"
-        	//TracePrint closeX
-        	//TracePrint closeY
-        	TouchDown closeX,closeY,1
-        	TouchUp 1
-        	Delay 300
-        	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-        	error_num_one = error_num_one + 1
-        	If error_num_one > 2 Then 
-            	TracePrint"出错"
-            	Exit While
-        	End If
-    	Wend
-    	Dim ocrchar,ocrchar1
-    	If fairy_temp  = False Then//不看
-        	ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
+		//识别小仙女
+		If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
+		    SetRowsNumber(33)
+			SetOffsetInterval (1)
+			SetDictEx(0, "Attachment:mq_soft.txt")
+    		UseDict(0)
+			Dim ocrchar,ocrchar1
+			ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
         	Traceprint ocrchar
-        	If ocrchar="不用了" Then 
-            	Touch 287, 1486, 200
-            	Traceprint "不用了"
-            	ShowMessage "不用了", 1500, 0, 0
-        	End If	
-    	Else//看 	
-        	ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
-        	If ocrchar = "不用了" Then 
+    		If fairy_temp  = False And ocrchar="不用了" Then//不看
+            		Touch 287, 1486, 200
+            		Traceprint "不用了"
+            		ShowMessage "不用了", 1500, 0, 0
+    		Elseif ocrchar = "不用了"  Then
+        			
             	Traceprint "出现小仙女广告"
             	//判断钻石
             	Dim diamondX,diamondY
@@ -676,15 +657,35 @@ Function close_ad(fairy_temp)
                     	ShowMessage "不用了", 1500, 0, 0
                 	End If	
             	End If
-        	End If
-        	//收集
-        	ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-        	If ocrchar1 = "收集" Then 
-            	Traceprint "出现小仙女广告收集"
-            	Delay 100
-            	Tap 534, 1493
-            	ShowMessage "收集", 1500,0,0
-        	End If 	
+        		//收集
+        		ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+        		If ocrchar1 = "收集" Then 
+            		Traceprint "出现小仙女广告收集"
+            		Delay 100
+            		Tap 534, 1493
+            		ShowMessage "收集", 1500,0,0
+        		End If 	
+    		End If
+    	//普通弹窗
+    	Else 
+    	    Dim closeX,closeY
+    		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+    		error_num_one=0
+    		While closeX > -1 And closeY > -1 
+        		TracePrint "关广告"
+        		//TracePrint closeX
+        		//TracePrint closeY
+        		TouchDown closeX,closeY,1
+        		TouchUp 1
+        		Delay 300
+        		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+        		error_num_one = error_num_one + 1
+        		If error_num_one > 2 Then 
+            		TracePrint"出错"
+            		Exit While
+        		End If
+    		Wend
+    		
     	End If
     End If
 End Function
@@ -831,7 +832,7 @@ Function update(flat)
 	Call close_ad(fairy_true)//广告
     TracePrint "升级" &flat
     Select Case flat
-    //两格
+    //从下往上两格
     Case 1
         //购买框识别
         error_num_one=0
@@ -900,7 +901,7 @@ Function update(flat)
                 Exit While
             End If
         Wend
-        //四格	
+    //从下往上四格	
     Case 2  
         //购买框识别
         error_num_one = 1
@@ -973,7 +974,7 @@ Function update(flat)
                 Exit While
             End If
         Wend
-        //日常升级
+    //不动日常升级
     Case 3
         //购买框识别
         error_num_one = 0
@@ -1022,6 +1023,7 @@ Function update(flat)
                 Exit While
             End If
         Wend
+    //从上往下
     Case 4
           //购买框识别
         error_num_one = 0
