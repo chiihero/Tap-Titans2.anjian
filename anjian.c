@@ -197,16 +197,14 @@ Function update_main(update_main_flat)
     ShowMessage "升级剩余时间" & update_main_time-Int(update_time_main), 1500, 0, 0
     If (update_time_main >= update_main_time) or update_main_flat <> 0 Then 
         //检测部落boss开启
-        If tribe_true = True Then 
-            Dim intX,intY
-			FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
-			If intX > -1 And intY > -1 Then
-//			FindColor 179,45,193,63,"3D4076-111111",0,1,intX,intY
-//			If intX > -1 And intY > -1 Then
-                Call tribe(2)
-                Delay 1000
-            End If
+        Dim intX,intY
+		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
+		If intX > -1 And intY > -1 And tribe_true = True Then
+            Call tribe(2)
+            Delay 1000
         End If
+
+        Call close_ad(fairy_true)
         Call hum(3)//日常升级本人
 		Delay 500
 		//超过5900层之后达到最高层，不需要升级
@@ -281,11 +279,12 @@ Function kill()
 //                	While TickCount() - t_temp < 2500
 //                	Wend
 //                Else 
-                 	While TickCount() - t_temp < 2300
-                 	 If Gk.Full(76,1654, "FFFFD8", 0.999) Then 
-                 	 	Exit While
-                 	 End If
-                	Wend
+                While TickCount() - t_temp < 2300
+                 	Delay 50
+//                 	If Gk.Full(76,1654, "FFFFD8", 0.999) And TickCount() - t_temp>1500 Then 
+//                 	 	Exit While
+//                 	End If
+                Wend
 //                End If
                
                 TracePrint TickCount()-t_temp
@@ -625,32 +624,32 @@ Function tribe(flat)
 //                TracePrint"等待结束"
 //                If error_num_one = 0 Then 
                     //第一次打boss35秒
-                    tribe_time = TickCount()
-                    DO While TickCount() - tribe_time <= 35000
-                        //点击延迟
-                        Delay shanhai.RndEx(50, 120)
-                        For 40
-                            //点击延迟
-                            TouchDown shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), 1
-                            Delay shanhai.RndEx(10, 30)
-                            TouchUp 1
-                            Delay shanhai.RndEx(30, 50)
-                        Next
-                    Loop 
+            tribe_time = TickCount()
+            DO While TickCount() - tribe_time <= 35000
+                //点击延迟
+                Delay shanhai.RndEx(50, 120)
+                For 40
+                    //点击延迟
+                    TouchDown shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), 1
+                    Delay shanhai.RndEx(10, 30)
+                    TouchUp 1
+                    Delay shanhai.RndEx(30, 50)
+                Next
+            Loop 
 //                Else 
-                    //之后的boos检测结束
-                    tribe_time = TickCount()
-                    DO While TickCount()-tribe_time<5000
-                        //点击延迟
-                        Delay shanhai.RndEx(50, 120)
-                        For 40
-                            //点击延迟
-                            TouchDown shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), 1
-                            Delay shanhai.RndEx(10, 30)
-                            TouchUp 1
-                            Delay shanhai.RndEx(30, 50)
-                        Next
-                    Loop
+            //之后的boos检测结束
+            tribe_time = TickCount()
+            DO While TickCount()-tribe_time<5000
+                //点击延迟
+                Delay shanhai.RndEx(50, 120)
+                For 40
+                    //点击延迟
+                    TouchDown shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), 1
+                    Delay shanhai.RndEx(10, 30)
+                    TouchUp 1
+                    Delay shanhai.RndEx(30, 50)
+                Next
+            Loop
 //                End If
 //                ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
 //                TracePrint ocrchar
@@ -1000,7 +999,7 @@ Function prestige
 		Call close_ad(fairy_true)
 		Delay 500
 		Call layer()
-		If error_num_one > 10 And ocrchar_layer = p_temp Then 
+		If error_num_one > 10 And ocrchar_layer > p_temp-1000  Then 
 			Call prestige()
 			Exit Function
 		End If
@@ -1441,94 +1440,62 @@ End Function
 //上滑
 Function swipe_up
     TracePrint "上滑"
-    Swipe 730, 1322, 730, 1715,100
-    Delay 200
-    Swipe 730, 1322, 730, 1715,100
-    Delay 212
-    Swipe 730, 1322, 730, 1715, 100
-    Delay 222
-    Swipe 730, 1322, 730, 1715, 100
-    Delay 230
-    Swipe 730, 1322, 730, 1715,100
-    Delay 200
-    Swipe 730, 1322, 730, 1715,100
-    Delay 212
-    Swipe 730, 1322, 730, 1715, 100
-    Delay 222
-    Swipe 730, 1322, 730, 1715, 100
-    Delay 230
+    Dim closeX,closeY
+    For 5
+    	Swipe 730, 1322, 730, 1715, 100
+    	Delay shanhai.RndEx(200, 255)
+	Next
+	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+    If closeX > -1 And closeY > -1 Then
+        TracePrint "关广告"
+        TouchDown closeX,closeY,1
+        TouchUp 1
+        Delay 300
+    End If
+    For 5
+    	Swipe 730, 1322, 730, 1715, 100
+    	Delay shanhai.RndEx(200, 255)
+	Next
 End Function
 //小的下滑
 Function s_swipe_down
     TracePrint "小的下滑"
-    Swipe 1000, 1471, 1000, 1300, 100
-    Delay 212
-    Swipe 1000, 1471, 1000, 1300, 100
-    Delay 222
-    Swipe 1000, 1471, 1000, 1300, 100
-    Delay 230
-    Swipe 1000, 1471, 1000, 1300, 100
-    Delay 200
-    Swipe 1000, 1471, 1000, 1300, 100
-    Delay 212
-    Swipe 1000, 1471, 1000, 1300, 100
-    Delay 222
-    Swipe 730, 1471, 730, 1300, 100
-    Delay 230
+    Dim closeX,closeY
+	For 5
+    	Swipe 1000, 1500, 1000, 1300, 100
+    	Delay shanhai.RndEx(200, 255)
+	Next
+	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+    If closeX > -1 And closeY > -1 Then
+        TracePrint "关广告"
+        TouchDown closeX,closeY,1
+        TouchUp 1
+        Delay 300
+    End If
+    For 5
+    	Swipe 1000, 1500, 1000, 1300, 100
+    	Delay shanhai.RndEx(200, 255)
+	Next
 End Function
 //大的下滑
 Function b_swipe_down
     TracePrint "大的下滑"
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 211
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 235
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 211
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 235
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 211
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 235
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 211
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 235
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 211
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 205
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 211
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 235
-    Swipe 1000, 1650, 1000, 1300, 100
-    Delay 220
+    Dim closeX,closeY
+    For 15
+    	Swipe 1000, 1650, 1000, 1300, 100
+    	Delay shanhai.RndEx(200, 255)
+	Next
+    FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+    If closeX > -1 And closeY > -1 Then
+        TracePrint "关广告"
+        TouchDown closeX,closeY,1
+        TouchUp 1
+        Delay 300
+    End If
+    For 15
+    	Swipe 1000, 1650, 1000, 1300, 100
+    	Delay shanhai.RndEx(200, 255)
+	Next
 End Function
 Function Screen
     Dim scrX,scrY
@@ -1572,7 +1539,7 @@ Function sendmessage(s_layer_number)
 	TracePrint "邮箱内容"
 	If Int(s_layer_number / 100) > s_layer_number_mix Then 
 		s_layer_number_mix = Int(s_layer_number / 100)
-		sendmessage_str = sendmessage_str & "层数:"& s_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n"
+		sendmessage_str = "层数:"& s_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n"&sendmessage_str
 	End If
 End Function
 
