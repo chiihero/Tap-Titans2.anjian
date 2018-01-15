@@ -140,7 +140,7 @@ Function init()
 	Delay 500
 	Touch 500, 500, 200
 	Call Screen()//屏幕适配
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     Call layer()
@@ -151,7 +151,7 @@ Function init()
     Call egg()//宠物蛋
     Call chest()//宝箱
     Call Daily_reward()//每日奖励
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     //Call hum(3)//日常升级本人
@@ -178,7 +178,7 @@ Function main
                 EndScript
             End If
         End If
-        If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+        If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If
 		Call update_main(0)//定时升级
@@ -200,7 +200,7 @@ Function update_main(update_main_flat)
             Delay 1000
         End If
 
-        If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+        If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If
         Call hum(3)//日常升级本人
@@ -231,7 +231,7 @@ Function kill()
 	TracePrint "杀怪冲关"
 	Dim intX,intY
     For 4
-        If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+        If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If
         //单次击杀点击
@@ -350,7 +350,7 @@ End Function
 Function hum(flat)
     TracePrint	"hum" 
     Dim humX,humY,humX2,humY2
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     //识别
@@ -433,7 +433,7 @@ End Function
 Function hero(flat)
     TracePrint	"hero" 
     Dim heroX,heroY,heroX2,heroY2
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     FindColor 245,1850,294,1879,"8F8C6E",1,1,heroX,heroY
@@ -586,7 +586,7 @@ Function tribe(flat)
         End If	
     End If
     Delay 2000
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
 End Function
@@ -771,7 +771,7 @@ Function skills
 End Function
 //蜕变
 Function prestige
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     SetRowsNumber(33)
@@ -829,7 +829,7 @@ Function prestige
 	Call layer()
 	error_num_one=1
 	While ocrchar_layer > p_temp - 100
-    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    	If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If
 		Delay 500
@@ -845,7 +845,7 @@ Function prestige
         End If
 	Wend
 	//Delay 40000
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     Call init()  //初始化
@@ -853,7 +853,7 @@ End Function
 //等级升级
 Function update(flat)
     Dim upX,upY,i=0,n=0,up1X,up1Y,up2X,up2Y,checkX,checkY,boxX,boxY,temp,flag=1
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     TracePrint "升级" &flat
@@ -872,7 +872,7 @@ Function update(flat)
                 TracePrint "物品栏下箭头x="&boxX&"y="&boxX
                 Call close_ad(fairy_true)
                 Delay 2000
-    			If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    			If CmpColorEx("64|36|6D6858",1) = 1 Then 
 					Call close_ad(fairy_true)//广告
 				End If
                 FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
@@ -943,7 +943,7 @@ Function update(flat)
                 TracePrint "物品栏下箭头x="&boxX&"y="&boxY
                 Call close_ad(fairy_true)
                 Delay 2000
-    			If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    			If CmpColorEx("64|36|6D6858",1) = 1 Then 
 					Call close_ad(fairy_true)//广告
 				End If
                 FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
@@ -1030,7 +1030,7 @@ Function update(flat)
             Swipe 730, 1250, 730, 1460, 200
             TracePrint "上滑"
             Delay 100
-    		If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    		If CmpColorEx("64|36|6D6858",1) = 1 Then 
 				Call close_ad(fairy_true)//广告
 			End If
             FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
@@ -1068,7 +1068,7 @@ Function update(flat)
                 TracePrint "物品栏下箭头x="&boxX&"y="&boxY
                 Call close_ad(fairy_true)
                 Delay 2000
-    			If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    			If CmpColorEx("64|36|6D6858",1) = 1 Then 
 					Call close_ad(fairy_true)//广告
 				End If
                 FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
@@ -1125,7 +1125,7 @@ Function update(flat)
         Next
       
     End Select
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
     Delay 150
@@ -1153,7 +1153,7 @@ Function Daily_reward
     	Delay 500
     	Touch 500, 500, 200
     End If
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
 End Function
@@ -1228,7 +1228,7 @@ Function achievement
         //Swipe 730, 1250, 730, 1460, 200
         TracePrint "上滑"
         Delay 100
-    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    	If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If
         FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
@@ -1273,7 +1273,7 @@ Function achievement
         End If
     Wend  
 	End If
-    If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    If CmpColorEx("64|36|6D6858",1) = 1 Then 
 		Call close_ad(fairy_true)//广告
 	End If
 End Function
@@ -1285,7 +1285,7 @@ Function swipe_up
     For 7
     	Swipe 730, 1322, 730, 1715, 100
     	Delay shanhai.RndEx(200, 255)
-    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    	If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If
 	Next
@@ -1298,7 +1298,7 @@ Function s_swipe_down
 	For 10
     	Swipe 1000, 1500, 1000, 1300, 100
     	Delay shanhai.RndEx(200, 255)
-    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    	If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If    	
 	Next
@@ -1311,7 +1311,7 @@ Function b_swipe_down
     For 30
     	Swipe 1000, 1650, 1000, 1300, 100
     	Delay shanhai.RndEx(200, 255)
-    	If CmpColorEx("63|35|6D6858,991|1883|3F4423,365|258|11B6E6", 1) = 0 Then 
+    	If CmpColorEx("64|36|6D6858",1) = 1 Then 
 			Call close_ad(fairy_true)//广告
 		End If
 	Next
