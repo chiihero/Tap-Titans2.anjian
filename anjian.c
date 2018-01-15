@@ -5,7 +5,7 @@ Import "ShanHai.lua"
 Import "GK.lua"
 KeepScreen True
 Device.SetBacklightLevel(0)//设置亮度
-//int(((TickCount() - t)/1000)*100)/100   小数点一位的时间
+//int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
 //数字0-9
 SetRowsNumber(33)
 SetOffsetInterval (1)
@@ -16,10 +16,10 @@ SetOffsetInterval (1)
 SetDictEx(0, "Attachment:mq_soft.txt")
 UseDict(0)
 //初始化时间
-Dim t 
+Dim update_main_time 
 Dim update_time_main
 Dim auto_tribe_time
-Dim auto_update_time
+//Dim auto_update_time
 Dim skills_time 
 Dim auto_sendmessage_tribe_time 
 //初始化错误次数
@@ -37,7 +37,7 @@ Dim ocrchar_layer_temp
 Dim s_layer_number
 //初始化升级
 Dim update_main_flat
-Dim update_main_time
+Dim update_main_init_time
 Dim updata_mistake
 //部落时间
 Dim tribe_time
@@ -137,14 +137,9 @@ Function init()
 	ocrchar_layer_temp = 0
 	//定时自动升级.初始化时间
 	update_main_flat = 0
-	update_main_time = update_time
+	update_main_init_time = update_time
 	updata_mistake = 0
-	t = TickCount()
-	skills_time = TickCount()//使用技能时间初始化
-    auto_tribe_time = TickCount()//自动蜕变时间初始化
-    auto_update_time = TickCount()//自动升级时间初始化
-    auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
-	
+/////////////////////////////////////	
     //显示信息
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n"&"层数: "&layer_number_max &"\n"&"升级时间: " & update_time&"\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4, 3000,screenX/2-275,screenY/2-200
 	Touch 500, 500, 200
@@ -166,10 +161,13 @@ Function init()
     //Call hum(3)//日常升级本人
     Call hum(4)//成就
 	Call update_main(1)//升级.初始化模式
-//    Delay 150
-//    Touch 968, 1089, 100
-//    Delay 50
+////////////////////////////////////////////////
 	send_flag = 1  //发送邮箱，必须在检测layer()后
+	update_main_time = TickCount()
+	skills_time = TickCount()//使用技能时间初始化
+    auto_tribe_time = TickCount()//自动蜕变时间初始化
+//    auto_update_time = TickCount()//自动升级时间初始化
+    auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 End Function
 Function main
     Call init()  //初始化
@@ -193,9 +191,9 @@ End Function
 
 Function update_main(update_main_flat)
 	//定时升级
-    update_time_main =Int((TickCount() - t) / 1000)//定时升级
-    ShowMessage "升级剩余时间" & update_main_time-Int(update_time_main), 1500, 0, 0
-    If (update_time_main >= update_main_time) or update_main_flat <> 0 Then 
+    update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
+    ShowMessage "距离上次升级时间" & update_time_main, 1500, 0, 0
+    If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
         //检测部落boss开启
         Dim intX,intY
 		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
@@ -213,30 +211,18 @@ Function update_main(update_main_flat)
         	Call hero(1)//升级
         Else 
         	Call hero(2)//升级
-        End If
-        ////////////////////////////
-//    	Delay 150
-//    	Touch 968, 1089, 100
-//    	Delay 50
-//    	Call close_ad(fairy_true)
-//    	Delay 150
-//    	Touch 968, 1089, 100
-//    	Delay 50
-    	///////////////////////////
-        
-        t = TickCount()
-        auto_update_time = TickCount()
-        //Traceprint "定时升级"&auto_update_time/1000
+        End If  
+        update_main_time = TickCount()
         update_main_flat = 0
     End If
     If ocrchar_layer > layer_number_max*0.90 Then 
-    	update_main_time = 300
+    	update_main_init_time = 300
     End If
     If ocrchar_layer > layer_number_max*0.96 Then 
-    	update_main_time = 230
+    	update_main_init_time = 230
     End If
     If ocrchar_layer > layer_number_max * 0.99 Then
-    	update_main_time = 150
+    	update_main_init_time = 180
     End If
 End Function
 
@@ -313,27 +299,25 @@ Function layer()
     ocrchar=Ocr(489,87,600,122,"FFFFFF-222222",0.8)
     Traceprint "层数"&ocrchar
     If ocrchar = "" Then 
-    Delay 1000
+    	Call close_ad(fairy_true)
         ocrchar=Ocr(489,87,600,122,"FFFFFF-222222",0.8)
     	Traceprint "层数"&ocrchar
     End If
-    If ocrchar <> "" Then
+//    If ocrchar <> "" Then
+//        ocrchar_layer = ocrchar + 0
+    //层数判断错误
+    If ocrchar = null Then 
+        ocrchar_layer = layer_temp
+        TracePrint "层数检测为空"
+    Else 
         ocrchar_layer = ocrchar + 0
-        //层数判断错误
-        If ocrchar = null Then 
-            ocrchar_layer = layer_temp
-            TracePrint "层数检测为空"
-        Else 
-            layer_temp = ocrchar_layer
-        End If
-        //层数显示
-//        Dim ocrchar_layer_flat = ocrchar_layer Mod 5
-//        If ocrchar_layer_flat =0 Then        
-//            ShowMessage ocrchar_layer&"层", 1500, 0, 0
-//        End If
-		ShowMessage ocrchar_layer&"层", 1000, 0, 0
-        layer = ocrchar_layer
-     End If
+        layer_temp = ocrchar_layer
+        ShowMessage ocrchar_layer&"层", 1000, 0, 0
+    End If
+    //层数显示
+	
+    layer = ocrchar_layer
+//     End If
 End Function        
         
 Function layer_check()
@@ -347,31 +331,29 @@ Else
    	If (ocrchar_layer -ocrchar_layer_temp < 8 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 50 and ocrchar_layer <= layer_number_max * 0.9) Then 
         TracePrint "层数相同"
         //防止卡关and自动蜕变
-        If TickCount() - auto_tribe_time > 600000 Then 
+        If TickCount() - auto_tribe_time > 300000 Then 
             TracePrint "自动蜕变"
             TracePrint "自动蜕变"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
-            If ocrchar_layer > layer_number_max * 0.98 Then 
+            If ocrchar_layer > layer_number_max * 0.9 Then 
             	layer_number_max = ocrchar_layer  //自动蜕变层数改变
             End If
             Call hum(2)
             auto_tribe_time = TickCount()
-            auto_update_time = TickCount()
+//            auto_update_time = TickCount()
             Exit Function
         //自动升级
-        ElseIf TickCount() - auto_update_time > 80000 Then 
-            TracePrint "升级"&(TickCount() - auto_update_time)/1000&"秒"
+        Else//If TickCount() - auto_update_time > 80000 Then 
+            TracePrint "升级"//&(TickCount() - auto_update_time)/1000&"秒"
             updata_mistake = updata_mistake + 1
 			Call update_main(2)
-			t = TickCount()
+			update_main_time = TickCount()
 			ocrchar_layer_temp = ocrchar_layer
-            auto_update_time = TickCount()
+//            auto_update_time = TickCount()
         End If
     Else 
     	updata_mistake = 0
         ocrchar_layer_temp = ocrchar_layer
         auto_tribe_time = TickCount()
-//                TracePrint "auto_tribe_time="&auto_tribe_time
-//                TracePrint "ocrchar_layer_temp="&ocrchar_layer_temp
     End If
 End If             
 
