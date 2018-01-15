@@ -2,7 +2,6 @@
 //hum(2)  蜕变
 //hum(3)  日常升级
 Import "ShanHai.lua"
-//Import "GK.lua"
 KeepScreen True
 Device.SetBacklightLevel(0)//设置亮度
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
@@ -573,7 +572,8 @@ End Function
 //关广告
 Function close_ad(fairy_temp)
     TracePrint "广告"
-	If CmpColorEx("64|36|6D6858",1) = 0 Then
+    //If CmpColorEx("993|1886|3F4423,64|36|6D6858",1) = 1 Then
+	If CmpColorEx("993|1886|3F4423",1) = 0 Then
     	ShowMessage "广告", 1000, 0, 0
     	SetRowsNumber(33)
 		SetOffsetInterval (1)
@@ -720,31 +720,26 @@ Function skills
 //模式二
 	//技能6
 	If CmpColorEx("975|1654|FFFFFF",1) = 1 Then
-//	If Gk.Full(975,1654, "FFFFFF", 0.999) Then 
     	Tap shanhai.RndEx(946, 1027), shanhai.RndEx(1682, 1755)
     	Delay shanhai.RndEx(20, 30)
 	End If
     //技能5
     If CmpColorEx("795|1654|FFFFFF",1) = 1 Then
-//    If Gk.Full(795,1654, "FFFFFF", 0.999) Then 
     	Tap shanhai.RndEx(772, 848), shanhai.RndEx(1682, 1755)
     	Delay shanhai.RndEx(20, 30)
 	End If
     //技能4
     If CmpColorEx("619|1654|FFFFFF",1) = 1 Then
-//    If Gk.Full(619,1654, "FFFFFF", 0.999) Then 
     	Tap shanhai.RndEx(590, 666), shanhai.RndEx(1682, 1755)
     	Delay shanhai.RndEx(20, 30)
 	End If
     //技能3
     If CmpColorEx("440|1654|FFFFFF",1) = 1 Then
-//    If Gk.Full(440,1654, "FFFFFF", 0.999) Then 
     	Tap shanhai.RndEx(406, 480), shanhai.RndEx(1682, 1755)
     	Delay shanhai.RndEx(20, 30)
 	End If	
     //技能2
     If CmpColorEx("260|1652|FFFFFF",1) = 1 Then
- //   If Gk.Full(260,1652, "FFFFFF", 0.999) Then 
     	Tap shanhai.RndEx(264, 303), shanhai.RndEx(1682, 1755)
     	Delay shanhai.RndEx(20, 30)
 	End If
@@ -835,9 +830,8 @@ Function update(flat)
     Dim upX,upY,i=0,n=0,up1X,up1Y,up2X,up2Y,checkX,checkY,boxX,boxY,temp,flag=1
 	Call close_ad(fairy_true)//广告
     TracePrint "升级" &flat
-   
     Select Case flat
-        //两格
+    //两格
     Case 1
         //购买框识别
         error_num_one=0
