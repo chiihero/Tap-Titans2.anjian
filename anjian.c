@@ -38,6 +38,7 @@ Dim updata_mistake
 Dim tribe_time
 //定义如果蜕变超时时候的改变层数设定
 Dim auto_tribe_flat=0
+Dim auto_tribe_temp=0
 /*===============设置===================*/
 //层数选择
 Dim layer_number = ReadUIConfig("textedit1")
@@ -292,22 +293,37 @@ End Function
 Function layer_check()
 //层数对比,固定层数蜕变
 TracePrint "蜕变&升级"
-If ocrchar_layer >= layer_number_max  and  auto_tribe = False Then 
+If ocrchar_layer >= layer_number_max Then 
     //蜕变
-    TracePrint "固定层数蜕变"&ocrchar_layer
-    Call hum(2)
+    If auto_tribe = False Then 
+    	TracePrint "固定层数蜕变"&ocrchar_layer
+    	Call hum(2)
+    	
+    Else 
+    	TracePrint "自动蜕变"&ocrchar_layer
+    	layer_number_max = ocrchar_layer  //自动蜕变层数改变
+    	Call hum(2)
+    End If
 Else 
    	If (ocrchar_layer -ocrchar_layer_temp < 7 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
         TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
         //防止卡关and自动蜕变
         If TickCount() - auto_tribe_time > 300000 Then 
-            TracePrint "自动蜕变"
-            TracePrint "自动蜕变"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
-            auto_tribe_flat =auto_tribe_flat+1
-            If auto_tribe_flat>=2 Then 
-             	layer_number_max = ocrchar_layer  //自动蜕变层数改变
-             	auto_tribe_flat = 0
+            TracePrint "蜕变出错"
+            TracePrint "蜕变出错"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
+            /**************蜕变出错部分***************/
+            auto_tribe_flat = auto_tribe_flat + 1
+            //两次蜕变的层数判断大小，取最大的层数进行蜕变层数
+            If auto_tribe_temp < ocrchar_layer Then 
+            	auto_tribe_temp = ocrchar_layer
             End If
+
+            If auto_tribe_flat>=2 Then 
+             	layer_number_max = auto_tribe_temp  //自动蜕变层数改变
+             	auto_tribe_flat = 0
+             	auto_tribe_temp = 0
+            End If
+            /***************************************/
             Call hum(2)
             auto_tribe_time = TickCount()
 //            auto_update_time = TickCount()
@@ -1251,7 +1267,7 @@ End Function
 Function s_swipe_down
     TracePrint "小的下滑"
     Dim closeX,closeY
-	For 10
+	For 7  
     	Swipe 1000, 1500, 1000, 1300, 100
     	Delay shanhai.RndEx(200, 255)
 		Call close_ad(fairy_true)//广告 	
