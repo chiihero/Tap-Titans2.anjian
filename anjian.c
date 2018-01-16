@@ -116,6 +116,7 @@ End If
 
 Call main()
 Function init()
+	Sys.ClearMemory() //释放内存
 	//初始化错误次数
 	error_num_one = 0
 	//初始化发送邮件内容
@@ -196,7 +197,7 @@ Function update_main(update_main_flat)
         Call hum(3)//日常升级本人
 		Delay 500
 		//超过5900层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000 or updata_mistake >= 2 or update_main_flat=1 Then 
+        If ocrchar_layer < 6000 or ocrchar_layer < layer_number_max*0.75 or updata_mistake >= 2 or update_main_flat=1 Then 
         	Call hum(1)//升级
         	Call hero(1)//升级
         Else 
@@ -319,6 +320,7 @@ Else
 
             If auto_tribe_flat>=2 Then 
              	layer_number_max = auto_tribe_temp  //自动蜕变层数改变
+             	auto_tribe = True
              	auto_tribe_flat = 0
              	auto_tribe_temp = 0
             End If
@@ -680,7 +682,6 @@ Function close_ad(fairy_temp)
             	Tap 534, 1493
             	ShowMessage "收集", 1500,0,0
         	End If 	
-
     	//普通弹窗
     	Else 
     	    Dim closeX,closeY
@@ -759,7 +760,6 @@ Function skills
     	Tap shanhai.RndEx(264, 303), shanhai.RndEx(1682, 1755)
     	Delay shanhai.RndEx(20, 30)
 	End If
-
     //技能1
     Tap shanhai.RndEx(80, 90), shanhai.RndEx(1700, 1740)
     Delay 50
@@ -955,12 +955,9 @@ Function update(flat)
                 End If
             Wend
             //减少关闭广告的次数
-            If flag > 5 Then
-            	Call close_ad(fairy_true)
-            	flag = 0
-            Else 
-            	flag =flag + 1
-            End If
+
+            Call close_ad(fairy_true)
+
             Delay 100
             Swipe 1000, 1300, 1000, 1600, 200
             TracePrint "上滑"
@@ -1059,13 +1056,8 @@ Function update(flat)
                     Exit Function
                 End If
             End If
-
-            If flag > 5 Then
-            	Call close_ad(fairy_true)
-            	flag = 0
-            Else 
-            	flag =flag + 1
-            End If
+            
+            Call close_ad(fairy_true)
 
             Delay 100
             Swipe 1000, 1300, 1000, 1600, 200
@@ -1147,13 +1139,10 @@ Function egg
 			Touch intX, intY, 200
 		End If
 		Delay 3000
-    	Touch 500, 500, 200
-    	Delay 1000
-    	Touch 500, 500, 200
-		Delay 1000
-    	Touch 500, 500, 200
-    	Delay 1000
-    	Touch 500, 500, 200
+        For 3
+        	Delay 500
+    		Touch 500, 500, 200
+        Next
 	End If
 
 End Function
@@ -1167,14 +1156,10 @@ Function chest
         TracePrint intX
         TracePrint intY
         Touch intX, intY, 200
-        Delay 500
-    	Touch 500, 500, 200
-    	Delay 500
-    	Touch 500, 500, 200
-    	Delay 500
-    	Touch 500, 500, 200
-    	Delay 500
-    	Touch 500, 500, 200
+        For 4
+        	Delay 500
+    		Touch 500, 500, 200
+        Next
     End If
 
 End Function
@@ -1217,40 +1202,38 @@ Function achievement
 	FindColor 478,1163,513,1202,"0742ED",0,0.9,intX,intY
 	If intX > -1 And intY > -1 Then 
 	    Touch 461, 1195, 150
-	        Delay 500
-    Dim intX,intY,intX2,intY2,checkX,checkY,boxX,boxY
-
-    error_num_one = 0
-    //确认成就页面打开
-    FindColor 117,93,147,119,"1473B4",1,0.9,intX,intY
-    While intX = -1 And intY = -1
-    	Touch 461, 1195, 150
-    	Delay 1000
-    	FindColor 117, 93, 147, 119, "1473B4", 1, 0.9, intX, intY
-    	error_num_one = error_num_one + 1
-        If error_num_one > 5 Then 
-            TracePrint"出错"
-            Exit While
-        End If
-    Wend
-    //确认成就领取
-    FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX2, intY2
-    error_num_one = 0
-    While intX2 > -1 And intY2 > -1
-        TouchDown shanhai.RndEx(851,851+10),shanhai.RndEx(465,465+10),1
-        TouchUp 1
-        Delay 1000
-        FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX2, intY2
-        error_num_one = error_num_one + 1
-        If error_num_one > 5 Then 
-            TracePrint"出错"
-            Exit While
-        End If
-    Wend  
+	    Delay 500
+    	Dim intX,intY,intX2,intY2,checkX,checkY,boxX,boxY
+    	error_num_one = 0
+    	//确认成就页面打开
+    	FindColor 117,93,147,119,"1473B4",1,0.9,intX,intY
+    	While intX = -1 And intY = -1
+    		Touch 461, 1195, 150
+    		Delay 1000
+    		FindColor 117, 93, 147, 119, "1473B4", 1, 0.9, intX, intY
+    		error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit While
+        	End If
+    	Wend
+    	//确认成就领取
+    	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX2, intY2
+    	error_num_one = 0
+    	While intX2 > -1 And intY2 > -1
+        	TouchDown shanhai.RndEx(851,851+10),shanhai.RndEx(465,465+10),1
+        	TouchUp 1
+        	Delay 1000
+        	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX2, intY2
+        	error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit While
+        	End If
+    	Wend  
 	End If
 	Call close_ad(fairy_true)//广告
 End Function
-
 //上滑
 Function swipe_up
     TracePrint "上滑"
@@ -1277,12 +1260,11 @@ End Function
 Function b_swipe_down
     TracePrint "大的下滑"
     Dim closeX,closeY
-    For 30
+    For 25
     	Swipe 1000, 1650, 1000, 1300, 100
     	Delay shanhai.RndEx(200, 255)
 		Call close_ad(fairy_true)//广告
 	Next
-
 End Function
 Function Screen
     Dim scrX,scrY
@@ -1292,7 +1274,7 @@ Function Screen
     SetScreenScale scrX, scrY,0
     Dim src = scrX & scrY
 End Function
-
+//邮箱
 Function mail(max_layer)
 //	If IsNull(max_layer) Then 
 //		max_layer=s_layer_number
