@@ -131,6 +131,7 @@ Function init()
 	update_main_flat = 0
 	update_main_init_time = update_time
 	updata_mistake = 0
+	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 /*****************************************************/
     //显示信息
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n"&"层数: "&layer_number_max &"\n"&"升级时间: " & update_time&"\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4, 3000,screenX/2-275,screenY/2-200
@@ -158,8 +159,6 @@ Function init()
 	update_main_time = TickCount()
 	skills_time = TickCount()//使用技能时间初始化
     auto_tribe_time = TickCount()//自动蜕变时间初始化
-//    auto_update_time = TickCount()//自动升级时间初始化
-    auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 End Function
 Function main
     Call init()  //初始化
