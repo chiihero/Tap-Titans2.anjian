@@ -1,9 +1,10 @@
 //hum(1)  本人升级
 //hum(2)  蜕变
 //hum(3)  日常升级
-Import "ShanHai.lua"
+
 KeepScreen True
 Device.SetBacklightLevel(0)//设置亮度
+Randomize
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
 
 //SetRowsNumber(33)
@@ -71,37 +72,11 @@ Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
 Dim temp1,temp2,temp3,temp4
 
-Dim skills_flat=1//技能
-
-If skills_true = true Then 
-    //ShowMessage "技能:开启" , 1500, 0, 0
-    temp1="技能:开启"
-Else 
-    //ShowMessage "技能:关闭 ", 1500,0,0
-    temp1="技能:关闭"
-End If
-If auto_tribe = true Then 
-    //ShowMessage "自动蜕变:开启", 1500, 0, 0
-    temp2="自动蜕变:开启"
-Else 
-    //ShowMessage "自动蜕变:关闭 ", 1500,0,0
-    temp2="自动蜕变:关闭"
-End If
-If tribe_true = true Then 
-    //ShowMessage "技能:开启" , 1500, 0, 0
-    temp3="部落:开启"
-Else 
-    //ShowMessage "技能:关闭 ", 1500,0,0
-    temp3="部落:关闭"
-End If
-If fairy_true = true Then 
-    //ShowMessage "仙女:开启", 1500, 0, 0
-    temp4="仙女:开启"
-Else 
-    //ShowMessage "仙女:关闭 ", 1500,0,0
-    temp4="仙女:关闭"
-End If
-
+temp1=iif(skills_true,"技能:开启","技能:关闭")
+temp2=iif(auto_tribe,"自动蜕变:开启","自动蜕变:关闭")
+temp3=iif(tribe_true,"部落:开启","部落:关闭")
+temp4=iif(fairy_true,"仙女:开启","仙女:关闭")
+//
 //========================================初始化结束=================================================//
 //layer_number_max = 4000
 //等待时间
@@ -240,8 +215,8 @@ Function kill()
             End If
             //点击
             For 17
-                Tap shanhai.RndEx(250, 830), shanhai.RndEx(320, 1000)
-                Delay shanhai.RndEx(75, 77)
+                Tap RndEx(250, 830), RndEx(320, 1000)
+                Delay RndEx(75, 77)
             Next
             //技能延迟
             While TickCount() - t_temp < 2250
@@ -542,26 +517,26 @@ Function tribe(flat)
             tribe_time = TickCount()
             DO While TickCount() - tribe_time <= 35000
                 //点击延迟
-                Delay shanhai.RndEx(50, 120)
+                Delay RndEx(50, 120)
                 For 40
                     //点击延迟
-                    TouchDown shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), 1
-                    Delay shanhai.RndEx(10, 30)
+                    TouchDown RndEx(250, 880), RndEx(342, 970), 1
+                    Delay RndEx(10, 30)
                     TouchUp 1
-                    Delay shanhai.RndEx(30, 50)
+                    Delay RndEx(30, 50)
                 Next
             Loop 
             //之后的boos检测结束
             tribe_time = TickCount()
             DO While TickCount()-tribe_time<5000
                 //点击延迟
-                Delay shanhai.RndEx(50, 120)
+                Delay RndEx(50, 120)
                 For 40
                     //点击延迟
-                    TouchDown shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), 1
-                    Delay shanhai.RndEx(10, 30)
+                    TouchDown RndEx(250, 880), RndEx(342, 970), 1
+                    Delay RndEx(10, 30)
                     TouchUp 1
-                    Delay shanhai.RndEx(30, 50)
+                    Delay RndEx(30, 50)
                 Next
             Loop
 
@@ -569,10 +544,10 @@ Function tribe(flat)
             error_num_one = 0
             ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
             While ocrchar = "点击继续"
-                TouchDown shanhai.RndEx(370, 380), shanhai.RndEx(1060, 1080), 1
-                Delay shanhai.RndEx(10, 30)
+                TouchDown RndEx(370, 380), RndEx(1060, 1080), 1
+                Delay RndEx(10, 30)
                 TouchUp 1
-                Delay shanhai.RndEx(200, 500)
+                Delay RndEx(200, 500)
                 Delay 2000
                 ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
                 error_num_one = error_num_one + 1
@@ -712,11 +687,10 @@ Function boss
 	If intX > -1 And intY > -1 Then 
 		TracePrint "主动进入boss模式"
     	Delay 50
-    	TouchDown shanhai.RndEx(intX-5, intX + 5), shanhai.RndEx(intY-5, intY + 5), 1
+    	TouchDown RndEx(intX-5, intX + 5), RndEx(intY-5, intY + 5), 1
     	Delay 85
     	TouchUp 1
     	Delay 100
-    	skills_flat = 1
 	End If
 End Function
 //技能
@@ -737,33 +711,33 @@ Function skills
 //模式二
 	//技能6
 	If CmpColorEx("975|1654|FFFFFF",1) = 1 Then
-    	Tap shanhai.RndEx(946, 1027), shanhai.RndEx(1682, 1755)
-    	Delay shanhai.RndEx(20, 30)
+    	Tap RndEx(946, 1027), RndEx(1682, 1755)
+    	Delay RndEx(20, 30)
 	End If
     //技能5
     If CmpColorEx("795|1654|FFFFFF",1) = 1 Then
-    	Tap shanhai.RndEx(772, 848), shanhai.RndEx(1682, 1755)
-    	Delay shanhai.RndEx(20, 30)
+    	Tap RndEx(772, 848), RndEx(1682, 1755)
+    	Delay RndEx(20, 30)
 	End If
     //技能4
     If CmpColorEx("619|1654|FFFFFF",1) = 1 Then
-    	Tap shanhai.RndEx(590, 666), shanhai.RndEx(1682, 1755)
-    	Delay shanhai.RndEx(20, 30)
+    	Tap RndEx(590, 666), RndEx(1682, 1755)
+    	Delay RndEx(20, 30)
 	End If
     //技能3
     If CmpColorEx("440|1654|FFFFFF",1) = 1 Then
-    	Tap shanhai.RndEx(406, 480), shanhai.RndEx(1682, 1755)
-    	Delay shanhai.RndEx(20, 30)
+    	Tap RndEx(406, 480), RndEx(1682, 1755)
+    	Delay RndEx(20, 30)
 	End If	
     //技能2
     If CmpColorEx("260|1652|FFFFFF",1) = 1 Then
-    	Tap shanhai.RndEx(264, 303), shanhai.RndEx(1682, 1755)
-    	Delay shanhai.RndEx(20, 30)
+    	Tap RndEx(264, 303), RndEx(1682, 1755)
+    	Delay RndEx(20, 30)
 	End If
     //技能1
-    Tap shanhai.RndEx(80, 90), shanhai.RndEx(1700, 1740)
+    Tap RndEx(80, 90), RndEx(1700, 1740)
     Delay 50
-    Tap shanhai.RndEx(80, 90), shanhai.RndEx(1700, 1740)
+    Tap RndEx(80, 90), RndEx(1700, 1740)
     Delay 50
 End Function
 //蜕变
@@ -1221,7 +1195,7 @@ Function achievement
     	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX2, intY2
     	error_num_one = 0
     	While intX2 > -1 And intY2 > -1
-        	TouchDown shanhai.RndEx(851,851+10),shanhai.RndEx(465,465+10),1
+        	TouchDown RndEx(851,851+10),RndEx(465,465+10),1
         	TouchUp 1
         	Delay 1000
         	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX2, intY2
@@ -1240,7 +1214,7 @@ Function swipe_up
     Dim closeX,closeY
     For 7
     	Swipe 730, 1322, 730, 1715, 100
-    	Delay shanhai.RndEx(200, 255)
+    	Delay RndEx(200, 255)
 		Call close_ad(fairy_true)//广告
 	Next
 
@@ -1251,7 +1225,7 @@ Function s_swipe_down
     Dim closeX,closeY
 	For 7  
     	Swipe 1000, 1500, 1000, 1300, 100
-    	Delay shanhai.RndEx(200, 255)
+    	Delay RndEx(200, 255)
 		Call close_ad(fairy_true)//广告 	
 	Next
 
@@ -1262,7 +1236,7 @@ Function b_swipe_down
     Dim closeX,closeY
     For 25
     	Swipe 1000, 1650, 1000, 1300, 100
-    	Delay shanhai.RndEx(200, 255)
+    	Delay RndEx(200, 255)
 		Call close_ad(fairy_true)//广告
 	Next
 End Function
@@ -1313,8 +1287,22 @@ Function sendmessage(s_layer_number)
 	End If
 End Function
 
+//封装时间格式化输出函数
 Function data_time(d_time)
 	data_time =DateTime.Format("%H:%M:%S",d_time-28800)
+End Function
+//封装if函数
+Function iif(judge, rtrue, rfalse)
+	If judge = false or judge = 0 then
+		iif =  rfalse
+	else 
+		iif =  rtrue
+	End If
+End Function
+//封装随机数函数
+Function RndEx(min, max)
+	//Int((最大值 - 最小值 + 1) * Rnd() + 最小值)
+	RndEx = Int(((max-min) * Rnd()) + min)
 End Function
 
 Function OnScriptExit()
