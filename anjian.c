@@ -8,7 +8,7 @@ Device.SetBacklightLevel(0)//设置亮度
 
 //SetRowsNumber(33)
 //SetOffsetInterval (1)
-//SetDictEx(0, "Attachment:mq_soft.txt")
+//SetDictEx(0, "Attachment:文字.txt")
 //UseDict(0)
 //初始化时间
 Dim update_main_time 
@@ -595,7 +595,7 @@ Function close_ad(fairy_temp)
 		If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
 		    SetRowsNumber(33)
 			SetOffsetInterval (1)
-			SetDictEx(0, "Attachment:mq_soft.txt")
+			SetDictEx(0, "Attachment:文字.txt")
     		UseDict(0)
 			Dim ocrchar,ocrchar1
 			ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
@@ -605,7 +605,6 @@ Function close_ad(fairy_temp)
             		Traceprint "不用了"
             		ShowMessage "不用了", 1500, 0, 0
     		Elseif ocrchar = "不用了"  Then
-        			
             	Traceprint "出现小仙女广告"
             	//判断钻石
             	Dim diamondX,diamondY
@@ -673,15 +672,16 @@ Function close_ad(fairy_temp)
                     	ShowMessage "不用了", 1500, 0, 0
                 	End If	
             	End If
-        		//收集
-        		ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-        		If ocrchar1 = "收集" Then 
-            		Traceprint "出现小仙女广告收集"
-            		Delay 100
-            		Tap 534, 1493
-            		ShowMessage "收集", 1500,0,0
-        		End If 	
-    		End If
+            End If
+        	//收集
+        	ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+        	If ocrchar1 = "收集" Then 
+            	Traceprint "出现小仙女广告收集"
+            	Delay 100
+            	Tap 534, 1493
+            	ShowMessage "收集", 1500,0,0
+        	End If 	
+
     	//普通弹窗
     	Else 
     	    Dim closeX,closeY
@@ -772,7 +772,7 @@ Function prestige
 	Call close_ad(fairy_true)//广告
     SetRowsNumber(33)
     SetOffsetInterval (1)
-    SetDictEx(0, "Attachment:mq_soft.txt")
+    SetDictEx(0, "Attachment:文字.txt")
     UseDict(0)
     TracePrint "蜕变"
     //发送邮件
