@@ -1273,30 +1273,7 @@ Function mail(max_layer)
 //	If IsNull(max_layer) Then 
 //		max_layer=s_layer_number
 //	End If
-	TracePrint "邮箱"
-    Dim m_host ="smtp.qq.com"
-    Dim m_username = "1171479579@qq.com"
-    Dim m_password = "fetmmswhxapgggei"
-    Dim m_subject = max_layer
-    //防止重复
-    If max_layer > s_layer_number Then 
-    	sendmessage_str ="最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
-    End If
-    sendmessage_str = "内容为:\n"& "最高设定层数:"& layer_number_max &"\n" &"使用升级次数:"&update_main_num&"\n"& sendmessage_str 
-    Dim m_message = sendmessage_str
-    Dim m_tomail = "853879993@qq.com"
-    Dim Ret = SendSimpleEmail(m_host,m_username,m_password,m_subject,m_message,m_tomail) 
-    TracePrint Ret
-    error_num_one = 0
-    While Ret = False
-    	Delay 500
-    	Ret = SendSimpleEmail (m_host, m_username, m_password, m_subject, m_message, m_tomail)
-    	error_num_one = error_num_one + 1
-        If error_num_one > 5 Then 
-            TracePrint"出错"
-            Exit While
-        End If
-    Wend
+
 End Function
 
 Function sendmessage(s_layer_number)
