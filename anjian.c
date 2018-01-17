@@ -7,10 +7,10 @@ Device.SetBacklightLevel(0)//设置亮度
 Randomize
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
 
-//SetRowsNumber(33)
-//SetOffsetInterval (1)
-//SetDictEx(0, "Attachment:文字.txt")
-//UseDict(0)
+SetRowsNumber(33)
+SetOffsetInterval (1)
+SetDictEx(0, "Attachment:文字.txt")
+UseDict(0)
 //初始化时间
 Dim update_main_time 
 Dim update_time_main
@@ -35,6 +35,7 @@ Dim s_layer_number
 Dim update_main_flat
 Dim update_main_init_time
 Dim updata_mistake
+Dim update_main_num//初始化升级次数
 //部落时间
 Dim tribe_time
 //定义如果蜕变超时时候的改变层数设定
@@ -72,11 +73,7 @@ Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
 Dim temp1,temp2,temp3,temp4
 
-temp1=iif(skills_true,"技能:开启","技能:关闭")
-temp2=iif(auto_tribe,"自动蜕变:开启","自动蜕变:关闭")
-temp3=iif(tribe_true,"部落:开启","部落:关闭")
-temp4=iif(fairy_true,"仙女:开启","仙女:关闭")
-//
+//WriteConfig("Checkbox_auto_tribe",true,true)
 //========================================初始化结束=================================================//
 //layer_number_max = 4000
 //等待时间
@@ -88,7 +85,7 @@ If delay_time > 0 Then
 	RunApp "com.gamehivecorp.taptitans2"
 	Delay 300000
 End If
-
+Call Screen()//屏幕适配 
 Call main()
 Function init()
 	Sys.ClearMemory() //释放内存
@@ -105,18 +102,23 @@ Function init()
 	ocrchar_layer_temp = 0
 	//定时自动升级.初始化时间
 	update_main_flat = 0
+	update_main_num = 0//初始化升级次数
 	update_main_init_time = update_time
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 /*****************************************************/
     //显示信息
+    temp1=iif(skills_true,"技能:开启","技能:关闭")
+	temp2=iif(auto_tribe,"自动蜕变:开启","自动蜕变:关闭")
+	temp3=iif(tribe_true,"部落:开启","部落:关闭")
+	temp4=iif(fairy_true,"仙女:开启","仙女:关闭")
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n"&"层数: "&layer_number_max &"\n"&"升级时间: " & update_time&"\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4, 3000,screenX/2-275,screenY/2-200
 	Touch 500, 500, 200
 	Delay 500
 	Touch 500, 500, 200
 	Delay 500
 	Touch 500, 500, 200
-	Call Screen()//屏幕适配 
+
 	Call close_ad(fairy_true)//广告
     Call layer()
     //层数处理
@@ -172,9 +174,10 @@ Function update_main(update_main_flat)
         Call hum(3)//日常升级本人
 		Delay 500
 		//超过5900层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000 or ocrchar_layer < layer_number_max*0.75 or updata_mistake >= 2 or update_main_flat=1 Then 
+        If ocrchar_layer < 6000  or updata_mistake >= 2 or update_main_flat=1 Then //or update_main_num < 15
         	Call hum(1)//升级
         	Call hero(1)//升级
+        	update_main_num =update_main_num+1//升级小于五次时
         Else 
         	Call hero(2)//升级
         End If  
@@ -215,7 +218,7 @@ Function kill()
             End If
             //点击
             For 17
-                Tap RndEx(250, 830), RndEx(320, 1000)
+                Tap RndEx(250,830), RndEx(320, 1000)
                 Delay RndEx(75, 77)
             Next
             //技能延迟
@@ -730,7 +733,7 @@ Function skills
     	Delay RndEx(20, 30)
 	End If	
     //技能2
-    If CmpColorEx("260|1652|FFFFFF",1) = 1 Then
+    If CmpColorEx("260|1654|FFFFFF",1) = 1 Then
     	Tap RndEx(264, 303), RndEx(1682, 1755)
     	Delay RndEx(20, 30)
 	End If
@@ -794,23 +797,23 @@ Function prestige
     End If
 	//蜕变等待
 	Delay 15000
-	Dim p_temp = ocrchar_layer 
+	Dim old_ocrchar_layer = ocrchar_layer 
 	Call layer()
-	error_num_one=1
-	While ocrchar_layer > p_temp - 100
-		Call close_ad(fairy_true)//广告
-		Delay 500
-		Call layer()
-		If error_num_one > 10 And ocrchar_layer > p_temp-1000  Then 
-			Call prestige()
-			Exit Function
-		End If
- 		error_num_one = error_num_one + 1
-        If error_num_one > 50 or ocrchar_layer<6000 Then 
+	error_num_one=0
+    While ocrchar_layer > old_ocrchar_layer - 10
+        Call close_ad(fairy_true)//广告
+        Delay 1000
+        Call layer()
+        If error_num_one > 10 And ocrchar_layer > old_ocrchar_layer-10  Then 
+            Call prestige()
+            Exit Function
+        End If
+        error_num_one = error_num_one + 1
+        If error_num_one > 40 Then 
             TracePrint"出错"
             Exit While
         End If
-	Wend
+    Wend
 	//Delay 40000
 	Call close_ad(fairy_true)//广告
     Call init()  //初始化
@@ -914,13 +917,13 @@ Function update(flat)
             //以防出错标记
             error_num_two=0
             //可否升级识别
-            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 2, 1, up2X, up2Y
+            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
             While up2X > -1 And up2Y > -1
                 TracePrint "升级识别2:x="&up2X&"y="&up2Y
                 TouchDown up2X,up2Y,1
                 TouchUp 1
                 Delay 100
-                FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 2, 1, up2X, up2Y
+                FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
                 error_num_two = error_num_two + 1
                 If error_num_two > 30 Then 
                     TracePrint"出错"
@@ -928,10 +931,9 @@ Function update(flat)
                     Exit While
                 End If
             Wend
-            //减少关闭广告的次数
-
+            //关闭广告
             Call close_ad(fairy_true)
-
+            
             Delay 100
             Swipe 1000, 1300, 1000, 1600, 200
             TracePrint "上滑"
@@ -946,13 +948,13 @@ Function update(flat)
         Wend
         error_num_one=0
         //最后可否升级识别
-        FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 2, 1, up2X, up2Y
+        FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
         While up2X > -1 And up2Y > -1
             TracePrint "升级识别2:x="&up2X&"y="&up2Y
             TouchDown up2X,up2Y,1
             TouchUp 1
             Delay 100
-            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 2, 1, up2X, up2Y
+            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
             error_num_one = error_num_one + 1
             If error_num_one > 30 Then 
                 TracePrint"出错"
@@ -981,6 +983,24 @@ Function update(flat)
                 End If
             End If 
             //以防出错标记
+            error_num_two=0
+            //可否升级识别
+            FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641|", 2, 1, up1X, up1Y
+            While up1X > -1 And up1Y > -1
+                TracePrint "升级识别1:x="&up1X&"y="&up1Y
+                //                TracePrint up1X
+                //                TracePrint up1Y
+                TouchDown up1X,up1Y,1
+                TouchUp 1
+                Delay 100
+                FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
+                error_num_two = error_num_two + 1
+                If error_num_two > 30 Then 
+                    TracePrint"出错"
+                    Call close_ad(fairy_true)
+                    Exit While
+                End If
+            Wend
             Delay 100
             Swipe 730, 1250, 730, 1460, 200
             TracePrint "上滑"
@@ -1262,7 +1282,7 @@ Function mail(max_layer)
     If max_layer > s_layer_number Then 
     	sendmessage_str ="最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
     End If
-    sendmessage_str = "内容为:\n"& "最高设定层数:"& layer_number_max &"\n" & sendmessage_str 
+    sendmessage_str = "内容为:\n"& "最高设定层数:"& layer_number_max &"\n" &"使用升级次数:"&update_main_num&"\n"& sendmessage_str 
     Dim m_message = sendmessage_str
     Dim m_tomail = "853879993@qq.com"
     Dim Ret = SendSimpleEmail(m_host,m_username,m_password,m_subject,m_message,m_tomail) 
