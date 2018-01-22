@@ -85,6 +85,7 @@ If delay_time > 0 Then
 	RunApp "com.gamehivecorp.taptitans2"
 	Delay 300000
 End If
+Call check_status()
 Call Screen()//屏幕适配 
 Call main()
 Function init()
@@ -102,7 +103,6 @@ Function init()
 	ocrchar_layer_temp = 0
 	//定时自动升级.初始化时间
 	update_main_flat = 0
-	update_main_num = 0//初始化升级次数
 	update_main_init_time = update_time
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
@@ -111,7 +111,7 @@ Function init()
     temp1=iif(skills_true,"技能:开启","技能:关闭")
 	temp2=iif(auto_tribe,"自动蜕变:开启","自动蜕变:关闭")
 	temp3=iif(tribe_true,"部落:开启","部落:关闭")
-	temp4=iif(fairy_true,"仙女:开启","仙女:关闭")
+	temp4=iif(fairy_true,"仙女:开启","仙女:关闭 ")
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n"&"层数: "&layer_number_max &"\n"&"升级时间: " & update_time&"\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4, 3000,screenX/2-275,screenY/2-200
 	Touch 500, 500, 200
 	Delay 500
@@ -123,6 +123,12 @@ Function init()
     Call layer()
     //层数处理
     Call layer_check()
+   	//减少高层数开始时的全面升级次数
+    If ocrchar_layer > 6500 Then 
+    	update_main_num = 3
+    Else 
+    	update_main_num = 0//初始化升级次数
+    End If
     //邮件内容记录
     Call sendmessage(ocrchar_layer)
     Call egg()//宠物蛋
@@ -141,7 +147,17 @@ End Function
 Function main
     Call init()  //初始化
     Do
-        //判断应用存在
+		Call check_status()
+		Call close_ad(fairy_true)//广告
+		Call update_main(0)//定时升级
+        Delay 300
+        Call kill()//层数
+    Loop
+End Function
+//判断应用存在
+Function check_status()
+
+        UseDict(0)
         dim temp_apprun = Sys.isRunning("com.gamehivecorp.taptitans2")
         If temp_apprun = False Then 
 //            RunApp "com.gamehivecorp.taptitans2"
@@ -151,11 +167,14 @@ Function main
                 EndScript
             End If
         End If
-		Call close_ad(fairy_true)//广告
-		Call update_main(0)//定时升级
-        Delay 300
-        Call kill()//层数
-    Loop
+        
+		//以上两句脚本只需要调用一次
+		Dim ocrchar
+		ocrchar=Ocr(350,600,725,691,"FFFFFF",1)
+		If ocrchar = "服务器维护" or CmpColorEx("122|629|FFFFFF,135|632|0742ED",1) = 1 Then 
+			Call mail("服务器维护")
+			EndScript
+		End If
 End Function
 
 Function update_main(update_main_flat)
@@ -174,7 +193,7 @@ Function update_main(update_main_flat)
         Call hum(3)//日常升级本人
 		Delay 500
 		//超过5900层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000  or updata_mistake >= 2 or update_main_flat=1 Then //or update_main_num < 15
+        If ocrchar_layer < 6000 or update_main_num < 4 or updata_mistake >= 2 or update_main_flat=1 Then 
         	Call hum(1)//升级
         	Call hero(1)//升级
         	update_main_num =update_main_num+1//升级小于五次时
@@ -270,7 +289,10 @@ End Function
         
 Function layer_check()
 //层数对比,固定层数蜕变
-TracePrint "蜕变&升级"
+TracePrint "层数处理—蜕变&升级"
+
+
+
 If ocrchar_layer >= layer_number_max Then 
     //蜕变
     If auto_tribe = False Then 
@@ -568,120 +590,123 @@ End Function
 Function close_ad(fairy_temp)
     TracePrint "广告"
     //If CmpColorEx("993|1886|3F4423,64|36|6D6858",1) = 0 Then
-	If CmpColorEx("993|1886|3F4423",1) = 0 Then
-    	ShowMessage "广告", 1000, 0, 0
-		//识别小仙女
-		If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
-		    SetRowsNumber(33)
-			SetOffsetInterval (1)
-			SetDictEx(0, "Attachment:文字.txt")
-    		UseDict(0)
-			Dim ocrchar,ocrchar1
-			ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
-        	Traceprint ocrchar
-    		If fairy_temp  = False And ocrchar="不用了" Then//不看
-            		Touch 287, 1486, 200
-            		Traceprint "不用了"
-            		ShowMessage "不用了", 1500, 0, 0
-    		Elseif ocrchar = "不用了"  Then
-            	Traceprint "出现小仙女广告"
-            	//判断钻石
-            	Dim diamondX,diamondY
-            	FindColor 126,1252,193,1331,"EFBD20-333333",0,0.9,diamondX,diamondY
-            	If diamondX > -1 And diamondY > -1 Then 
-                	Touch 804,1494, 200
-                	Traceprint "等待观看"
-                	ShowMessage "等待观看", 1500, 0, 0
-                	Delay 1000
-                	//确认已点击观看
-                	FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
-                	error_num_one=0
-                	While diamondX > -1 And diamondY > -1 
-                    	Delay 500
-                    	Touch 804, 1494, 200
-                    	Delay 500
-                    	FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
-                    	error_num_one = error_num_one + 1
-                    	If error_num_one > 20 Then 
-                        	TracePrint"出错"
-                        	Exit While
-                    	End If
-                	Wend
-                	TracePrint"已点击观看"
-                	//判断收集字符出现
-                	error_num_one =0
-                	ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-                	While ocrchar1 <> "收集"
-                    	Traceprint "等待收集"
-                    	Delay 1000
-                    	ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-                    	//判断如果断网了的情况
-                    	dim color = CmpColor(972,639, 303843, 0.9)
-                    	If color > -1 Then 
-                        	Touch 972,639, 200
-                        	Delay 500
-                    	End If
-                    	error_num_one = error_num_one + 1
-                    	If error_num_one > 40 Then 
-                        	TracePrint"出错"
-                        	Exit While
-                    	End If
-                	Wend
-                	Delay 500
-                	//点击收集字符
-                	error_num_one =0
-                	While ocrchar1 = "收集" 
-                    	Tap 534, 1493
-                    	Traceprint "收集"
-                    	ShowMessage "收集", 1500,0,0
-                    	Delay 1000
-                    	ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-                    	error_num_one = error_num_one + 1
-                    	If error_num_one > 20 Then 
-                        	TracePrint"出错"
-                        	Exit While
-                    	End If
-                	Wend
-            	Else 
-                	ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
-                	Traceprint ocrchar
-                	If ocrchar="不用了" Then 
-                    	Touch 287, 1486, 200
-                    	Traceprint "不用了"
-                    	ShowMessage "不用了", 1500, 0, 0
-                	End If	
-            	End If
+	If CmpColorEx("993|1886|3F4423", 1) = 1 Then 
+		Exit Function
+    End If	
+	
+    ShowMessage "广告", 1000, 0, 0
+	//识别小仙女
+	If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
+		SetRowsNumber(33)
+		SetOffsetInterval (1)
+		SetDictEx(0, "Attachment:文字.txt")
+    	UseDict(0)
+		Dim ocrchar,ocrchar1
+		ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
+        Traceprint ocrchar
+    	If fairy_temp  = False And ocrchar="不用了" Then//不看
+            Touch 287, 1486, 200
+            Traceprint "不用了"
+            ShowMessage "不用了", 1500, 0, 0
+    	Elseif ocrchar = "不用了"  Then
+            Traceprint "出现小仙女广告"
+            //判断钻石
+            Dim diamondX,diamondY
+            FindColor 126,1252,193,1331,"EFBD20-333333",0,0.9,diamondX,diamondY
+            If diamondX > -1 And diamondY > -1 Then 
+                Touch 804,1494, 200
+                Traceprint "等待观看"
+                ShowMessage "等待观看", 1500, 0, 0
+                Delay 1000
+                //确认已点击观看
+                FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
+                error_num_one=0
+                While diamondX > -1 And diamondY > -1 
+                    Delay 500
+                    Touch 804, 1494, 200
+                    Delay 500
+                    FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
+                    error_num_one = error_num_one + 1
+                    If error_num_one > 20 Then 
+                        TracePrint"出错"
+                        Exit While
+                    End If
+                Wend
+                TracePrint"已点击观看"
+                //判断收集字符出现
+                error_num_one =0
+                ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+                While ocrchar1 <> "收集"
+                    Traceprint "等待收集"
+                    Delay 1000
+                    ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+                    //判断如果断网了的情况
+                    dim color = CmpColor(972,639, 303843, 0.9)
+                    If color > -1 Then 
+                        Touch 972,639, 200
+                        Delay 500
+                    End If
+                    error_num_one = error_num_one + 1
+                    If error_num_one > 40 Then 
+                        TracePrint"出错"
+                        Exit While
+                    End If
+                Wend
+                Delay 500
+                //点击收集字符
+                error_num_one =0
+                While ocrchar1 = "收集" 
+                    Tap 534, 1493
+                    Traceprint "收集"
+                    ShowMessage "收集", 1500,0,0
+                    Delay 1000
+                    ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+                    error_num_one = error_num_one + 1
+                    If error_num_one > 20 Then 
+                        TracePrint"出错"
+                        Exit While
+                    End If
+                Wend
+            Else 
+                ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
+                Traceprint ocrchar
+                If ocrchar="不用了" Then 
+                    Touch 287, 1486, 200
+                    Traceprint "不用了"
+                    ShowMessage "不用了", 1500, 0, 0
+                End If	
             End If
-        	//收集
-        	ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-        	If ocrchar1 = "收集" Then 
-            	Traceprint "出现小仙女广告收集"
-            	Delay 100
-            	Tap 534, 1493
-            	ShowMessage "收集", 1500,0,0
-        	End If 	
-    	//普通弹窗
-    	Else 
-    	    Dim closeX,closeY
-    		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-    		error_num_one=0
-    		While closeX > -1 And closeY > -1 
-        		TracePrint "关广告"
-        		//TracePrint closeX
-        		//TracePrint closeY
-        		TouchDown closeX,closeY,1
-        		TouchUp 1
-        		Delay 300
-        		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-        		error_num_one = error_num_one + 1
-        		If error_num_one > 2 Then 
-            		TracePrint"出错"
-            		Exit While
-        		End If
-    		Wend
-    		
-    	End If
+        End If
+        //收集
+        ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+        If ocrchar1 = "收集" Then 
+            Traceprint "出现小仙女广告收集"
+            Delay 100
+            Tap 534, 1493
+            ShowMessage "收集", 1500,0,0
+        End If 	
+    //普通弹窗
+    Else 
+    	Dim closeX,closeY
+    	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+    	error_num_one=0
+    	While closeX > -1 And closeY > -1 
+        	TracePrint "关广告"
+        	//TracePrint closeX
+        	//TracePrint closeY
+        	TouchDown closeX,closeY,1
+        	TouchUp 1
+        	Delay 300
+        	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+        	error_num_one = error_num_one + 1
+        	If error_num_one > 2 Then 
+            	TracePrint"出错"
+            	Exit While
+        	End If
+    	Wend
+    	
     End If
+
 End Function
 //主动进入boss模式
 Function boss	
@@ -800,7 +825,7 @@ Function prestige
 	Dim old_ocrchar_layer = ocrchar_layer 
 	Call layer()
 	error_num_one=0
-    While ocrchar_layer > old_ocrchar_layer - 10
+    While (ocrchar_layer > old_ocrchar_layer - 10 or ocrchar_layer<layer_number_max*0.6)
         Call close_ad(fairy_true)//广告
         Delay 1000
         Call layer()
@@ -1273,7 +1298,33 @@ Function mail(max_layer)
 //	If IsNull(max_layer) Then 
 //		max_layer=s_layer_number
 //	End If
+	TracePrint "邮箱"
+    Dim m_host ="smtp.qq.com"
+    Dim m_username = "1171479579@qq.com"
+    Dim m_password = "fetmmswhxapgggei"
+    Dim m_subject = max_layer
+	If IsNumeric(max_layer)=True Then
+        //防止重复
+    	If max_layer > s_layer_number Then 
+    		sendmessage_str ="最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
+    	End If
+	End If 
 
+    sendmessage_str = "内容为:\n"& "最高设定层数:"& layer_number_max &"\n" &"使用升级次数:"&update_main_num&"\n"& sendmessage_str 
+    Dim m_message = sendmessage_str
+    Dim m_tomail = "853879993@qq.com"
+    Dim Ret = SendSimpleEmail(m_host,m_username,m_password,m_subject,m_message,m_tomail) 
+    TracePrint Ret
+    error_num_one = 0
+    While Ret = False
+    	Delay 500
+    	Ret = SendSimpleEmail (m_host, m_username, m_password, m_subject, m_message, m_tomail)
+    	error_num_one = error_num_one + 1
+        If error_num_one > 5 Then 
+            TracePrint"出错"
+            Exit While
+        End If
+    Wend
 End Function
 
 Function sendmessage(s_layer_number)
