@@ -83,7 +83,7 @@ Dim temp1,temp2,temp3,temp4
 If delay_time > 0 Then 
 	Delay delay_time
 	RunApp "com.gamehivecorp.taptitans2"
-	Delay 300000
+	Delay 120000
 End If
 Call check_status()
 Call Screen()//屏幕适配 
@@ -123,12 +123,6 @@ Function init()
     Call layer()
     //层数处理
     Call layer_check()
-   	//减少高层数开始时的全面升级次数
-    If ocrchar_layer > 6500 Then 
-    	update_main_num = 3
-    Else 
-    	update_main_num = 0//初始化升级次数
-    End If
     //邮件内容记录
     Call sendmessage(ocrchar_layer)
     Call egg()//宠物蛋
@@ -137,6 +131,13 @@ Function init()
 	Call close_ad(fairy_true)//广告
     //Call hum(3)//日常升级本人
     Call hum(4)//成就
+    //减少高层数开始时的全面升级次数
+    update_main_num=iif(ocrchar_layer > 6500,4,0)
+//    If ocrchar_layer > 6500 Then 
+//    	update_main_num = 4
+//    Else 
+//    	update_main_num = 0//初始化升级次数
+//    End If
 	Call update_main(1)//升级.初始化模式
 /*****************************************************/
 	send_flag = 1  //发送邮箱，必须在检测layer()后
@@ -216,36 +217,24 @@ End Function
 
 //杀怪
 Function kill()
-	TracePrint "杀怪冲关"
-	Dim intX,intY
+    TracePrint "杀怪冲关"
+    Dim intX,intY
     For 4
         //单次击杀点击
-        For 16
+        For 15
             dim t_temp=TickCount()
             //广告
-			Call close_ad(fairy_true)//广告
-			//启动boss
+            Call close_ad(fairy_true)//广告
+            //启动boss
             Call boss()
             //技能
             If skills_true = true Then 
                 Call skills()
-                //技能等待点击延迟
-				While TickCount() - t_temp < 450
-					Delay 50
-                Wend
-                TracePrint TickCount()-t_temp
             End If
-            //点击
-            For 17
-                Tap RndEx(250,830), RndEx(320, 1000)
-                Delay RndEx(75, 77)
-            Next
-            //技能延迟
-            While TickCount() - t_temp < 2250
-                Delay 50
-//                 	If Gk.Full(76,1654, "FFFFD8", 0.999) And TickCount() - t_temp>1500 Then 
-//                 	 	Exit While
-//                 	End If
+            //技能延迟&点击
+            While TickCount() - t_temp < 2200
+                Touch RndEx(250,830), RndEx(320, 1000),RndEx(2, 15)
+                Delay RndEx(190, 220)
             Wend
             TracePrint TickCount()-t_temp
         Next
@@ -305,7 +294,7 @@ If ocrchar_layer >= layer_number_max Then
     	Call hum(2)
     End If
 Else 
-   	If (ocrchar_layer -ocrchar_layer_temp < 7 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
+   	If (ocrchar_layer -ocrchar_layer_temp < 4 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
         TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
         //防止卡关and自动蜕变
         If TickCount() - auto_tribe_time > 300000 Then 
@@ -377,7 +366,7 @@ Function hum(flat)
         ElseIf flat = 3 Then
             //日常升级
             Delay 200
-            Call update(3)
+            Call update(1)
         ElseIf flat = 4 Then
             //成就
             Delay 200
@@ -407,14 +396,14 @@ Function hum(flat)
             	Call s_swipe_down()
             	Delay 200
             	Call s_swipe_down()
-            	Delay 1000
+            	Delay 500
             	Call s_swipe_down()
-            	Delay 1000
+            	Delay 500
             	Call prestige()
         	ElseIf flat = 3 Then
             	//日常升级
             	Delay 200
-            	Call update(3)
+            	Call update(1)
         	ElseIf flat = 4 Then
             	//成就
             	Delay 200
@@ -443,9 +432,9 @@ Function hero(flat)
             	Delay 300
            		Call update(2)
         ElseIf flat = 2 Then
-            	Call swipe_up()
+//            	Call swipe_up()
             	Delay 300
-           		Call update(4)         
+           		Call update(3)         
         End If
         Exit Function
     End If
@@ -462,9 +451,9 @@ Function hero(flat)
             	Delay 300
            		Call update(2)
         ElseIf flat = 2 Then
-            	Call swipe_up()
+//            	Call swipe_up()
             	Delay 300
-           		Call update(4)         
+           		Call update(3)         
         End If
         	Exit Function
         End If
@@ -588,12 +577,13 @@ Function tribe(flat)
 End Function
 //关广告
 Function close_ad(fairy_temp)
-    TracePrint "广告"
+
     //If CmpColorEx("993|1886|3F4423,64|36|6D6858",1) = 0 Then
+    //检测界面是否被遮挡
 	If CmpColorEx("993|1886|3F4423", 1) = 1 Then 
 		Exit Function
     End If	
-	
+	TracePrint "广告"
     ShowMessage "广告", 1000, 0, 0
 	//识别小仙女
 	If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
@@ -845,39 +835,42 @@ Function prestige
 End Function
 //等级升级
 Function update(flat)
-    Dim upX,upY,i=0,n=0,up1X,up1Y,up2X,up2Y,checkX,checkY,boxX,boxY,temp,flag=1
-	Call close_ad(fairy_true)//广告
+    Dim up1X,up1Y,checkX,checkY,boxX,boxY,last_check=-1,box_flat=0,case_3 = 0
+    Call close_ad(fairy_true)//广告
     TracePrint "升级" &flat
-    Select Case flat
-    //从下往上两格
-    Case 1
-        //购买框识别
-        error_num_one=0
-        FindColor 805,1174,1072,1765,"535141",1,1,checkX,checkY
-        While checkX = -1 And checkY = -1
-            TracePrint "物品栏识别"
-            //物品栏下箭头
+    //购买框识别
+    error_num_one=0
+    FindColor 805, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
+    While (checkX = -1 And checkY = -1) or last_check = -1
+        TracePrint "物品栏识别"
+        //物品栏下箭头
+        FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
+        If boxX = -1 And boxX = -1 Then 
+            TracePrint "物品栏下箭头x="&boxX&"y="&boxX
+            Call close_ad(fairy_true)//广告
+            Delay 2000
+            Call close_ad(fairy_true)//广告
             FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
             If boxX = -1 And boxX = -1 Then 
-                TracePrint "物品栏下箭头x="&boxX&"y="&boxX
-                Call close_ad(fairy_true)//广告
-                Delay 2000
-				Call close_ad(fairy_true)//广告
-                FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
-                If boxX = -1 And boxX = -1 Then 
-                    TracePrint "error.hum(1)"
-                    Call hum(1)
-                    Exit Function
-                End If 
+				box_flat =1
             End If 
-            //以防出错标记
-            error_num_two=0
+        End If
+        last_check = checkX  //使判断到最后时候在执行一次
+        //以防出错标记
+        error_num_two = 0
+        Select Case flat
+        //从下往上两格
+        Case 1
+        	TracePrint "从下往上两格"
+        	If box_flat =1 Then 
+                TracePrint "error.hum(1)"
+                Call hum(1)
+                Exit Function
+            End If 
             //可否升级识别
             FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641|", 2, 1, up1X, up1Y
             While up1X > -1 And up1Y > -1
                 TracePrint "升级识别1:x="&up1X&"y="&up1Y
-                //                TracePrint up1X
-                //                TracePrint up1Y
                 TouchDown up1X,up1Y,1
                 TouchUp 1
                 Delay 100
@@ -889,235 +882,80 @@ Function update(flat)
                     Exit While
                 End If
             Wend
-//            Call close_ad(fairy_true)
-            Delay 100
-            Swipe 730, 1400, 730, 1600, 200
-            TracePrint "上滑"
-            Delay 100
-            error_num_one = error_num_one + 1
-            If error_num_one > 30 Then 
-                TracePrint"出错"
-                Call close_ad(fairy_true)
-                Exit While
-            End If
-            FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
-        Wend
-        error_num_one=0
-        //最后可否升级识别
-        FindColor 926,1174,1072,1503, "778ACC-111111|146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
-        While up1X > -1 And up1Y > -1
-            TracePrint "升级识别1:x="&up1X&"y="&up1Y
-            TouchDown up1X,up1Y,1
-            TouchUp 1
-            Delay 100
-            FindColor 926,1174,1072,1503, "778ACC-111111|146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
-            error_num_one = error_num_one + 1
-            If error_num_one > 15 Then 
-                TracePrint"出错"
-                Call close_ad(fairy_true)
-                Exit While
-            End If
-        Wend
-    //从下往上四格	
-    Case 2  
-        //购买框识别
-        error_num_one = 1
-        FindColor 805,1174,1072,1765,"535141",1,1,checkX,checkY
-        While checkX = -1 And checkY = -1
-            TracePrint "物品栏识别"
-            //物品栏下箭头
-            FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
-            If boxX = -1 And boxY = -1 Then 
-                TracePrint "物品栏下箭头x="&boxX&"y="&boxY
-                Call close_ad(fairy_true)
-                Delay 2000
-				Call close_ad(fairy_true)//广告
-                FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
-                If boxX = -1 And boxY = -1 Then 
-                    TracePrint "error.hero(1)"
-                    Call hero(1)
-                    Exit Function
-                End If
-            End If
-            //以防出错标记
-            error_num_two=0
+        //从下往上四格
+        Case 2
+        	TracePrint "从下往上四格"
+        	If box_flat =1 Then 
+                TracePrint "error.hero(1)"
+                Call hero(1)
+                Exit Function
+            End If         
             //可否升级识别
-            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
-            While up2X > -1 And up2Y > -1
-                TracePrint "升级识别2:x="&up2X&"y="&up2Y
-                TouchDown up2X,up2Y,1
-                TouchUp 1
-                Delay 100
-                FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
-                error_num_two = error_num_two + 1
-                If error_num_two > 30 Then 
-                    TracePrint"出错"
-                    Call close_ad(fairy_true)
-                    Exit While
-                End If
-            Wend
-            //关闭广告
-            Call close_ad(fairy_true)
-            
-            Delay 100
-            Swipe 1000, 1300, 1000, 1600, 200
-            TracePrint "上滑"
-            Delay 100
-            error_num_one = error_num_one + 1
-            If error_num_one > 15 Then 
-                TracePrint"出错"
-                Call close_ad(fairy_true)
-                Exit While
-            End If
-            FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
-        Wend
-        error_num_one=0
-        //最后可否升级识别
-        FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
-        While up2X > -1 And up2Y > -1
-            TracePrint "升级识别2:x="&up2X&"y="&up2Y
-            TouchDown up2X,up2Y,1
-            TouchUp 1
-            Delay 100
-            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
-            error_num_one = error_num_one + 1
-            If error_num_one > 30 Then 
-                TracePrint"出错"
-                Call close_ad(fairy_true)
-                Exit While
-            End If
-        Wend
-    //不动日常升级
-    Case 3
-        //购买框识别
-        error_num_one = 0
-        FindColor 805,1174,1072,1765,"535141",1,1,checkX,checkY
-        While checkX = -1 And checkY = -1
-            TracePrint "物品栏识别"
-            //物品栏下箭头
-            FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
-            If boxX = -1 And boxY = -1 Then 
-                TracePrint "物品栏下箭头x="&boxX&"y="&boxY
-                Call close_ad(fairy_true)
-                Delay 2000
-                FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
-                If boxX = -1 And boxY = -1 Then 
-                    TracePrint "error.hum(3)"
-                    Call hum(3)
-                    Exit Function
-                End If
-            End If 
-            //以防出错标记
-            error_num_two=0
-            //可否升级识别
-            FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641|", 2, 1, up1X, up1Y
+            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
             While up1X > -1 And up1Y > -1
-                TracePrint "升级识别1:x="&up1X&"y="&up1Y
-                //                TracePrint up1X
-                //                TracePrint up1Y
+                TracePrint "升级识别2:x="&up1X&"y="&up1Y
                 TouchDown up1X,up1Y,1
                 TouchUp 1
                 Delay 100
-                FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
+                FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
                 error_num_two = error_num_two + 1
                 If error_num_two > 30 Then 
                     TracePrint"出错"
                     Call close_ad(fairy_true)
                     Exit While
                 End If
-            Wend
-            Delay 100
-            Swipe 730, 1250, 730, 1460, 200
-            TracePrint "上滑"
-            Delay 100
-			Call close_ad(fairy_true)//广告
-            FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
-            error_num_one = error_num_one + 1
-            If error_num_one > 20 Then 
-                TracePrint"出错"
-                Exit While
-            End If    
-        Wend       
-        //可否升级识别
-        error_num_one = 0
-        FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
-        While up1X > -1 And up1Y > -1
-            TracePrint "升级识别3"
-
-            TouchDown up1X,up1Y,1
-            TouchUp 1
-            Delay 200
-            FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
-            error_num_one = error_num_one + 1
-            If error_num_one > 40 Then 
-                TracePrint"出错"
-                Exit While
+            Wend    		
+        //从上往下
+        Case 3
+        	TracePrint "从上往下"
+        	If box_flat =1 Then 
+                TracePrint "error.hero(2)"
+                Call hero(2)
+                Exit Function
+            End If          
+            If last_check <> -1 And case_3 = 0 Then 
+                //最后可否升级识别
+                For 4
+                    error_num_one=0
+                    FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
+                    While up1X > -1 And up1Y > -1
+                        TracePrint "升级识别3:x="&up1X&"y="&up1Y
+                        TouchDown up1X,up1Y,1
+                        TouchUp 1
+                        Delay 100
+                        FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
+                        error_num_one = error_num_one + 1
+                        If error_num_one > 30 Then 
+                            TracePrint"出错"
+                            Call close_ad(fairy_true)
+                            Exit While
+                        End If
+                    Wend
+                    //没有点击内容了
+                    //        	If error_num_one < 2 Then 
+                    //        		Exit For
+                    //        	End If
+                    Swipe 1000, 1500, 1000, 1300, 200
+                    Delay 550
+                Next
+            case_3 = 1    
             End If
-        Wend
-    //从上往下
-    Case 4
-          //购买框识别
-        error_num_one = 0
-        FindColor 805,1174,1072,1765,"535141",1,1,checkX,checkY
-        While checkX = -1 And checkY = -1
-            TracePrint "物品栏识别"
-            //物品栏下箭头
-            FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
-            If boxX = -1 And boxY = -1 Then 
-                TracePrint "物品栏下箭头x="&boxX&"y="&boxY
-                Call close_ad(fairy_true)
-                Delay 2000
-				Call close_ad(fairy_true)//广告
-                FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
-                If boxX = -1 And boxY = -1 Then 
-                    TracePrint "error.hero(2)"
-                    Call hero(2)
-                    Exit Function
-                End If
-            End If
-            
+        End Select
+        Call close_ad(fairy_true)
+        Delay 100
+        Swipe 730, 1400, 730, 1600, 200
+        TracePrint "上滑"
+        Delay 100
+        error_num_one = error_num_one + 1
+        If error_num_one > 40 Then 
+            TracePrint"出错"
             Call close_ad(fairy_true)
+            Exit While
+        End If
 
-            Delay 100
-            Swipe 1000, 1300, 1000, 1600, 200
-            TracePrint "上滑"
-            Delay 100
-            error_num_one = error_num_one + 1
-            If error_num_one > 30 Then 
-                TracePrint"出错"
-                Call close_ad(fairy_true)
-                Exit While
-            End If
-            FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
-        Wend
-        
-        //最后可否升级识别
-        For 4
-        	error_num_one=0
-        	FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
-        	While up2X > -1 And up2Y > -1
-            	TracePrint "升级识别2:x="&up2X&"y="&up2Y
-            	TouchDown up2X,up2Y,1
-            	TouchUp 1
-            	Delay 100
-            	FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up2X, up2Y
-            	error_num_one = error_num_one + 1
-            	If error_num_one > 30 Then 
-                	TracePrint"出错"
-                	Call close_ad(fairy_true)
-                	Exit While
-            	End If
-        	Wend
-        	//没有点击内容了
-//        	If error_num_one < 2 Then 
-//        		Exit For
-//        	End If
-        	Swipe 1000, 1500, 1000, 1300, 200
-        	Delay 550
-        Next
-      
-    End Select
-	Call close_ad(fairy_true)//广告
+        FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
+    Wend
+    Call close_ad(fairy_true)//广告
     Delay 150
 
 End Function
