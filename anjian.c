@@ -277,65 +277,62 @@ Function layer()
 End Function        
         
 Function layer_check()
-//层数对比,固定层数蜕变
-TracePrint "层数处理—蜕变&升级"
-
-
-
-If ocrchar_layer >= layer_number_max Then 
-    //蜕变
-    If auto_tribe = False Then 
-    	TracePrint "固定层数蜕变"&ocrchar_layer
-    	Call hum(2)
-    	
-    Else 
-    	TracePrint "自动蜕变"&ocrchar_layer
-    	layer_number_max = ocrchar_layer  //自动蜕变层数改变
-    	Call hum(2)
-    End If
-Else 
-   	If (ocrchar_layer -ocrchar_layer_temp < 4 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
-        TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
-        //防止卡关and自动蜕变
-        If TickCount() - auto_tribe_time > 300000 Then 
-            TracePrint "蜕变出错"
-            TracePrint "蜕变出错"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
-            /**************蜕变出错部分***************/
-            auto_tribe_flat = auto_tribe_flat + 1
-            //两次蜕变的层数判断大小，取最大的层数进行蜕变层数
-            If auto_tribe_temp < ocrchar_layer Then 
-            	auto_tribe_temp = ocrchar_layer
-            End If
-
-            If auto_tribe_flat>=2 Then 
-             	layer_number_max = auto_tribe_temp  //自动蜕变层数改变
-             	auto_tribe = True
-             	auto_tribe_flat = 0
-             	auto_tribe_temp = 0
-            End If
-            /***************************************/
-            Call hum(2)
-            auto_tribe_time = TickCount()
-//            auto_update_time = TickCount()
-            Exit Function
-        //自动升级
-        Else//If TickCount() - auto_update_time > 80000 Then 
-            TracePrint "自动升级"//&(TickCount() - auto_update_time)/1000&"秒"
-            updata_mistake = updata_mistake + 1
-			Call update_main(2)
-			update_main_time = TickCount()
-			ocrchar_layer_temp = ocrchar_layer
-//            auto_update_time = TickCount()
-        End If
-    Else 
-    	TracePrint "层数不同"
-    	updata_mistake = 0
-        ocrchar_layer_temp = ocrchar_layer
-        auto_tribe_time = TickCount()
-    End If
-End If             
-
-//    layer() = ocrchar_layer
+	//层数对比,固定层数蜕变
+	TracePrint "层数处理—蜕变&升级"
+	If ocrchar_layer >= layer_number_max Then 
+    	//蜕变
+    	If auto_tribe = False Then 
+    		TracePrint "固定层数蜕变"&ocrchar_layer
+    		Call hum(2)
+    		
+    	Else 
+    		TracePrint "自动蜕变"&ocrchar_layer
+    		layer_number_max = ocrchar_layer  //自动蜕变层数改变
+    		Call hum(2)
+    	End If
+	Else 
+   		If (ocrchar_layer -ocrchar_layer_temp < 4 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
+        	TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
+        	//防止卡关and自动蜕变
+        	If TickCount() - auto_tribe_time > 300000 Then 
+            	TracePrint "蜕变出错"
+            	TracePrint "蜕变出错"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
+            	/**************蜕变出错部分***************/
+            	auto_tribe_flat = auto_tribe_flat + 1
+            	//两次蜕变的层数判断大小，取最大的层数进行蜕变层数
+            	If auto_tribe_temp < ocrchar_layer Then 
+            		auto_tribe_temp = ocrchar_layer
+            	End If
+	
+            	If auto_tribe_flat>=3 Then 
+             		layer_number_max = auto_tribe_temp  //自动蜕变层数改变
+             		auto_tribe = True
+             		auto_tribe_flat = 0
+             		auto_tribe_temp = 0
+            	End If
+            	/***************************************/
+            	Call hum(2)
+            	auto_tribe_time = TickCount()
+	//            auto_update_time = TickCount()
+            	Exit Function
+        	//自动升级
+        	Else//If TickCount() - auto_update_time > 80000 Then 
+            	TracePrint "自动升级"//&(TickCount() - auto_update_time)/1000&"秒"
+            	updata_mistake = updata_mistake + 1
+				Call update_main(2)
+				update_main_time = TickCount()
+				ocrchar_layer_temp = ocrchar_layer
+	//            auto_update_time = TickCount()
+        	End If
+    	Else 
+    		TracePrint "层数不同"
+    		updata_mistake = 0
+        	ocrchar_layer_temp = ocrchar_layer
+        	auto_tribe_time = TickCount()
+    	End If
+	End If             
+	
+	//    layer() = ocrchar_layer
 End Function
 //个人
 Function hum(flat)
@@ -915,8 +912,11 @@ Function update(flat)
             End If          
             If last_check <> -1 And case_3 = 0 Then 
                 //最后可否升级识别
-                For 4
-                    error_num_one=0
+                Dim intX,intY
+				FindColor 824,1288,856,1839,"11BBEE",0,1,intX,intY
+                error_num_two=0
+				While intX > -1 And intY > -1
+                    error_num_three=0
                     FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
                     While up1X > -1 And up1Y > -1
                         TracePrint "升级识别3:x="&up1X&"y="&up1Y
@@ -924,8 +924,8 @@ Function update(flat)
                         TouchUp 1
                         Delay 100
                         FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
-                        error_num_one = error_num_one + 1
-                        If error_num_one > 30 Then 
+                        error_num_three = error_num_three + 1
+                        If error_num_three > 30 Then 
                             TracePrint"出错"
                             Call close_ad(fairy_true)
                             Exit While
@@ -937,7 +937,14 @@ Function update(flat)
                     //        	End If
                     Swipe 1000, 1500, 1000, 1300, 200
                     Delay 550
-                Next
+                    error_num_two = error_num_two + 1
+                	If error_num_two > 5 Then 
+                    	TracePrint"出错"
+                    	Call close_ad(fairy_true)
+                    	Exit While
+                	End If
+                    FindColor 824,1288,856,1839,"11BBEE",0,1,intX,intY
+                Wend
             case_3 = 1    
             End If
         End Select
