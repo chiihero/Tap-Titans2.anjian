@@ -133,11 +133,7 @@ Function init()
     Call hum(4)//成就
     //减少高层数开始时的全面升级次数
     update_main_num=iif(ocrchar_layer > 6500,4,0)
-//    If ocrchar_layer > 6500 Then 
-//    	update_main_num = 4
-//    Else 
-//    	update_main_num = 0//初始化升级次数
-//    End If
+
 	Call update_main(1)//升级.初始化模式
 /*****************************************************/
 	send_flag = 1  //发送邮箱，必须在检测layer()后
@@ -145,37 +141,42 @@ Function init()
 	skills_time = TickCount()//使用技能时间初始化
     auto_tribe_time = TickCount()//自动蜕变时间初始化
 End Function
+//主函数
 Function main
     Call init()  //初始化
     Do
 		Call check_status()
-		Call close_ad(fairy_true)//广告
 		Call update_main(0)//定时升级
-        Delay 300
-        Call kill()//层数
+        Call kill()//点杀        
+        Call layer()//层数  
+        Call layer_check()//层数处理
+        Call sendmessage(ocrchar_layer)//邮件内容记录
     Loop
 End Function
 //判断应用存在
 Function check_status()
-
-        UseDict(0)
-        dim temp_apprun = Sys.isRunning("com.gamehivecorp.taptitans2")
+    //检测界面是否被遮挡
+	If CmpColorEx("993|1886|3F4423", 1) = 1 Then 
+		Exit Function
+    End If
+    UseDict(0)
+    dim temp_apprun = Sys.isRunning("com.gamehivecorp.taptitans2")
+    If temp_apprun = False Then 
+//      RunApp "com.gamehivecorp.taptitans2"
+        Delay 10000
+        temp_apprun = Sys.AppIsFront("com.gamehivecorp.taptitans2")
         If temp_apprun = False Then 
-//            RunApp "com.gamehivecorp.taptitans2"
-            Delay 10000
-            temp_apprun = Sys.AppIsFront("com.gamehivecorp.taptitans2")
-            If temp_apprun = False Then 
-                EndScript
-            End If
+            EndScript
         End If
-        
-		//以上两句脚本只需要调用一次
-		Dim ocrchar
-		ocrchar=Ocr(350,600,725,691,"FFFFFF",1)
-		If ocrchar = "服务器维护" or CmpColorEx("122|629|FFFFFF,135|632|0742ED",1) = 1 Then 
-			Call mail("服务器维护")
-			EndScript
-		End If
+    End If
+    
+	//以上两句脚本只需要调用一次
+	Dim ocrchar
+	ocrchar=Ocr(350,600,725,691,"FFFFFF",1)
+	If ocrchar = "服务器维护" or CmpColorEx("122|629|FFFFFF,135|632|0742ED",1) = 1 Then 
+		Call mail("服务器维护")
+		EndScript
+	End If
 End Function
 
 Function update_main(update_main_flat)
@@ -183,7 +184,8 @@ Function update_main(update_main_flat)
     update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
     
     If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
-    	ShowMessage "距离上次升级时间" & update_time_main &"秒", 1500, 0, 0
+    	ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, 0, 0
+    	Call close_ad(fairy_true)//广告
         //检测部落boss开启
         Dim intX,intY
 		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
@@ -191,11 +193,10 @@ Function update_main(update_main_flat)
             Call tribe(2)
             Delay 1000
         End If 
-		Call close_ad(fairy_true)//广告
         Call hum(3)//日常升级本人
 		Delay 500
-		//超过5900层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000 or update_main_num < 4 or updata_mistake >= 2 or update_main_flat=1 Then 
+		//超过6000层之后达到最高层，不需要升级
+        If ocrchar_layer < 6000 or update_main_num < 4 or updata_mistake >=3 or update_main_flat=1 Then 
         	Call hum(1)//升级
         	Call hero(1)//升级
         	update_main_num =update_main_num+1//升级小于五次时
@@ -219,33 +220,25 @@ End Function
 //杀怪
 Function kill()
     TracePrint "杀怪冲关"
-    Dim intX,intY
-    For 4
-        //单次击杀点击
-        For 11
-            dim t_temp=TickCount()
-            //广告
-            Call close_ad(fairy_true)//广告
-            //启动boss
-            Call boss()
-            //技能
-            If skills_true = true Then 
-                Call skills()
-            End If
-            //技能延迟&点击
-            While TickCount() - t_temp < 2200
-                Touch RndEx(250,830), RndEx(320, 1000),RndEx(2, 15)
-                Delay RndEx(180, 200)
-            Wend
-            TracePrint TickCount()-t_temp
-        Next
-        //层数
-        Call layer()
-        //层数处理
-        Call layer_check()
-        //邮件内容记录
-        Call sendmessage(ocrchar_layer)
+    //单次击杀点击
+    For 11
+        dim t_temp=TickCount()
+        //广告
+        Call close_ad(fairy_true)//广告
+        //启动boss
+        Call boss()
+        //技能
+        If skills_true = true Then 
+            Call skills()
+        End If
+        //技能延迟&点击
+        While TickCount() - t_temp < 2200
+            Touch RndEx(250,830), RndEx(320, 1000),RndEx(2, 15)
+            Delay RndEx(180, 200)
+        Wend
+        TracePrint TickCount()-t_temp
     Next
+
 End Function
 //判断层数
 Function layer()
@@ -336,7 +329,7 @@ End Function
 //个人
 Function hum(flat)
     TracePrint	"hum" 
-    Dim humX,humY,humX2,humY2
+    Dim humX,humY
 	Call close_ad(fairy_true)//广告
     //识别
     FindColor 59,1865,102,1907, "AB9C7C", 1, 1, humX, humY
@@ -351,13 +344,10 @@ Function hum(flat)
             Call update(1)
         ElseIf flat = 2 Then
             //蜕变
-            Delay 200
-            Call s_swipe_down()
-            Delay 200
-            Call s_swipe_down()
-            Delay 1000
-            Call s_swipe_down()
-            Delay 1000
+            For 3
+            	Call s_swipe_down()
+            	Delay 1000
+            Next
             Call prestige()
         ElseIf flat = 3 Then
             //日常升级
@@ -388,13 +378,10 @@ Function hum(flat)
             	Call update(1)
         	ElseIf flat = 2 Then
             	//蜕变
-            	Delay 200
-            	Call s_swipe_down()
-            	Delay 200
-            	Call s_swipe_down()
-            	Delay 500
-            	Call s_swipe_down()
-            	Delay 500
+            	For 3
+            		Call s_swipe_down()
+            		Delay 1000
+            	Next
             	Call prestige()
         	ElseIf flat = 3 Then
             	//日常升级
@@ -417,20 +404,20 @@ End Function
 //英雄
 Function hero(flat)
     TracePrint	"hero" 
-    Dim heroX,heroY,heroX2,heroY2
+    Dim heroX,heroY
 	Call close_ad(fairy_true)//广告
     FindColor 245,1850,294,1879,"8F8C6E",1,1,heroX,heroY
     If heroX > -1 And heroY > -1 Then 	
         TracePrint	"hero已经点开"
-//        hero = True
-		If flat=1 Then 
-            	Call b_swipe_down()
-            	Delay 300
-           		Call update(2)
+        //        hero = True
+        If flat=1 Then 
+            Call b_swipe_down()
+            Delay 300
+            Call update(2)
         ElseIf flat = 2 Then
-//            	Call swipe_up()
-            	Delay 300
-           		Call update(3)         
+            //            	Call swipe_up()
+            Delay 300
+            Call update(3)         
         End If
         Exit Function
     End If
@@ -549,7 +536,6 @@ Function tribe(flat)
                     Delay RndEx(30, 50)
                 Next
             Loop
-
             //离开部落boos界面
             error_num_one = 0
             ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
@@ -578,7 +564,10 @@ Function close_ad(fairy_temp)
     //检测界面是否被遮挡
 	If CmpColorEx("993|1886|3F4423", 1) = 1 Then 
 		Exit Function
-    End If	
+    End If
+    Touch 500, 500, 200
+    Delay 500
+    Touch 500, 500, 200
 	TracePrint "广告"
     ShowMessage "广告", 1000, 0, 0
 	//识别小仙女
@@ -930,10 +919,6 @@ Function update(flat)
                             Exit While
                         End If
                     Wend
-                    //没有点击内容了
-                    //        	If error_num_one < 2 Then 
-                    //        		Exit For
-                    //        	End If
                     Swipe 1000, 1500, 1000, 1300, 200
                     Delay 550
                     error_num_two = error_num_two + 1
@@ -958,12 +943,10 @@ Function update(flat)
             Call close_ad(fairy_true)
             Exit While
         End If
-
         FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
     Wend
     Call close_ad(fairy_true)//广告
     Delay 150
-
 End Function
 //每日奖励
 Function Daily_reward
