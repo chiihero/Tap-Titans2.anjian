@@ -2,11 +2,10 @@
 //hum(2)  蜕变
 //hum(3)  日常升级
 
-KeepScreen True
+KeepScreen True//保持亮屏
 Device.SetBacklightLevel(0)//设置亮度
-Randomize
+Randomize//随机数种子
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
-
 SetRowsNumber(33)
 SetOffsetInterval (1)
 SetDictEx(0, "Attachment:文字.txt")
@@ -284,46 +283,44 @@ Function layer_check()
     		layer_number_max = ocrchar_layer  //自动蜕变层数改变
     		Call hum(2)
     	End If
-	Else 
-   		If ocrchar_layer -ocrchar_layer_temp < 4 Then //and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
-        	TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
-        	//防止卡关and自动蜕变
-        	If TickCount() - auto_tribe_time > 300000 Then 
-            	TracePrint "蜕变出错"
-            	TracePrint "蜕变出错"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
-            	/**************蜕变出错部分***************/
-            	auto_tribe_flat = auto_tribe_flat + 1
-            	//两次蜕变的层数判断大小，取最大的层数进行蜕变层数
-            	If auto_tribe_temp < ocrchar_layer Then 
-            		auto_tribe_temp = ocrchar_layer
-            	End If
-            	If auto_tribe_flat>=3 Then 
-             		layer_number_max = auto_tribe_temp  //自动蜕变层数改变
-             		auto_tribe = True
-             		auto_tribe_flat = 0
-             		auto_tribe_temp = 0
-            	End If
-            	/***************************************/
-            	Call hum(2)
-            	auto_tribe_time = TickCount()
-	//            auto_update_time = TickCount()
-            	Exit Function
-        	//自动升级
-        	Else//If TickCount() - auto_update_time > 80000 Then 
-            	TracePrint "自动升级"//&(TickCount() - auto_update_time)/1000&"秒"
-            	updata_mistake = updata_mistake + 1
-				Call update_main(2)
-				update_main_time = TickCount()
-				ocrchar_layer_temp = ocrchar_layer
-	//            auto_update_time = TickCount()
-        	End If
-    	Else 
-    		TracePrint "层数不同"
-    		updata_mistake = 0
-        	ocrchar_layer_temp = ocrchar_layer
-        	auto_tribe_time = TickCount()
-    	End If
-	End If
+	ElseIf ocrchar_layer -ocrchar_layer_temp < 4 Then //and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then  
+        TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
+        //防止卡关and自动蜕变
+        If TickCount() - auto_tribe_time > 300000 Then 
+            TracePrint "蜕变出错"
+            TracePrint "蜕变出错"&"层数等待超时"&(TickCount() - auto_tribe_time)/1000&"秒"
+            /**************蜕变出错部分***************/
+            auto_tribe_flat = auto_tribe_flat + 1
+            //两次蜕变的层数判断大小，取最大的层数进行蜕变层数
+            If auto_tribe_temp < ocrchar_layer Then 
+            	auto_tribe_temp = ocrchar_layer
+            End If
+            If auto_tribe_flat>=3 Then 
+             	layer_number_max = auto_tribe_temp  //自动蜕变层数改变
+             	auto_tribe = True
+             	auto_tribe_flat = 0
+             	auto_tribe_temp = 0
+            End If
+            /***************************************/
+            Call hum(2)
+            auto_tribe_time = TickCount()
+//            auto_update_time = TickCount()
+            Exit Function
+        //自动升级
+        Else//If TickCount() - auto_update_time > 80000 Then 
+            TracePrint "自动升级"//&(TickCount() - auto_update_time)/1000&"秒"
+            updata_mistake = updata_mistake + 1
+			Call update_main(2)
+			update_main_time = TickCount()
+			ocrchar_layer_temp = ocrchar_layer
+//            auto_update_time = TickCount()
+        End If
+    Else 
+    	TracePrint "层数不同"
+    	updata_mistake = 0
+        ocrchar_layer_temp = ocrchar_layer
+        auto_tribe_time = TickCount()
+    End If
 	//    layer() = ocrchar_layer
 End Function
 //个人
@@ -1083,18 +1080,15 @@ End Function
 //上滑
 Function swipe_up
     TracePrint "上滑"
-    Dim closeX,closeY
     For 7
     	Swipe 730, 1322, 730, 1715, 100
     	Delay RndEx(200, 255)
 		Call close_ad(fairy_true)//广告
 	Next
-
 End Function
 //小的下滑
 Function s_swipe_down
     TracePrint "小的下滑"
-    Dim closeX,closeY
 	For 7  
     	Swipe 1000, 1500, 1000, 1300, 100
     	Delay RndEx(200, 255)
@@ -1105,7 +1099,6 @@ End Function
 //大的下滑
 Function b_swipe_down
     TracePrint "大的下滑"
-    Dim closeX,closeY
     For 25
     	Swipe 1000, 1650, 1000, 1300, 100
     	Delay RndEx(200, 255)
@@ -1136,7 +1129,6 @@ Function mail(max_layer)
     		sendmessage_str ="最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
     	End If
 	End If 
-
     sendmessage_str = "内容为:\n"& "最高设定层数:"& layer_number_max &"\n" &"使用升级次数:"&update_main_num&"\n"& sendmessage_str 
     Dim m_message = sendmessage_str
     Dim m_tomail = "853879993@qq.com"
@@ -1153,7 +1145,7 @@ Function mail(max_layer)
         End If
     Wend
 End Function
-
+//邮箱内容
 Function sendmessage(s_layer_number)
 	TracePrint "邮箱内容"
 	If Int(s_layer_number / 100) > s_layer_number_mix Then 
@@ -1161,7 +1153,6 @@ Function sendmessage(s_layer_number)
 		sendmessage_str = "层数:"& s_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n"&sendmessage_str
 	End If
 End Function
-
 //封装时间格式化输出函数
 Function data_time(d_time)
 	data_time =DateTime.Format("%H:%M:%S",d_time-28800)
