@@ -181,8 +181,9 @@ End Function
 Function update_main(update_main_flat)
 	//定时升级
     update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
-    ShowMessage "距离上次升级时间" & update_time_main &"秒", 1500, 0, 0
-    If (update_time_main >= update_main_init_time) or update_main_flat <> 0  Then 
+    
+    If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
+    	ShowMessage "距离上次升级时间" & update_time_main &"秒", 1500, 0, 0
         //检测部落boss开启
         Dim intX,intY
 		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
@@ -204,15 +205,15 @@ Function update_main(update_main_flat)
         update_main_time = TickCount()
         update_main_flat = 0
     End If
-    If ocrchar_layer > layer_number_max*0.90 Then 
-    	update_main_init_time = 300
-    End If
-    If ocrchar_layer > layer_number_max*0.96 Then 
-    	update_main_init_time = 230
-    End If
-    If ocrchar_layer > layer_number_max * 0.99 Then
-    	update_main_init_time = 180
-    End If
+//    If ocrchar_layer > layer_number_max*0.90 Then 
+//    	update_main_init_time = 300
+//    End If
+//    If ocrchar_layer > layer_number_max*0.96 Then 
+//    	update_main_init_time = 230
+//    End If
+//    If ocrchar_layer > layer_number_max * 0.99 Then
+//    	update_main_init_time = 180
+//    End If
 End Function
 
 //杀怪
@@ -221,7 +222,7 @@ Function kill()
     Dim intX,intY
     For 4
         //单次击杀点击
-        For 15
+        For 11
             dim t_temp=TickCount()
             //广告
             Call close_ad(fairy_true)//广告
@@ -234,7 +235,7 @@ Function kill()
             //技能延迟&点击
             While TickCount() - t_temp < 2200
                 Touch RndEx(250,830), RndEx(320, 1000),RndEx(2, 15)
-                Delay RndEx(190, 220)
+                Delay RndEx(180, 200)
             Wend
             TracePrint TickCount()-t_temp
         Next
@@ -291,7 +292,7 @@ Function layer_check()
     		Call hum(2)
     	End If
 	Else 
-   		If (ocrchar_layer -ocrchar_layer_temp < 4 and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
+   		If ocrchar_layer -ocrchar_layer_temp < 4 Then //and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then 
         	TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
         	//防止卡关and自动蜕变
         	If TickCount() - auto_tribe_time > 300000 Then 
@@ -303,7 +304,6 @@ Function layer_check()
             	If auto_tribe_temp < ocrchar_layer Then 
             		auto_tribe_temp = ocrchar_layer
             	End If
-	
             	If auto_tribe_flat>=3 Then 
              		layer_number_max = auto_tribe_temp  //自动蜕变层数改变
              		auto_tribe = True
@@ -330,8 +330,7 @@ Function layer_check()
         	ocrchar_layer_temp = ocrchar_layer
         	auto_tribe_time = TickCount()
     	End If
-	End If             
-	
+	End If
 	//    layer() = ocrchar_layer
 End Function
 //个人
