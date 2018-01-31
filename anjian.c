@@ -6,6 +6,7 @@ SetRowsNumber(33)
 SetOffsetInterval (1)
 SetDictEx(0, "Attachment:文字.txt")
 UseDict(0)
+
 //初始化时间
 Dim update_main_time 
 Dim update_time_main
@@ -58,13 +59,15 @@ TracePrint  auto_tribe
 //部落
 Dim tribe_true = ReadUIConfig("Checkbox_tribe")
 TracePrint  tribe_true
+//部落钻石选项
+Dim tribe_true_num = ReadUIConfig("Checkbox_tribe_num","0")
+TracePrint  tribe_true_num
 //仙女选项
 Dim fairy_true = ReadUIConfig("Checkbox3")
 TracePrint  fairy_true
 //修改选项
 Dim GameGuardian_true = ReadUIConfig("Checkbox_GameGuardian")
 TracePrint  GameGuardian_true
-
 /*===============杂项===================*/
 //等待开启时间
 Dim delay_time = ReadUIConfig("textedit_delay")
@@ -81,13 +84,8 @@ Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
 Dim temp1,temp2,temp3,temp4,temp5
 
-//WriteConfig("Checkbox_auto_tribe",true,true)
 //========================================初始化结束=================================================//
-//layer_number_max = 4000
-//等待时间
-//Dim delay_temp_t = TickCount()
-//While TickCount()-delay_temp_t<delay_time*1000
-//Wend
+
 If delay_time > 0 Then 
 	Delay delay_time
 	RunApp "com.gamehivecorp.taptitans2"
@@ -138,12 +136,15 @@ Function init()
     Call egg()//宠物蛋
     Call chest()//宝箱
     Call Daily_reward()//每日奖励
+    If tribe_true = True Then
+        Call tribe()
+        Delay 1000
+    End If 
 	Call close_ad()//广告
     //Call hum(3)//日常升级本人
     Call hum(4)//成就
     //减少高层数开始时的全面升级次数
     update_main_num=iif(ocrchar_layer > 6500,4,0)
-
 	Call update_main(1)//升级.初始化模式
 /*****************************************************/
 	send_flag = 1  //发送邮箱，必须在检测layer()后
@@ -276,8 +277,7 @@ Function update_main(update_main_flat)
     If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
     	ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
     	Call close_ad()//广告
-        //检测部落boss开启
-        Dim intX,intY
+    	Dim intX,intY
 		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
 		If intX > -1 And intY > -1 And tribe_true = True Then
             Call tribe(2)
@@ -296,7 +296,6 @@ Function update_main(update_main_flat)
         update_main_time = TickCount()
         update_main_flat = 0
     End If
-
 End Function
 
 //杀怪
@@ -395,16 +394,14 @@ Function layer_check()
             /***************************************/
             Call hum(2)
             auto_tribe_time = TickCount()
-//            auto_update_time = TickCount()
             Exit Function
         //自动升级
-        Else//If TickCount() - auto_update_time > 80000 Then 
-            TracePrint "自动升级"//&(TickCount() - auto_update_time)/1000&"秒"
+        Else
+            TracePrint "自动升级"
             updata_mistake = updata_mistake + 1
 			Call update_main(2)
 			update_main_time = TickCount()
 			ocrchar_layer_temp = ocrchar_layer
-//            auto_update_time = TickCount()
         End If
     Else 
     	TracePrint "层数不同"
@@ -473,7 +470,6 @@ Function hero(flat)
         TracePrint	"hero正在点开"
         Touch 267,1890, 100
 		Delay 2000
-//        hero = True
         FindColor 245,1850,294,1879,"8F8C6E",1,1,heroX,heroY
         error_num_one = error_num_one + 1
         If error_num_one > 10 Then 
@@ -487,16 +483,16 @@ Function hero(flat)
             	Delay 300
            		Call update(2)
         ElseIf flat = 2 Then
-//            	Call swipe_up()
             	Delay 300
            		Call update(3)         
         End If
     End If
 End Function
 //部落
-Function tribe(flat)
+Function tribe()
     TracePrint "进入部落"
-    Dim HH,MM,SS,tempH,tempM,tempS,intX,intY,ocrchar,timeX,timeY
+    Dim HH,MM,SS,tempH,tempM,tempS,intX,intY,ocrchar,ocrchar_diamond,timeX,timeY
+   	SetDictEx(0, "Attachment:文字.txt") 
     UseDict (0)
     Touch 188,79, 150
     Delay 2000
@@ -534,93 +530,111 @@ Function tribe(flat)
             Exit While
         End If
     Wend
-    If flat = 2 Then
-        ocrchar = Ocr(635, 1722, 776, 1800, "FFFFFF", 0.9)//识别“战斗”
-        TracePrint ocrchar
-        FindColor 144,1764,360,1816,"30FFAC",0,0.9,timeX,timeY
-        If  timeX = -1 And timeY = -1 Then 
-            //点击“战斗”
-            TracePrint"点击战斗"
-            error_num_one=0
-            While ocrchar = "战斗"
-            	error_num_one = error_num_one + 1
-                Touch 699,1767, 150
-                Delay 2000
-                ocrchar = Ocr(635, 1722, 776, 1800, "FFFFFF", 0.9)
-                If ocrchar <> "战斗" Then 
-                	timeX =10
-                End If
-                If error_num_one > 5 Then 
-                    TracePrint"出错"
-                    Exit While
-                End If
-            Wend
-            //点击部落boss
-            //第一次打boss35秒
-            tribe_time = TickCount()
-            DO While TickCount() - tribe_time < 35000
+    ocrchar = Ocr(648,1742,782,1816, "FFFFFF", 0.9)//识别“战斗”
+    TracePrint ocrchar
+	SetDictEx(3, "Attachment:blue_and_diamond.txt")
+	UseDict(3)
+    ocrchar_diamond=Ocr(714,1699,759,1734,"FFFFFF-111111",0.9)//识别“钻石”
+    TracePrint ocrchar_diamond
+    UseDict (0)
+    If ocrchar_diamond = "" Then 
+    	ocrchar_diamond = "0"
+    End If
+	ocrchar_diamond =CInt(ocrchar_diamond)
+    If  ocrchar = "战斗"  Then 
+        //点击“战斗”
+        TracePrint"点击战斗"
+        Dim tribe_flat = False
+        Select Case tribe_true_num
+		Case 0
+    		If ocrchar_diamond = 0 Then 
+    			
+    		End If
+		Case 1
+    		If ocrchar_diamond <= 5 Then 
+				tribe_flat=True
+    		End If
+		Case 2
+    		If ocrchar_diamond <= 25 Then 
+				tribe_flat=True
+    		End If
+		Case 3
+    		If ocrchar_diamond <= 50 Then 
+				tribe_flat=True
+    		End If
+		End Select
+		If tribe_flat=True Then 
+			Touch 699,1767, 150
+        	Delay 1500
+        	Touch 723,1058, 150
+        	Delay 1000
+        Else 
+        	Call close_ad()//广告
+    		Delay 2000
+			Call close_ad()//广告
+			Exit Function
+		End If
+        //点击部落boss
+        //第一次打boss35秒
+        tribe_time = TickCount()
+        DO While TickCount() - tribe_time < 35000
+            //点击延迟
+            Delay RndEx(50, 120)
+            For 40
                 //点击延迟
-                Delay RndEx(50, 120)
-                For 40
-                    //点击延迟
-                    TouchDown RndEx(250, 880), RndEx(342, 970), 1
-                    Delay RndEx(10, 30)
-                    TouchUp 1
-                    Delay RndEx(30, 50)
-                Next
-            Loop 
-            //之后的boos检测结束
-            tribe_time = TickCount()
-            DO While TickCount()-tribe_time<5000
-                //点击延迟
-                Delay RndEx(50, 120)
-                For 40
-                    //点击延迟
-                    TouchDown RndEx(250, 880), RndEx(342, 970), 1
-                    Delay RndEx(10, 30)
-                    TouchUp 1
-                    Delay RndEx(30, 50)
-                Next
-            Loop
-            //离开部落boos界面
-            error_num_one = 0
-            ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
-            While ocrchar = "点击继续"
-                TouchDown RndEx(370, 380), RndEx(1060, 1080), 1
+                TouchDown RndEx(250, 880), RndEx(342, 970), 1
                 Delay RndEx(10, 30)
                 TouchUp 1
-                Delay RndEx(200, 500)
-                Delay 2000
-                ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
-                error_num_one = error_num_one + 1
-                If error_num_one > 5 Then 
-                    TracePrint"出错"
-                    Exit While
-                End If
-            Wend
-        End If	
-    End If
+                Delay RndEx(30, 50)
+            Next
+        Loop 
+        //之后的boos检测结束
+        tribe_time = TickCount()
+        DO While TickCount()-tribe_time<5000
+            //点击延迟
+            Delay RndEx(50, 120)
+            For 40
+                //点击延迟
+                TouchDown RndEx(250, 880), RndEx(342, 970), 1
+                Delay RndEx(10, 30)
+                TouchUp 1
+                Delay RndEx(30, 50)
+            Next
+        Loop
+        //离开部落boos界面
+        error_num_one = 0
+        ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
+        While ocrchar = "点击继续"
+            TouchDown RndEx(370, 380), RndEx(1060, 1080), 1
+            Delay RndEx(10, 30)
+            TouchUp 1
+            Delay RndEx(200, 500)
+            Delay 2000
+            ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
+            error_num_one = error_num_one + 1
+            If error_num_one > 5 Then 
+                TracePrint"出错"
+                Exit While
+            End If
+        Wend
+    End If	
+	Call close_ad()//广告
     Delay 2000
 	Call close_ad()//广告
 End Function
 //关广告
 Function close_ad()
-
     //If CmpColorEx("993|1886|3F4423,64|36|6D6858",1) = 0 Then
     //检测界面是否被遮挡
 	If CmpColorEx("993|1886|3F4423", 1) = 1 Then 
 		Exit Function
     End If
-    
     Touch 538,1539, 200
     Delay 500
-//    Touch 500, 500, 200
 	TracePrint "广告"
     ShowMessage "广告", 1000, screenX/2-150,screenY/4-200
 	//识别小仙女
 	If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
-		SetRowsNumber(33)
-		SetOffsetInterval (1)
 		SetDictEx(0, "Attachment:文字.txt")
     	UseDict(0)
 		Dim ocrchar,ocrchar1
@@ -725,10 +739,8 @@ Function close_ad()
             	TracePrint"出错"
             	Exit While
         	End If
-    	Wend
-    	
+    	Wend	
     End If
-
 End Function
 //主动进入boss模式
 Function boss	
@@ -758,49 +770,38 @@ Function skills
             Exit While
         End If
     Wend
-//模式二
 	//技能6
 	If CmpColorEx("975|1654|FFFFFF",1) = 1 Then
-//    	Tap RndEx(946, 1027), RndEx(1682, 1755)
     	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(12, 20)
     	Delay RndEx(20, 30)
 	End If
     //技能5
     If CmpColorEx("795|1654|FFFFFF",1) = 1 Then
-//    	Tap RndEx(772, 848), RndEx(1682, 1755)
     	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(12, 20)
     	Delay RndEx(20, 30)
 	End If
     //技能4
     If CmpColorEx("619|1654|FFFFFF",1) = 1 Then
-//    	Tap RndEx(590, 666), RndEx(1682, 1755)
     	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(12, 20)
     	Delay RndEx(20, 30)
 	End If
     //技能3
     If CmpColorEx("440|1654|FFFFFF",1) = 1 Then
-//    	Tap RndEx(406, 480), RndEx(1682, 1755)
     	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(12, 20)
     	Delay RndEx(20, 30)
 	End If	
     //技能2
     If CmpColorEx("260|1654|FFFFFF",1) = 1 Then
-//    	Tap RndEx(264, 303), RndEx(1682, 1755)
     	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(12, 20)
     	Delay RndEx(20, 30)
 	End If
     //技能1
-//    Tap RndEx(80, 90), RndEx(1700, 1740)
     Touch RndEx(80, 90), RndEx(1700, 1740),RndEx(12, 20)
 		Delay RndEx(20, 30)
-	
-
 End Function
 //蜕变
 Function prestige
 	Call close_ad()//广告
-    SetRowsNumber(33)
-    SetOffsetInterval (1)
     SetDictEx(0, "Attachment:文字.txt")
     UseDict(0)
     TracePrint "蜕变"
@@ -867,7 +868,6 @@ Function prestige
             Exit While
         End If
     Wend
-	//Delay 40000
 	Call close_ad()//广告
     Call init()  //初始化
 End Function
@@ -1029,8 +1029,7 @@ Function update(flat)
 End Function
 Function ocrchar_blue()
 	   //识别魔法量
-	SetRowsNumber(33)
-	SetDictEx(3, "Attachment:blue.txt")
+	SetDictEx(3, "Attachment:blue_and_diamond.txt")
 	UseDict(3)
 	Dim ocrchar
 	error_num_one =0
@@ -1055,10 +1054,9 @@ Function ocrchar_blue()
         If error_num_one > 40 Then 
             TracePrint"出错"
             Call close_ad()
-            Exit Do
+            EndScript
         End If
 	Loop While ocrchar = ""
-
 End Function
 //GameGuardian修改器
 Function GameGuardian()
@@ -1088,19 +1086,13 @@ Function GameGuardian()
 	//点击搜索栏
 	Delay 1000
 	Touch 436,70, 10
-	Delay 1000
-	Touch 436,70, 10
+
 	//判断是否已经搜索过
 	FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
 	If intX > -1 And intY > -1 Then 
 		TracePrint "已经搜索过"
 		KeyPress "Back"
 		GameGuardian_flat = True
-//		While CmpColorEx("993|1886|3F4423", 1) = 0
-//			KeyPress "Back"
-//			Delay 1000
-//			Call close_ad()
-//		Wend
 		Exit Function
 	End If
 	//搜索
@@ -1439,7 +1431,6 @@ Function achievement
         error_num_one=0
         Delay 100
         Swipe 1000, 1300, 1000, 1600, 200
-        //Swipe 730, 1250, 730, 1460, 200
         TracePrint "上滑"
         Delay 100
 		Call close_ad()//广告
@@ -1523,9 +1514,6 @@ Function Screen
 End Function
 //邮箱
 Function mail(max_layer)
-//	If IsNull(max_layer) Then 
-//		max_layer=s_layer_number
-//	End If
 	TracePrint "邮箱"
     Dim m_host ="smtp.qq.com"
     Dim m_username = "1171479579@qq.com"
