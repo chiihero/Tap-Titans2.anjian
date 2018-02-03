@@ -23,7 +23,7 @@ Dim sendmessage_str
 Dim send_flag = 0
 Dim s_layer_number_mix
 //初始化识别层数
-Dim ocrchar,ocrchar_layer
+Dim ocrchar,ocrchar_layer,ocrchar_int
 Dim layer_temp
 Dim ocrchar_layer_temp
 Dim s_layer_number
@@ -332,27 +332,27 @@ Function layer()
 	//数字0-9
 	SetRowsNumber(33)
 	SetOffsetInterval (1)
-	SetDictEx 1, "Attachment:层数.txt"
+	SetDictEx 1, "Attachment:数字.txt"
 	UseDict (1)
-	ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
 	error_num_one =0
-	While ocrchar = ""
-		Call close_ad()
-		Delay 200
+	Do
 		ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
+		ocrchar_layer = ocrchar + 0		
+		Delay 500
+		Call close_ad()
+
 		error_num_one = error_num_one + 1
-        If error_num_one > 5 Then 
+        If error_num_one > 3 Then 
             TracePrint"层数出错"
-            Exit While
+            Exit Do
         End If
-	Wend
+	Loop While ocrchar = "" or ocrchar_layer<layer_temp
 	Traceprint "层数"&ocrchar
     //层数判断错误
     If ocrchar = "" Then 
         ocrchar_layer = layer_temp
         TracePrint "层数检测为空"
     ElseIf ocrchar <> "" Then 
-        ocrchar_layer = ocrchar + 0
         layer_temp = ocrchar_layer
     End If
     //层数显示
@@ -374,7 +374,7 @@ Function layer_check()
     		layer_number_max = ocrchar_layer  //自动蜕变层数改变
     		Call hum(2)
     	End If
-	ElseIf ocrchar_layer -ocrchar_layer_temp < 4 Then //and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then  
+	ElseIf Abs(ocrchar_layer -ocrchar_layer_temp) < 4 Then //and ocrchar_layer > layer_number_max * 0.9) or (ocrchar_layer - ocrchar_layer_temp < 40 and ocrchar_layer <= layer_number_max * 0.9) Then  
         TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
         //防止卡关and自动蜕变
         If TickCount() - auto_tribe_time > 300000 Then 
@@ -534,8 +534,8 @@ Function tribe()
     ocrchar = Ocr(648,1742,782,1816, "FFFFFF", 0.9)//识别“战斗”
     FindColor 144,1764,360,1816,"30FFAC",0,0.9,timeX,timeY
     TracePrint ocrchar
-	SetDictEx(3, "Attachment:blue_and_diamond.txt")
-	UseDict(3)
+	SetDictEx(1, "Attachment:数字.txt")
+	UseDict(1)
     ocrchar_diamond=Ocr(714,1699,759,1734,"FFFFFF-111111",0.9)//识别“钻石”
     TracePrint ocrchar_diamond
     UseDict (0)
@@ -1031,8 +1031,8 @@ Function update(flat)
 End Function
 Function ocrchar_blue(accuracy)
 	   //识别魔法量
-	SetDictEx(3, "Attachment:blue_and_diamond.txt")
-	UseDict(3)
+	SetDictEx(1, "Attachment:数字.txt")
+	UseDict(1)
 	Dim ocrchar
 	error_num_one =0
 	Do
