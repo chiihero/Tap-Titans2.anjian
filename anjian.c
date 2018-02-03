@@ -244,16 +244,17 @@ Function check_status()
 		GameGuardian_true = True
     End If
     //检测界面是否被遮挡
-	If CmpColorEx("993|1886|3F4423", 1) = 1 Then 
+	If CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 1 Then 
 		Exit Function
     End If
+    
     If Sys.isRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2") = False Then 
     	TracePrint "开启游戏"
       	RunApp "com.gamehivecorp.taptitans2"
         Dim start_time = TickCount()//开始时间
     	//检测界面
     	Dim intX, intY
-		While CmpColorEx("993|1886|3F4423", 1) = 0
+		While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
 			//识别修改器的确认游戏退出
 			FindPic 91, 736, 992, 1222, "Attachment:确定.png", "000000", 0, 0.8, intX, intY
 			If intX > -1 Then 
@@ -280,7 +281,7 @@ Function update_main(update_main_flat)
     	Dim intX,intY
 		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
 		If intX > -1 And intY > -1 And tribe_true = True Then
-            Call tribe(2)
+            Call tribe()
             Delay 1000
         End If 
         Call hum(3)//日常升级本人
@@ -626,7 +627,7 @@ End Function
 Function close_ad()
     //If CmpColorEx("993|1886|3F4423,64|36|6D6858",1) = 0 Then
     //检测界面是否被遮挡
-	If CmpColorEx("993|1886|3F4423", 1) = 1 Then 
+	If CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 1 Then 
 		Exit Function
     End If
     Touch 538,1539, 200
@@ -1222,18 +1223,18 @@ Function GameGuardian()
 	End If
 	Delay 1000
 	error_num_one = 0//退出修改器界面
-	While CmpColorEx("993|1886|3F4423", 1) = 0
-		Touch 1008, 72, 10
+	While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
+//		Touch 1008, 72, 10
 		KeyPress "Back"
-		Delay 500
+		Delay 1000
 		error_num_one = error_num_one + 1
-        If error_num_one > 20 Then 
+        If error_num_one > 5 Then 
             TracePrint"出错"
             Call close_ad()
             Exit While
         End If
 	Wend
-	KeyPress "Back"
+//	KeyPress "Back"
 	Delay 1000
 	//检查是否修改成功
 	Call skills()
@@ -1241,7 +1242,7 @@ Function GameGuardian()
 	Call skills()
 	Delay 1000
 	Call ocrchar_blue()
-	If CInt(Myblue(0)) < 100 Then 
+	If CInt(Myblue(0)) < 70 Then 
 		GameGuardian_flat = False
 		Exit Function
 	End If
