@@ -156,7 +156,7 @@ End Function
 //主函数
 Function main
 	//修改部分
-	If GameGuardian_true = True And Sys.isRunning("com.cdpknescwm.ccfogjlqa") Then 
+	If GameGuardian_true = True Then 
 		Call  GameGuardian()
     	While GameGuardian_flat = False
 			Call kill_app()
@@ -192,7 +192,7 @@ Function kill_app()
             Exit do
         End If
 	Loop While intX = -1 
-	//退出，点击是
+	//., .退出，点击是
 //	FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
 	error_num_one = 0
 	While intX > -1 
@@ -221,7 +221,7 @@ Function kill_app()
             Exit Do
         End If
 	Loop While intX = -1 
-	//点击修改器的确认游戏退出
+	//点击修改器的确认游戏退出 
 	Touch intX, intY, 10
 	Delay 1000
 End Function
@@ -287,7 +287,7 @@ Function update_main(update_main_flat)
         Call hum(3)//日常升级本人
 		Delay 500
 		//超过6000层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000 or update_main_num < 4 or updata_mistake >=4 or update_main_flat=1 Then 
+        If ocrchar_layer < 6000 or update_main_num < 4  or update_main_flat=1 Then //or updata_mistake >=4
         	Call hum(1)//升级
         	Call hero(1)//升级
         	update_main_num =update_main_num+1//升级小于五次时
@@ -532,6 +532,7 @@ Function tribe()
         End If
     Wend
     ocrchar = Ocr(648,1742,782,1816, "FFFFFF", 0.9)//识别“战斗”
+    FindColor 144,1764,360,1816,"30FFAC",0,0.9,timeX,timeY
     TracePrint ocrchar
 	SetDictEx(3, "Attachment:blue_and_diamond.txt")
 	UseDict(3)
@@ -542,7 +543,7 @@ Function tribe()
     	ocrchar_diamond = "0"
     End If
 	ocrchar_diamond =CInt(ocrchar_diamond)
-    If  ocrchar = "战斗"  Then 
+    If  ocrchar = "战斗" or timeX = -1 Then 
         //点击“战斗”
         TracePrint"点击战斗"
         Dim tribe_flat = False
@@ -1028,14 +1029,26 @@ Function update(flat)
     Call close_ad()//广告
     Delay 150
 End Function
-Function ocrchar_blue()
+Function ocrchar_blue(accuracy)
 	   //识别魔法量
 	SetDictEx(3, "Attachment:blue_and_diamond.txt")
 	UseDict(3)
 	Dim ocrchar
 	error_num_one =0
-	Do 
-		ocrchar = Ocr(41, 1563, 175, 1607, "FFF534-111111", 0.9)
+	Do
+	
+		//搜索精准性
+		Select Case accuracy
+		Case 8
+    		ocrchar = Ocr(41, 1563, 175, 1607, "FFF534-111111", 0.8)
+		Case 9
+    		ocrchar = Ocr(41, 1563, 175, 1607, "FFF534-111111", 0.9)
+		Case 10
+    		ocrchar = Ocr(41, 1563, 175, 1607, "FFF534-111111", 1)
+		End Select
+
+		
+		
 		If ocrchar <> "" Then 
 			Traceprint ocrchar
 			Myblue = Split(ocrchar, "/")
@@ -1063,15 +1076,14 @@ End Function
 Function GameGuardian()
 	TracePrint "GameGuardian"
     //降下选择栏
-    Dim checkX,checkY
+    Dim checkX,checkY,intX,intY,intX1,intY1
     While CmpColorEx("969|1086|303843",1) = 1
         Touch 968, 1089, 150
        	Delay 150
     Wend
  	Delay 1000
-	Call ocrchar_blue()
+	Call ocrchar_blue(9)
 	//打开GameGuardian
-	Dim intX,intY
 	FindMultiColor 5,768,147,1685,"C5008B","6|-35|CCCCCC",1,1,intX,intY
 	If intX > -1 And intY > -1 Then
 		TracePrint "打开GameGuardian-x:"&intX&"y:"&intY
@@ -1096,8 +1108,10 @@ Function GameGuardian()
 		GameGuardian_flat = True
 		Exit Function
 	End If
-	//搜索
-	Call shuru(1)
+
+	/******************第一次修改*************/
+		//搜索
+	Call search(1)
 	Delay 1000
 //	判断是否搜索到数据
 	FindColor 23, 1591, 77, 1646, "C4CB80", 1, 1, intX, intY
@@ -1109,7 +1123,6 @@ Function GameGuardian()
 		Delay 200
 		Exit Function
 	End If
-	/******************第一次修改*************/
 	/******************肾上腺素cd*************/
 	//第一栏
 	TracePrint "肾上腺素cd"
@@ -1176,26 +1189,35 @@ Function GameGuardian()
 	End If	
 	Delay 1000
 	/******************第二次修改*************/
-	/******************魔法*******************/	
 	//搜索
-	Call shuru(2)
+	Call search(2)
 
-	//	判断是否搜索到数据
+	/***********搜索不到数据或者数据过多***********/
 	FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
-	If intX = -1 And intY = -1 Then 
+	FindColor 20, 715, 78, 767, "C4CB80", 1, 1, intX1, intY1
+	error_num_one = 0
+	while intX = -1 or intY1 > -1
 		TracePrint "出错"
-		GameGuardian_flat = False
-		Delay 500
-		Touch 1008,72, 10
-		Delay 200
-		Exit Function
-	End If
-	FindColor 20, 715, 78, 767, "C4CB80", 1, 1, intX, intY
-	If intX > -1 And intY > -1 Then 
-		TracePrint "过多"
-		Touch 1008,72, 10
-		Delay 400
-		Call ocrchar_blue()
+		error_num_two = 0
+		While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
+			KeyPress "Back"
+			Delay 1000
+			error_num_two = error_num_two + 1
+        	If error_num_two > 5 Then 
+            	TracePrint"出错"
+            	Call close_ad()
+            	Exit While
+        	End If
+		Wend
+		If error_num_one > 2 Then 
+			Call update_main(1)//升级.初始化模式
+		End If
+		While CmpColorEx("969|1086|303843",1) = 1
+        	Touch 968, 1089, 150
+       	 	Delay 150
+    	Wend
+ 		Delay 1000
+		Call ocrchar_blue(8)
 		//打开GameGuardian
 		FindMultiColor 5,768,147,1685,"C5008B","6|-35|CCCCCC",1,1,intX,intY
 		If intX > -1 And intY > -1 Then
@@ -1203,9 +1225,19 @@ Function GameGuardian()
 			Touch intX, intY, 10
 		End If
 		Delay 2000
-		Call shuru(2)
-	End If
-	//第一栏
+		Call search(2)
+		FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
+		FindColor 20, 715, 78, 767, "C4CB80", 1, 1, intX1, intY1
+		error_num_one = error_num_one + 1
+        If error_num_one > 5 Then 
+			GameGuardian_flat = False
+			Delay 500
+			Touch 1008,72, 10
+			Delay 200
+			Exit Function
+        End If
+	Wend
+	/******************魔法*******************/	
 	TracePrint "魔法"
 	Touch 479, 449, 10
 	Delay 1000
@@ -1222,7 +1254,8 @@ Function GameGuardian()
 		Touch intX, intY, 10
 	End If
 	Delay 1000
-	error_num_one = 0//退出修改器界面
+	/*****************退出修改器界面********************/
+	error_num_one = 0
 	While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
 //		Touch 1008, 72, 10
 		KeyPress "Back"
@@ -1241,7 +1274,7 @@ Function GameGuardian()
 	Delay 3000
 	Call skills()
 	Delay 1000
-	Call ocrchar_blue()
+	Call ocrchar_blue(9)
 	If CInt(Myblue(0)) < 70 Then 
 		GameGuardian_flat = False
 		Exit Function
@@ -1249,7 +1282,7 @@ Function GameGuardian()
 	GameGuardian_flat = True
 End Function
 //搜索
-Function shuru(flat)
+Function search(flat)
 	//打开搜索
 	error_num_one=0
 	While CmpColorEx("1008|72|FFFFFF",1) = 1
