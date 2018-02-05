@@ -29,7 +29,7 @@ Dim ocrchar_layer_temp
 Dim s_layer_number
 //初始化升级
 Dim update_main_flat
-Dim update_main_inikill_time
+Dim update_main_init_time
 Dim updata_mistake
 Dim update_main_num//初始化升级次数
 //部落时间
@@ -75,10 +75,10 @@ delay_time = delay_time + 0
 delay_time = delay_time*60000
 TracePrint  delay_time
 //重启选项
-Dim rebookill_time = ReadUIConfig("textedit_reboot_delay")
-rebookill_time = rebookill_time + 0
-rebookill_time = rebookill_time*60000
-TracePrint  rebookill_time
+Dim reboot_time = ReadUIConfig("textedit_reboot_delay")
+reboot_time = reboot_time + 0
+reboot_time = reboot_time*60000
+TracePrint  reboot_time
 //屏幕分辨率检测
 Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
@@ -111,7 +111,7 @@ Function init()
 	ocrchar_layer_temp = 0
 	//定时自动升级.初始化时间
 	update_main_flat = 0
-	update_main_inikill_time = update_time
+	update_main_init_time = update_time
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 /*****************************************************/
@@ -121,7 +121,7 @@ Function init()
 	temp3 = iif(tribe_true, "部落:开启", "部落:关闭")	
 	temp4 = iif(fairy_true, "仙女:开启", "仙女:关闭 ")
 	temp5 = iif(GameGuardian_true, "修改:开启", "修改:关闭 ")
-    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&rebookill_time/60000&"分钟\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4&"\n"&temp5, 5000,screenX/2-275,screenY/2-550
+    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&reboot_time/60000&"分钟\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4&"\n"&temp5, 5000,screenX/2-275,screenY/2-550
 	Touch 500, 500, 200
 	Delay 1000
 	Touch 500, 500, 200
@@ -240,7 +240,7 @@ Function check_status()
 		GameGuardian_true = True
 	End If
 	//定时重启
-    If TickCount() > rebookill_time And rebookill_time>0 Then 
+    If TickCount() > reboot_time And reboot_time>0 Then 
 		Call kill_app()
 		GameGuardian_true = True
     End If
@@ -253,7 +253,7 @@ Function check_status()
     	TracePrint "开启游戏"
       	RunApp "com.gamehivecorp.taptitans2"
       	Delay 5000
-        Dim starkill_time = TickCount()//开始时间
+        Dim start_time = TickCount()//开始时间
     	//检测界面
     	Dim intX, intY
 		While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
@@ -267,7 +267,7 @@ Function check_status()
 			End If
 			Delay 2000
 			Call close_ad()//广告
-			If TickCount() - starkill_time>120000 Then 
+			If TickCount() - start_time>120000 Then 
 				Exit While
 			End If
     	Wend
@@ -280,7 +280,7 @@ End Function
 Function update_main(update_main_flat)
 	//定时升级
     update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
-    If (update_time_main >= update_main_inikill_time) or update_main_flat <> 0 Then 
+    If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
     	ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
     	Call close_ad()//广告
     	Dim intX,intY
