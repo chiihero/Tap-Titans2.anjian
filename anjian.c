@@ -645,7 +645,8 @@ Function close_ad()
 End Function
 
 Function little_fairy()
-	//识别小仙女
+	//小仙女
+	TracePrint "小仙女"
 	SetDictEx(0, "Attachment:文字.txt")
     UseDict(0)
 	Dim ocrchar,ocrchar1
@@ -653,7 +654,7 @@ Function little_fairy()
 //	ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
 //    Traceprint ocrchar
     FindColor 126,1252,193,1331,"EFBD20-333333",0,0.9,diamondX,diamondY//判断钻石
-    If fairy_true  = False And diamondX = -1 Then
+    If fairy_true  = False or diamondX = -1 Then
 		Touch 287, 1486, 200
         Traceprint "不用了"
         ShowMessage "不用了", 1500, screenX/2-150,screenY/4-200
