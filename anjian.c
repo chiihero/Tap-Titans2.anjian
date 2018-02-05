@@ -29,7 +29,7 @@ Dim ocrchar_layer_temp
 Dim s_layer_number
 //初始化升级
 Dim update_main_flat
-Dim update_main_init_time
+Dim update_main_inikill_time
 Dim updata_mistake
 Dim update_main_num//初始化升级次数
 //部落时间
@@ -75,10 +75,10 @@ delay_time = delay_time + 0
 delay_time = delay_time*60000
 TracePrint  delay_time
 //重启选项
-Dim reboot_time = ReadUIConfig("textedit_reboot_delay")
-reboot_time = reboot_time + 0
-reboot_time = reboot_time*60000
-TracePrint  reboot_time
+Dim rebookill_time = ReadUIConfig("textedit_reboot_delay")
+rebookill_time = rebookill_time + 0
+rebookill_time = rebookill_time*60000
+TracePrint  rebookill_time
 //屏幕分辨率检测
 Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
@@ -111,7 +111,7 @@ Function init()
 	ocrchar_layer_temp = 0
 	//定时自动升级.初始化时间
 	update_main_flat = 0
-	update_main_init_time = update_time
+	update_main_inikill_time = update_time
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 /*****************************************************/
@@ -121,7 +121,7 @@ Function init()
 	temp3 = iif(tribe_true, "部落:开启", "部落:关闭")	
 	temp4 = iif(fairy_true, "仙女:开启", "仙女:关闭 ")
 	temp5 = iif(GameGuardian_true, "修改:开启", "修改:关闭 ")
-    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&reboot_time/60000&"分钟\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4&"\n"&temp5, 5000,screenX/2-275,screenY/2-550
+    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&rebookill_time/60000&"分钟\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4&"\n"&temp5, 5000,screenX/2-275,screenY/2-550
 	Touch 500, 500, 200
 	Delay 1000
 	Touch 500, 500, 200
@@ -192,7 +192,7 @@ Function kill_app()
             Exit do
         End If
 	Loop While intX = -1 
-	//., .退出，点击是
+	//退出，点击是
 //	FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
 	error_num_one = 0
 	While intX > -1 
@@ -240,7 +240,7 @@ Function check_status()
 		GameGuardian_true = True
 	End If
 	//定时重启
-    If TickCount() > reboot_time And reboot_time>0 Then 
+    If TickCount() > rebookill_time And rebookill_time>0 Then 
 		Call kill_app()
 		GameGuardian_true = True
     End If
@@ -252,7 +252,8 @@ Function check_status()
     If Sys.isRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2") = False Then 
     	TracePrint "开启游戏"
       	RunApp "com.gamehivecorp.taptitans2"
-        Dim start_time = TickCount()//开始时间
+      	Delay 5000
+        Dim starkill_time = TickCount()//开始时间
     	//检测界面
     	Dim intX, intY
 		While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
@@ -261,9 +262,12 @@ Function check_status()
 			If intX > -1 Then 
 				Touch intX, intY, 10
 			End If
+			If Sys.IsRunning("com.gamehivecorp.taptitans2") = False Then 
+				RunApp "com.gamehivecorp.taptitans2"
+			End If
 			Delay 2000
 			Call close_ad()//广告
-			If TickCount() - start_time>120000 Then 
+			If TickCount() - starkill_time>120000 Then 
 				Exit While
 			End If
     	Wend
@@ -276,7 +280,7 @@ End Function
 Function update_main(update_main_flat)
 	//定时升级
     update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
-    If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
+    If (update_time_main >= update_main_inikill_time) or update_main_flat <> 0 Then 
     	ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
     	Call close_ad()//广告
     	Dim intX,intY
@@ -306,7 +310,7 @@ Function kill()
     //单次击杀点击
     For 10
         dim t_temp=TickCount()
-        Dim t_time = 0
+        Dim kill_time = 0
         //广告
         Call close_ad()//广告
         //启动boss
@@ -316,15 +320,15 @@ Function kill()
             Call skills()
         End If
         //技能延迟&点击
-        While t_time < 2300 
-            Touch RndEx(250,830), RndEx(320, 1000),RndEx(2, 15)
-            Delay RndEx(180, 200)
-            t_time = TickCount() - t_temp
-            If CmpColorEx("83|1654|FFFFFF", 1) = 1 And t_time > 1000 Then 
+        While kill_time < 2300 
+            Touch RndEx(250,830), RndEx(320, 1000),RndEx(5, 15)
+            Delay RndEx(160, 200)
+            kill_time = TickCount() - t_temp
+            If CmpColorEx("83|1654|FFFFFF", 1) = 1 And kill_time > 1000 Then 
             	Exit While
             End If
         Wend
-        TracePrint t_time
+        TracePrint kill_time
     Next
 
 End Function
@@ -422,10 +426,10 @@ Function hum(flat)
     FindColor 59,1865,102,1907, "AB9C7C", 1, 1, humX, humY
     error_num_one = 0
     while humX = -1 And humY = -1
-//        hum=True
         TracePrint	"hum正在点开" 
         Touch 85, 1891, 100
         Delay 2000
+        Call close_ad()//广告
       	FindColor 59, 1865, 102, 1907, "AB9C7C", 1, 1, humX, humY      	
         error_num_one = error_num_one + 1
         If error_num_one > 10 Then 
@@ -434,7 +438,6 @@ Function hum(flat)
         End If
     Wend
     If humX > -1 And humY > -1 Then 
-//            hum = True
         TracePrint	"hum已经点开"
         If flat = 1 Then 
             //升级
@@ -471,6 +474,7 @@ Function hero(flat)
         TracePrint	"hero正在点开"
         Touch 267,1890, 100
 		Delay 2000
+		Call close_ad()//广告
         FindColor 245,1850,294,1879,"8F8C6E",1,1,heroX,heroY
         error_num_one = error_num_one + 1
         If error_num_one > 10 Then 
@@ -624,140 +628,146 @@ Function tribe()
     Delay 2000
 	Call close_ad()//广告
 End Function
+
 //关广告
 Function close_ad()
     //检测界面是否被遮挡
-	If CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 1 Then 
-		Exit Function
-    End If
-//    Touch 538,1539, 200
-//    Delay 500
-	TracePrint "广告"
-    ShowMessage "广告", 1000, screenX/2-150,screenY/4-200
-	//识别小仙女
-	If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
-		SetDictEx(0, "Attachment:文字.txt")
-    	UseDict(0)
-		Dim ocrchar,ocrchar1
-		ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
-        Traceprint ocrchar
-    	If fairy_true  = False And ocrchar="不用了" Then//不看
-            Touch 287, 1486, 200
-            Traceprint "不用了"
-            ShowMessage "不用了", 1500, screenX/2-150,screenY/4-200
-    	Elseif ocrchar = "不用了" Then
-            Traceprint "出现小仙女广告"
-            //判断钻石
-            Dim diamondX,diamondY
-            FindColor 126,1252,193,1331,"EFBD20-333333",0,0.9,diamondX,diamondY
-            If diamondX > -1 And diamondY > -1 Then 
-//				TracePrint "stop"            
-//                EndScript
-                Touch 804,1494, 200
-                Traceprint "等待观看"
-                ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
-                Delay 1000
-                //确认已点击观看
-                FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
-                error_num_one=0
-                While diamondX > -1 And diamondY > -1 
-                    Delay 500
-                    Touch 804, 1494, 200
-                    Delay 500
-                    FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
-                    error_num_one = error_num_one + 1
-                    If error_num_one > 20 Then 
-                        TracePrint"出错"
-                        Exit While
-                    End If
-                Wend
-                TracePrint"已点击观看"
-                //判断收集字符出现
-                error_num_one =0
-                ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-                While ocrchar1 <> "收集"
-                    Traceprint "等待收集"
-                    Delay 1000
-                    ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-                    //判断如果断网了的情况
-                    dim color = CmpColor(972,639, 303843, 0.9)
-                    If color > -1 Then 
-                        Touch 972,639, 200
-                        Delay 500
-                    End If
-                    KeyPress "Back"
-
-                    error_num_one = error_num_one + 1
-                    If error_num_one > 25 Then 
-                        TracePrint"出错"
-                        Exit While
-                    End If
-                Wend
-                Delay 500
-                //点击收集字符
-                error_num_one =0
-                While ocrchar1 = "收集" 
-                    Tap 534, 1493
-                    Traceprint "收集"
-                    ShowMessage "收集", 1500,screenX/2-150,screenY/4-200
-                    Delay 1000
-                    ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-                    error_num_one = error_num_one + 1
-                    If error_num_one > 10 Then 
-                        TracePrint"出错"
-                        Exit While
-                    End If
-                Wend
-            Else 
-                ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
-                Traceprint ocrchar
-                If ocrchar="不用了" Then 
-                    Touch 287, 1486, 200
-                    Traceprint "不用了"
-                    ShowMessage "不用了", 1500, screenX/2-150,screenY/4-200
-                End If	
-            End If
-        End If
-        //收集
-        ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
-        If ocrchar1 = "收集" Then 
-            Traceprint "出现小仙女广告收集"
-            Delay 100
-            Tap 534, 1493
-            ShowMessage "收集", 1500,screenX/2-150,screenY/4-200
-        End If 	
-    //普通弹窗
-    Else 
-		Dim closeX,closeY
-		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-		If closeX > -1 Then 
-    		Do
-        		TracePrint "关广告"
-        		TouchDown closeX,closeY,1
-        		TouchUp 1
-        		Delay 500
-        		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
-        		error_num_one = error_num_one + 1
-        		If error_num_one > 5 Then 
-            		TracePrint"出错"
-            		Exit do
-        		End If
-    		Loop While closeX > -1
-     		
-    	Else
-			Do
-				TracePrint"等待识别退出"
-				KeyPress "Back"
-				Delay 1000
-				FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, closeX, closeY
-				error_num_one = error_num_one + 1
-        		If error_num_one > 5 Then 
-            		TracePrint"出错"
-            		Exit do
-        		End If
-			Loop While closeX = -1
-			Delay 500
+	If CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0 Then 
+		TracePrint "广告"
+    	ShowMessage "广告", 1000, screenX / 2 - 150, screenY / 4 - 200
+    	//识别小仙女
+		If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
+			Call little_fairy()//小仙女
+    	Else 
+			Call close_window()//普通弹窗
     	End If
+    End If
+End Function
+
+Function little_fairy()
+	//识别小仙女
+	SetDictEx(0, "Attachment:文字.txt")
+    UseDict(0)
+	Dim ocrchar,ocrchar1
+	Dim diamondX,diamondY
+//	ocrchar=Ocr(124,1459,283,1529,"FFFFFF",0.9)
+//    Traceprint ocrchar
+    FindColor 126,1252,193,1331,"EFBD20-333333",0,0.9,diamondX,diamondY//判断钻石
+    If fairy_true  = False And diamondX = -1 Then
+		Touch 287, 1486, 200
+        Traceprint "不用了"
+        ShowMessage "不用了", 1500, screenX/2-150,screenY/4-200
+        Traceprint "出现小仙女广告"
+    Elseif diamondX > -1 Then//不看
+        Touch 804,1494, 200
+        Traceprint "等待观看"
+        ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
+        Delay 1000
+        //确认已点击观看
+        FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
+        error_num_one=0
+        While diamondX > -1 And diamondY > -1 
+            Delay 500
+            Touch 804, 1494, 200
+            Delay 500
+            FindColor 126, 1252, 193, 1331, "EFBD20-333333", 0, 0.9, diamondX, diamondY
+            error_num_one = error_num_one + 1
+            If error_num_one > 20 Then 
+                TracePrint"出错"
+                Exit While
+            End If
+        Wend
+        TracePrint"已点击观看"
+        //判断收集字符出现
+        error_num_one =0
+        ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+        While ocrchar1 <> "收集"
+            Traceprint "等待收集"
+            Delay 1000
+            ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+            //判断如果断网了的情况
+            dim color = CmpColor(972,639, 303843, 0.9)
+            If color > -1 Then 
+                Touch 972,639, 200
+                Delay 500
+            End If
+            Call close_window()
+            error_num_one = error_num_one + 1
+            If error_num_one > 30 Then 
+                TracePrint"出错"
+                Exit While
+            End If
+        Wend
+        Delay 500
+    End If
+    //点击收集字符
+    ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+    error_num_one = 0
+    While ocrchar1 = "收集" 
+        Tap 534, 1493
+        Traceprint "收集"
+        ShowMessage "收集", 1500,screenX/2-150,screenY/4-200
+        Delay 1000
+        Call close_window()
+        ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+        error_num_one = error_num_one + 1
+        If error_num_one > 5 Then 
+            TracePrint"出错"
+            Exit While
+        End If
+    Wend
+//    ocrchar1 = Ocr(475, 1454, 601, 1535, "FFFFFF", 0.8)
+//    If ocrchar1 = "收集" Then 
+//        Traceprint "出现小仙女广告收集"
+//        Delay 100
+//        Tap 534, 1493
+//        ShowMessage "收集", 1500,screenX/2-150,screenY/4-200
+//    End If 	
+End Function
+
+Function close_window()
+	Dim closeX,closeY
+	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+	If closeX > -1 Then 
+    	Do
+        	TracePrint "关广告"
+        	TouchDown closeX,closeY,1
+        	TouchUp 1
+        	Delay 500
+        	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+        	error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit do
+        	End If
+    	Loop While closeX > -1
+     	
+    Else
+		Do
+			TracePrint"等待识别退出"
+			KeyPress "Back"
+			Delay 1000
+			FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, closeX, closeY
+			error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit do
+        	End If
+		Loop While closeX = -1
+		Delay 500
+		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+		Do
+        	TracePrint "关广告"
+        	TouchDown closeX,closeY,1
+        	TouchUp 1
+        	Delay 500
+        	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+        	error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit do
+        	End If
+    	Loop While closeX > -1
     End If
 End Function
 //主动进入boss模式
@@ -829,12 +839,19 @@ Function prestige
     //本人等级提升|解锁技能|英雄等级提升
 	Dim pX,pY,intX,intY
     FindColor 760,1707,1046,1826,"146EEE|08B1FC|CBA641",1,1,pX,pY
-    If pX > -1 And pY > -1 Then
-        TracePrint pX
-        TracePrint pY
-        TouchDown pX, pY, 1
-        TouchUp 1
-        Delay 1000
+    If pX > -1 And pY > -1 Then 
+    	error_num_one=0
+		While pX > -1
+        	TouchDown pX, pY, 1
+        	TouchUp 1
+        	Delay 1000
+        	FindColor 760, 1707, 1046, 1826, "146EEE|08B1FC|CBA641", 1, 1, pX, pY
+        	error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit While
+        	End If
+        Wend
 		FindPic 445, 374, 632, 483, "Attachment:蜕变.png", "000000", 0, 0.9, intX, intY
 		error_num_one=0
 		While intX > -1
@@ -874,9 +891,9 @@ Function prestige
     	TracePrint "蜕变等待"
         Call close_ad()//广告
         Delay 1000
-        Call layer()
+        ocrchar_layer=layer()
         error_num_one = error_num_one + 1
-        If error_num_one > 40 And ocrchar_layer >= old_ocrchar_layer  Then 
+        If error_num_one > 20 And ocrchar_layer = old_ocrchar_layer  Then 
             Call prestige()
             Exit Function
         elseif ocrchar_layer<layer_number_max*0.6  Then 
@@ -924,15 +941,15 @@ Function update(flat)
                 Exit Function
             End If 
             //可否升级识别
-            FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641|", 2, 1, up1X, up1Y
+            FindColor 926,1174,1072,1603, "146EEE|08B1FC|CBA641|", 2, 1, up1X, up1Y
             While up1X > -1 And up1Y > -1
                 TracePrint "升级识别1:x="&up1X&"y="&up1Y
                 TouchDown up1X,up1Y,1
                 TouchUp 1
                 Delay 100
-                FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
+                FindColor 926,1174,1072,1603, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
                 error_num_two = error_num_two + 1
-                If error_num_two > 30 Then 
+                If error_num_two > 35 Then 
                     TracePrint"出错"
                     Call close_ad()
                     Exit While
@@ -972,7 +989,7 @@ Function update(flat)
             End If          
             If last_check <> -1 And case_3 = 0 Then 
                 //最后可否升级识别
-				FindColor 824,1288,856,1839,"11BBEE",0,1,intX,intY
+				FindColor 824,1388,856,1839,"11BBEE",0,1,intX,intY
                 error_num_two=0
 				While intX > -1 And intY > -1
                     error_num_three=0
@@ -999,37 +1016,37 @@ Function update(flat)
                     	Call close_ad()
                     	Exit While
                 	End If
-                    FindColor 824,1288,856,1839,"11BBEE",0,1,intX,intY
+                    FindColor 824,1388,856,1839,"11BBEE",0,1,intX,intY
                 Wend
             case_3 = 1    
             End If
-        Case 4
-        	TracePrint "第一格不动"
-        	If box_flat =1 Then 
-                TracePrint "error.hum(3)"
-                Call hum(3)
-                Exit Function
-            End If
-            //最后可否升级识别
-            error_num_two=0
-            FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641|", 2, 1, up1X, up1Y
-            While up1X > -1 And up1Y > -1
-                TracePrint "升级识别1:x="&up1X&"y="&up1Y
-                TouchDown up1X,up1Y,1
-                TouchUp 1
-                Delay 100
-                Call close_ad()
-                FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
-                error_num_two = error_num_two + 1
-                If error_num_two > 30 Then 
-                    TracePrint"出错"
-                    Call close_ad()
-                    Exit While
-                End If
-            Wend
+//        Case 4
+//        	TracePrint "第一格不动"
+//        	If box_flat =1 Then 
+//                TracePrint "error.hum(3)"
+//                Call hum(3)
+//                Exit Function
+//            End If
+//            //最后可否升级识别
+//            error_num_two=0
+//            FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641|", 2, 1, up1X, up1Y
+//            While up1X > -1 And up1Y > -1
+//                TracePrint "升级识别1:x="&up1X&"y="&up1Y
+//                TouchDown up1X,up1Y,1
+//                TouchUp 1
+//                Delay 100
+//                Call close_ad()
+//                FindColor 926,1174,1072,1503, "146EEE|08B1FC|CBA641", 2, 1, up1X, up1Y
+//                error_num_two = error_num_two + 1
+//                If error_num_two > 30 Then 
+//                    TracePrint"出错"
+//                    Call close_ad()
+//                    Exit While
+//                End If
+//            Wend
         End Select
         Delay 100
-        Swipe 730, 1400, 730, 1600, 200
+        Swipe 730, 1400, 730, 1650, 200
         TracePrint "上滑"
         Delay 100
         error_num_one = error_num_one + 1
@@ -1090,9 +1107,9 @@ Function GameGuardian()
     Dim checkX,checkY,intX,intY,intX1,intY1
     While CmpColorEx("969|1086|303843",1) = 1
         Touch 968, 1089, 150
-       	Delay 150
+       	Delay 550
     Wend
- 	Delay 1000
+ 	Delay 500
 	Call ocrchar_blue(9)
 	//打开GameGuardian
 	FindMultiColor 5,768,147,1685,"C5008B","6|-35|CCCCCC",1,1,intX,intY
@@ -1108,8 +1125,9 @@ Function GameGuardian()
 		Touch intX, intY, 10
 	End If
 	//点击搜索栏
-	Delay 1000
-	Touch 436,70, 10
+	Delay 600
+	Touch 436, 70, 10
+	Delay 600
 	//判断是否已经搜索过
 	FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
 	If intX > -1 And intY > -1 Then 
@@ -1429,6 +1447,7 @@ Function egg
     		Touch 500, 500, 200
         Next
 	End If
+	Call close_ad()//广告
 End Function
 //区域找宝箱
 Function chest
@@ -1445,6 +1464,7 @@ Function chest
     		Touch 500, 500, 200
         Next
     End If
+    Call close_ad()//广告
 End Function
 //成就
 Function achievement
