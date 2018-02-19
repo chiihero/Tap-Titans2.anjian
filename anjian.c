@@ -1165,27 +1165,9 @@ Function GameGuardian()
 	/******************肾上腺素cd*************/
 	//第一栏
 	TracePrint "肾上腺素cd"
-//	Touch 479, 449, 10
-//	Delay 1000
-//	KeyPress "Del"
-//	InputText "4320000"
-//	Delay 2000
-//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-//	If intX > -1 And intY > -1 Then 
-//		Touch intX, intY, 10
-//	End If
 	Call change_database(479, 449, "4320000", 1)//1为普通模式
 	Delay 1000
 	//第二栏	
-//	Touch 447, 596, 10
-//	Delay 1000
-//	KeyPress "Del"
-//	InputText "4320000"
-//	Delay 2000
-//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-//	If intX > -1 And intY > -1 Then 
-//		Touch intX, intY, 10
-//	End If
 	Call change_database(447, 596, "4320000", 1)//1为普通模式
 	Delay 1000
 	/******************技能cd*************/
@@ -1207,28 +1189,10 @@ Function GameGuardian()
 	Call database(9)	
 	/******************天降cd*************/
 	TracePrint "天降cd"
-//	Touch 438, 1652, 10
-//	Delay 1000
-//	KeyPress "Del"
-//	InputText "1.2"
-//	Delay 2000
-//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-//	If intX > -1 And intY > -1 Then 
-//		Touch intX, intY, 10
-//	End If
 	Call change_database(438, 1652, "1.2", 1)//1为普通模式
 	Delay 1000
 	/******************技能cd2*************/	
 	TracePrint "技能cd2"
-//	Touch 200, 303, 10
-//	Delay 1000
-//	KeyPress "Del"
-//	InputText "5"
-//	Delay 2000
-//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-//	If intX > -1 And intY > -1 Then 
-//		Touch intX, intY, 10
-//	End If	
 	Call change_database(200, 303, "5", 1)//1为普通模式
 	Delay 1000
 	/******************第二次修改*************/
@@ -1290,20 +1254,6 @@ Function GameGuardian()
 	Wend
 	/******************魔法*******************/	
 	TracePrint "魔法"
-//	Touch 479, 449, 10
-//	Delay 1000
-//	KeyPress "Del"
-//	InputText "500"
-//	Delay 1000
-//	FindPic 158,453,248,877, "Attachment:冻结.png","000000",0, 0.8, intX, intY
-//	If intX > -1 And intY > -1 Then 
-//		Touch intX, intY, 10
-//	End If
-//	Delay 1000	
-//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-//	If intX > -1 And intY > -1 Then 
-//		Touch intX, intY, 10
-//	End If
 	Call change_database(479, 449, "500", 2)//2为冻结模式
 	Delay 1000
 	/*****************退出修改器界面********************/
