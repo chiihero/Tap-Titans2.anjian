@@ -78,11 +78,11 @@ TracePrint iif(GameGuardian_true, "修改:开启", "修改:关闭 ")
 /*===============杂项===================*/
 //等待开启时间
 Dim delay_time = ReadUIConfig("textedit_delay","0")
-delay_time = CInt(delay_time)*60000
+delay_time = CInt(delay_time)*60*1000
 TracePrint  "等待时间"&delay_time
 //重启选项
 Dim reboot_time = ReadUIConfig("textedit_reboot_delay","0")
-reboot_time = CInt(reboot_time)*60000
+reboot_time = CInt(reboot_time)*60*1000
 TracePrint  reboot_time
 //屏幕分辨率检测
 Dim screenX = GetScreenX()
@@ -255,13 +255,17 @@ End Function
 Function check_status()
 	//出错重启
 	If TickCount() - mistake_reboot > (30 * 60 * 1000) Then 
+		TracePrint "出错重启"
 		Call kill_app()
 		GameGuardian_true = True
+		mistake_reboot = TickCount()
 	End If
 	//定时重启
-    If TickCount() > reboot_time And reboot_time>0 Then 
+    If TickCount() > reboot_time And reboot_time > 0 Then 
+    	TracePrint "定时重启"
 		Call kill_app()
 		GameGuardian_true = True
+		reboot_time = TickCount() + reboot_time
     End If
     //检测界面是否被遮挡
 	If CmpColorEx("64|35|6D6858,992|1886|3F4423", 1) = 1 Then 
@@ -976,20 +980,8 @@ Function update(flat)
                 Exit Function
             End If 
             //可否升级识别
-            FindColor 926,1174,1072,1603, "146EEE|08B1FC|CBA641|", 7, 1, up1X, up1Y
-            While up1X > -1 And up1Y > -1
-                TracePrint "升级识别1:x="&up1X&"y="&up1Y
-                TouchDown up1X+10,up1Y+10,1
-                TouchUp 1
-                Delay 100
-                FindColor 926,1174,1072,1603, "146EEE|08B1FC|CBA641", 7, 1, up1X, up1Y
-                error_num_two = error_num_two + 1
-                If error_num_two > 35 Then 
-                    TracePrint"出错"
-                    Call close_ad()
-                    Exit While
-                End If
-			Wend
+			Call update_one(1)//单一页面升级
+			TracePrint "从下往上两格_升级结束"
         //从下往上四格
         Case 2
         	TracePrint "从下往上四格"
@@ -999,21 +991,8 @@ Function update(flat)
                 Exit Function
             End If         
             //可否升级识别
-            FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 5, 1, up1X, up1Y
-            While up1X > -1 And up1Y > -1
-                TracePrint "升级识别2:x="&up1X&"y="&up1Y
-                TouchDown up1X+10,up1Y+10,1
-                TouchUp 1
-                Delay 100
-                Call close_ad()
-                FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 5, 1, up1X, up1Y
-                error_num_two = error_num_two + 1
-                If error_num_two > 30 Then 
-                    TracePrint"出错"
-                    Call close_ad()
-                    Exit While
-                End If
-            Wend    		
+            Call update_one(2)//单一页面升级
+            TracePrint "从下往上四格_升级结束"
         //从上往下
         Case 3
         	TracePrint "从上往下"
@@ -1025,24 +1004,8 @@ Function update(flat)
             If last_check <> -1 And case_3 = 0 Then 
                 //最后可否升级识别
 				FindColor 824,1388,856,1839,"11BBEE",0,1,intX,intY
-                error_num_two=0
 				While intX > -1 And intY > -1
-                    error_num_three=0
-                    FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
-                    While up1X > -1 And up1Y > -1
-                        TracePrint "升级识别3:x="&up1X&"y="&up1Y
-                        TouchDown up1X+10,up1Y+10,1
-                        TouchUp 1
-                        Delay 100
-                        Call close_ad()
-                        FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
-                        error_num_three = error_num_three + 1
-                        If error_num_three > 30 Then 
-                            TracePrint"出错"
-                            Call close_ad()
-                            Exit While
-                        End If
-                    Wend
+					Call update_one(3)//单一页面升级
                     Swipe 1000, 1500, 1000, 1300, 200
                     Delay 550
                     error_num_two = error_num_two + 1
@@ -1055,6 +1018,7 @@ Function update(flat)
                 Wend
             case_3 = 1    
             End If
+            TracePrint "从上往下_升级结束"
         End Select
         Delay 100
         Swipe 730, 1400, 730, 1650, 200
@@ -1071,6 +1035,40 @@ Function update(flat)
     Call close_ad()//广告
     Delay 150
 End Function
+
+Function update_one(flat)
+	Dim up1X, up1Y, error_num_one
+	Select Case flat
+	Case 1
+		FindColor 926,1174,1072,1603, "146EEE|08B1FC|CBA641|", 7, 1, up1X, up1Y
+	Case 2
+		FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 5, 1, up1X, up1Y
+	Case 3
+    	FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
+    End Select
+    error_num_one = 0
+    While up1X > -1 And up1Y > -1
+//      TracePrint "升级识别"&flat&":x="&up1X&"y="&up1Y
+        Touch up1X+10,up1Y+10, 20
+        Delay 100
+        Call close_ad()
+        Select Case flat
+		Case 1
+			FindColor 926,1174,1072,1603, "146EEE|08B1FC|CBA641|", 7, 1, up1X, up1Y
+		Case 2
+			FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 5, 1, up1X, up1Y
+		Case 3
+    		FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
+    	End Select
+        error_num_one = error_num_one + 1
+        If error_num_one > 30 Then 
+            TracePrint"出错"
+            Call close_ad()
+            Exit While
+        End If
+    Wend
+End Function
+
 Function ocrchar_blue(accuracy)
 	//识别魔法量
 	SetRowsNumber(0)
@@ -1167,26 +1165,28 @@ Function GameGuardian()
 	/******************肾上腺素cd*************/
 	//第一栏
 	TracePrint "肾上腺素cd"
-	Touch 479, 449, 10
-	Delay 1000
-	KeyPress "Del"
-	InputText "4320000"
-	Delay 2000
-	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-	If intX > -1 And intY > -1 Then 
-		Touch intX, intY, 10
-	End If
+//	Touch 479, 449, 10
+//	Delay 1000
+//	KeyPress "Del"
+//	InputText "4320000"
+//	Delay 2000
+//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
+//	If intX > -1 And intY > -1 Then 
+//		Touch intX, intY, 10
+//	End If
+	Call change_database(479, 449, "4320000", 1)//1为普通模式
 	Delay 1000
 	//第二栏	
-	Touch 447, 596, 10
-	Delay 1000
-	KeyPress "Del"
-	InputText "4320000"
-	Delay 2000
-	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-	If intX > -1 And intY > -1 Then 
-		Touch intX, intY, 10
-	End If
+//	Touch 447, 596, 10
+//	Delay 1000
+//	KeyPress "Del"
+//	InputText "4320000"
+//	Delay 2000
+//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
+//	If intX > -1 And intY > -1 Then 
+//		Touch intX, intY, 10
+//	End If
+	Call change_database(447, 596, "4320000", 1)//1为普通模式
 	Delay 1000
 	/******************技能cd*************/
 	TracePrint "技能cd"
@@ -1207,27 +1207,29 @@ Function GameGuardian()
 	Call database(9)	
 	/******************天降cd*************/
 	TracePrint "天降cd"
-	Touch 438, 1652, 10
-	Delay 1000
-	KeyPress "Del"
-	InputText "1.2"
-	Delay 2000
-	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-	If intX > -1 And intY > -1 Then 
-		Touch intX, intY, 10
-	End If
+//	Touch 438, 1652, 10
+//	Delay 1000
+//	KeyPress "Del"
+//	InputText "1.2"
+//	Delay 2000
+//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
+//	If intX > -1 And intY > -1 Then 
+//		Touch intX, intY, 10
+//	End If
+	Call change_database(438, 1652, "1.2", 1)//1为普通模式
 	Delay 1000
 	/******************技能cd2*************/	
 	TracePrint "技能cd2"
-	Touch 200, 303, 10
-	Delay 1000
-	KeyPress "Del"
-	InputText "5"
-	Delay 2000
-	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-	If intX > -1 And intY > -1 Then 
-		Touch intX, intY, 10
-	End If	
+//	Touch 200, 303, 10
+//	Delay 1000
+//	KeyPress "Del"
+//	InputText "5"
+//	Delay 2000
+//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
+//	If intX > -1 And intY > -1 Then 
+//		Touch intX, intY, 10
+//	End If	
+	Call change_database(200, 303, "5", 1)//1为普通模式
 	Delay 1000
 	/******************第二次修改*************/
 	//搜索
@@ -1288,20 +1290,21 @@ Function GameGuardian()
 	Wend
 	/******************魔法*******************/	
 	TracePrint "魔法"
-	Touch 479, 449, 10
-	Delay 1000
-	KeyPress "Del"
-	InputText "500"
-	Delay 1000
-	FindPic 158,453,248,877, "Attachment:冻结.png","000000",0, 0.8, intX, intY
-	If intX > -1 And intY > -1 Then 
-		Touch intX, intY, 10
-	End If
-	Delay 1000	
-	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
-	If intX > -1 And intY > -1 Then 
-		Touch intX, intY, 10
-	End If
+//	Touch 479, 449, 10
+//	Delay 1000
+//	KeyPress "Del"
+//	InputText "500"
+//	Delay 1000
+//	FindPic 158,453,248,877, "Attachment:冻结.png","000000",0, 0.8, intX, intY
+//	If intX > -1 And intY > -1 Then 
+//		Touch intX, intY, 10
+//	End If
+//	Delay 1000	
+//	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
+//	If intX > -1 And intY > -1 Then 
+//		Touch intX, intY, 10
+//	End If
+	Call change_database(479, 449, "500", 2)//2为冻结模式
 	Delay 1000
 	/*****************退出修改器界面********************/
 	error_num_one = 0
@@ -1329,6 +1332,26 @@ Function GameGuardian()
 		Exit Function
 	End If
 	GameGuardian_flat = True
+End Function
+
+//单一数据修改
+Function change_database(intX, intY, str, flat)
+	Touch intX, intY, 10
+	Delay 1000
+	KeyPress "Del"
+	InputText str
+	Delay 2000
+	If flat = 2 Then 
+		FindPic 158,453,248,877, "Attachment:冻结.png","000000",0, 0.8, intX, intY
+		If intX > -1 And intY > -1 Then 
+			Touch intX, intY, 10
+		End If
+		Delay 1000	
+	End If
+	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
+	If intX > -1 And intY > -1 Then 
+		Touch intX, intY, 10
+	End If
 End Function
 //搜索
 Function search(flat)
@@ -1362,7 +1385,6 @@ Function search(flat)
             Exit While
         End If
 		FindColor 306, 216, 344, 287, "FFFFFF", 0, 1, intX, intY
-		
 	Wend
 	//输入
 	If flat = 1 Then 
