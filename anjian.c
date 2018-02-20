@@ -33,10 +33,7 @@ Dim s_layer_number
 Dim update_main_flat
 Dim update_main_init_time
 Dim updata_mistake
-Dim update_main_num//初始化升级次数
-Dim update_main_num1//初始化升级次数
-Dim update_main_num2//初始化升级次数
-
+Dim update_main_num, update_main_num1, update_main_num2//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 //部落时间
 Dim tribe_time
@@ -47,8 +44,7 @@ Dim GameGuardian_flat = False
 //定义如果蜕变超时时候的改变层数设定
 Dim auto_tribe_flat=0
 Dim auto_tribe_temp=0
-/*===============设置===================*/
-
+/*=========================设置=============================*/
 //层数选择
 Dim layer_number = ReadUIConfig("textedit1")
 Dim layer_number_max = CInt(layer_number)
@@ -90,7 +86,6 @@ Dim screenY = GetScreenY()
 Dim temp1,temp2,temp3,temp4,temp5
 
 //========================================初始化结束=================================================//
-
 If delay_time > 0 Then 
 	Delay delay_time
 	RunApp "com.gamehivecorp.taptitans2"
@@ -201,6 +196,7 @@ Function main
         TracePrint " kill()*************"&(TickCount()-t_time)/1000&"秒"
     Loop
 End Function
+//退出游戏
 Function kill_app()
 	TracePrint "关闭游戏"	
 	//等待识别退出
@@ -219,7 +215,7 @@ Function kill_app()
         End If
 	Loop While intX = -1 
 	//退出，点击是
-//	FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
+	FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
 	error_num_one = 0
 	While intX > -1 
 		TracePrint"等待退出"
@@ -263,9 +259,11 @@ Function check_status()
 	//定时重启
     If TickCount() > reboot_time And reboot_time > 0 Then 
     	TracePrint "定时重启"
+    	Call mail("定时重启")
 		Call kill_app()
 		GameGuardian_true = True
-		reboot_time = TickCount() + reboot_time
+		reboot_time = TickCount() + reboot_time	
+    	
     End If
     //检测界面是否被遮挡
 	If CmpColorEx("64|35|6D6858,992|1886|3F4423", 1) = 1 Then 
@@ -320,9 +318,7 @@ Function update_main(update_main_flat)
 		If intX > -1 And intY > -1 And tribe_true = True Then
             Call tribe()
             Delay 1000
-        End If 
-        Call hum(3)//日常升级本人
-		Delay 500
+        End If
 		//超过6000层之后达到最高层，不需要升级
         If ocrchar_layer < 6000 or update_main_num < 2 or update_main_flat=1 or updata_mistake >2 Then//update_main_num为超过6000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
         	Call hum(1)//升级
@@ -332,6 +328,8 @@ Function update_main(update_main_flat)
         	Call hero(2)//升级
         	update_main_num2 = update_main_num2 + 1
         End If
+        Delay 500
+        Call hum(3)//日常升级本人
         If ocrchar_layer > 6000 Then 
         	update_main_num =update_main_num+1//升级大于6000层
         End If
@@ -357,7 +355,7 @@ Function kill()
         //技能延迟&点击
         Do
             Touch RndEx(250,830), RndEx(320, 1000),RndEx(5, 15)
-            Delay RndEx(160, 200) 
+            Delay RndEx(160, 180) 
             If TickCount() - t_temp > 2300 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And TickCount() - t_temp > 1000) Then 
             	Exit Do
             End If
@@ -619,9 +617,7 @@ Function tribe()
             Delay RndEx(50, 120)
             For 40
                 //点击延迟
-                TouchDown RndEx(250, 880), RndEx(342, 970), 1
-                Delay RndEx(10, 30)
-                TouchUp 1
+                Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
                 Delay RndEx(30, 50)
             Next
             If TickCount() - tribe_time > 35000 Then 
@@ -635,9 +631,7 @@ Function tribe()
             Delay RndEx(50, 120)
             For 40
                 //点击延迟
-                TouchDown RndEx(250, 880), RndEx(342, 970), 1
-                Delay RndEx(10, 30)
-                TouchUp 1
+                Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
                 Delay RndEx(30, 50)
             Next
             If TickCount() - tribe_time > 5000 Then 
@@ -1575,19 +1569,17 @@ Function Screen
     SetScreenScale scrX, scrY,0
     Dim src = scrX & scrY
 End Function
+
 //邮箱
-Function mail(max_layer)
+Function mail(subject)
 	TracePrint "邮箱"
 	Dim error_num_one
     Dim m_host ="smtp.qq.com"
     Dim m_username = "1171479579@qq.com"
     Dim m_password = "fetmmswhxapgggei"
-    Dim m_subject = max_layer
-	If IsNumeric(max_layer)=True Then
-        //防止重复
-    	If max_layer > s_layer_number Then 
-    		sendmessage_str ="最终层数:"& max_layer &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
-    	End If
+    Dim m_subject = subject
+	If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
+    	sendmessage_str ="最终层数:"& subject &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
 	End If 
     sendmessage_str = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&update_main_num1&"\n升级次数(少):"&update_main_num2&"\n"& sendmessage_str 
     Dim m_message = sendmessage_str
