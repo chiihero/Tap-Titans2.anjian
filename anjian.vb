@@ -321,15 +321,15 @@ Function update_main(update_main_flat)
         End If
 		//超过6000层之后达到最高层，不需要升级
         If ocrchar_layer < 6000 or update_main_num < 2 or update_main_flat=1 or updata_mistake >2 Then//update_main_num为超过6000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
+        	Call hum(3)//日常升级本人
         	Call hum(1)//升级
         	Call hero(1)//升级
         	update_main_num1 = update_main_num1 + 1
         Else 
         	Call hero(2)//升级
+        	Call hum(3)//日常升级本人
         	update_main_num2 = update_main_num2 + 1
         End If
-        Delay 500
-        Call hum(3)//日常升级本人
         If ocrchar_layer > 6000 Then 
         	update_main_num =update_main_num+1//升级大于6000层
         End If
@@ -819,8 +819,8 @@ Function skills
     Dim checkX,checkY,error_num_one
     error_num_one = 0
     While CmpColorEx("969|1086|303843",1) = 1
-        Touch 968, 1089, 150
-       	Delay 150
+        Touch 968, 1089, 50
+       	Delay 500
     	error_num_one = error_num_one + 1
         If error_num_one > 2 Then 
             TracePrint"出错"
@@ -829,32 +829,32 @@ Function skills
     Wend
 	//技能6
 	If CmpColorEx("975|1654|FFFFFF",1) = 1 Then
-    	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(12, 20)
+    	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能5
     If CmpColorEx("795|1654|FFFFFF",1) = 1 Then
-    	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(12, 20)
+    	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能4
     If CmpColorEx("619|1654|FFFFFF",1) = 1 Then
-    	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(12, 20)
+    	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能3
     If CmpColorEx("440|1654|FFFFFF",1) = 1 Then
-    	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(12, 20)
+    	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If	
     //技能2
     If CmpColorEx("260|1654|FFFFFF",1) = 1 Then
-    	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(12, 20)
+    	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能1
-    Touch RndEx(80, 90), RndEx(1700, 1740),RndEx(12, 20)
-		Delay RndEx(20, 30)
+    Touch RndEx(80, 90), RndEx(1700, 1740),RndEx(5, 15)
+	Delay RndEx(20, 30)
 End Function
 //蜕变
 Function prestige
@@ -1043,8 +1043,8 @@ Function update_one(flat)
     error_num_one = 0
     While up1X > -1 And up1Y > -1
 //      TracePrint "升级识别"&flat&":x="&up1X&"y="&up1Y
-        Touch up1X+10,up1Y+10, 20
-        Delay 100
+        Touch up1X+10,up1Y+10, RndEx(5,15)
+        Delay RndEx(25,55)
         Call close_ad()
         Select Case flat
 		Case 1
