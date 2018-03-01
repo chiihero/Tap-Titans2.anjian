@@ -56,6 +56,7 @@ TracePrint update_time
 //技能选项
 Dim skills_true = ReadUIConfig("Checkbox1")
 TracePrint iif(skills_true, "技能:开启", "技能:关闭")
+<<<<<<< HEAD:anjian.c
 //技能1
 Dim skill_1 = ReadUIConfig("skill_1")
 TracePrint iif(skill_1, "技能1:开启", "技能1:关闭")
@@ -74,6 +75,8 @@ TracePrint iif(skill_5, "技能5:开启", "技能5:关闭")
 //技能6
 Dim skill_6 = ReadUIConfig("skill_6")
 TracePrint iif(skill_6, "技能6:开启", "技能6:关闭")
+=======
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 //自动蜕变
 Dim auto_tribe = ReadUIConfig("Checkbox_auto_tribe")
 TracePrint iif(auto_tribe, "自动蜕变:开启", "自动蜕变:关闭")
@@ -367,16 +370,23 @@ End Function
 Function kill()
     TracePrint "杀怪冲关"
     //单次击杀点击
+<<<<<<< HEAD:anjian.c
 //    Dim error_num_one
 	dim kill_time,t_temp
     For 5
         t_temp=TickCount()
+=======
+    For 4
+        dim t_temp=TickCount()
+        //广告
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
         Call close_ad()//广告
         Call boss()//启动boss
         If skills_true = true Then 
             Call skills()//技能
         End If
         //技能延迟&点击
+<<<<<<< HEAD:anjian.c
 //        error_num_one = 0
         Do
             Touch RndEx(250,830), RndEx(320, 1000),RndEx(10, 15)
@@ -385,6 +395,12 @@ Function kill()
 //            If error_num_one > 12 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And error_num_one > 5) Then 
             kill_time = TickCount() - t_temp 
             If kill_time > 2300 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And kill_time > 1200) Then 
+=======
+        Do
+            Touch RndEx(250,830), RndEx(320, 1000),RndEx(5, 15)
+            Delay RndEx(160, 180) 
+            If TickCount() - t_temp > 2300 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And TickCount() - t_temp > 1000) Then 
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
             	Exit Do
             End If
         Loop
@@ -413,7 +429,11 @@ Function layer()
 	Wend
 	TracePrint "层数"&ocrchar
     //层数判断错误
+<<<<<<< HEAD:anjian.c
     If ocrchar = "" or CInt(ocrchar)>20000 Then 
+=======
+    If ocrchar = "" or CInt(ocrchar)>12000 Then 
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
         ocrchar_layer = layer_temp
         TracePrint "层数检测为空"
     ElseIf ocrchar <> "" Then
@@ -431,6 +451,7 @@ Function layer_check()
 	If ocrchar_layer >= layer_number_max And auto_tribe = False Then 
     	//蜕变
     	TracePrint "固定层数蜕变"&ocrchar_layer
+<<<<<<< HEAD:anjian.c
     	//检查魔法值
         Call ocrchar_blue(9)
         TracePrint CInt(Myblue(0))
@@ -439,6 +460,8 @@ Function layer_check()
 			Call  GameGuardian()
 			Exit Function
 		End If
+=======
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     	Call hum(2)
     	Exit Function
 	ElseIf Abs(ocrchar_layer - ocrchar_layer_temp) < 4 Then
@@ -447,6 +470,7 @@ Function layer_check()
 		    TracePrint "自动蜕变"&ocrchar_layer
     		layer_number_max = ocrchar_layer  //自动蜕变层数改变
     		TracePrint "最高层数设定"&layer_number_max
+<<<<<<< HEAD:anjian.c
     		//检查魔法值
             Call ocrchar_blue(9)
             TracePrint CInt(Myblue(0))
@@ -455,6 +479,8 @@ Function layer_check()
 				Call  GameGuardian()
 				Exit Function
 			End If
+=======
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     		Call hum(2)
     		Exit Function
 		End If
@@ -482,7 +508,11 @@ Function layer_check()
             auto_tribe_time = TickCount()
             Exit Function
         //自动升级
+<<<<<<< HEAD:anjian.c
         ElseIf auto_updata_flat >= 2 or CmpColorEx("760|162|2663EF",0.9) = 1 Then
+=======
+        ElseIf auto_updata_flat >= 2 Then
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
             TracePrint "自动升级"
             updata_mistake = updata_mistake + 1
 			Call update_main(2)
@@ -578,7 +608,10 @@ End Function
 //部落
 Function tribe()
     TracePrint "进入部落"
+<<<<<<< HEAD:anjian.c
     Call close_ad()
+=======
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     Dim ocrchar_diamond,timeX,timeY,intX,intY,error_num_one
     Touch 188,79, 150
     Delay 2000
@@ -666,9 +699,13 @@ Function tribe()
                 Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
                 Delay RndEx(30, 50)
             Next
+<<<<<<< HEAD:anjian.c
             error_num_one = error_num_one + 1
             If error_num_one > 14 Then 
 //            If TickCount() - tribe_time > 35000 Then 
+=======
+            If TickCount() - tribe_time > 35000 Then 
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
             	Exit Do
             End If
         Loop
@@ -683,9 +720,13 @@ Function tribe()
                 Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
                 Delay RndEx(30, 50)
             Next
+<<<<<<< HEAD:anjian.c
             error_num_one = error_num_one + 1
             If error_num_one > 2 Then 
 //            If TickCount() - tribe_time > 5000 Then 
+=======
+            If TickCount() - tribe_time > 5000 Then 
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
             	Exit Do
             End If
         Loop
@@ -731,7 +772,10 @@ End Function
 Function little_fairy()
 	//小仙女
 	TracePrint "小仙女"
+<<<<<<< HEAD:anjian.c
 	ShowMessage "小仙女", 1000, screenX / 2 - 150, screenY / 4 - 200
+=======
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 	Dim diamondX,diamondY,intX,intY,error_num_one
     FindColor 126,1252,193,1331,"EFBD20-333333",0,0.9,diamondX,diamondY//判断钻石
     If fairy_true  = False or diamondX = -1 Then
@@ -800,12 +844,16 @@ Function little_fairy()
 End Function
 
 Function close_window()
+<<<<<<< HEAD:anjian.c
 	TracePrint "关闭窗口或等待过关页面"
 	Dim closeX,closeY,error_num_one
 	If CmpColorEx("987|1849|3E6BE5",0.9) = 1 Then
 		Touch 987, 1849, 100
 	End If
 	error_num_one = 0
+=======
+	Dim closeX,closeY,error_num_one
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
 	If closeX > -1 Then 
     	Do
@@ -816,7 +864,41 @@ Function close_window()
         	Delay 500
         	If CmpColorEx("327|1262|0B81FA", 0.9) = 1 Then 
         		Touch 327, 1262, 30
+<<<<<<< HEAD:anjian.c
         	End If
+=======
+        	End If
+        	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+        	error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit do
+        	End If
+    	Loop While closeX > -1
+     	
+    ElseIf CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0 Then 
+		Do
+			TracePrint"等待识别退出"
+			KeyPress "Back"
+			Delay 1000
+			FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, closeX, closeY
+			error_num_one = error_num_one + 1
+        	If error_num_one > 5 Then 
+            	TracePrint"出错"
+            	Exit do
+        	End If
+		Loop While closeX = -1
+		Delay 500
+		FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
+		Do
+        	TracePrint "关广告"
+        	TouchDown closeX, closeY, 1
+        	TouchUp 1
+        	Delay 500
+        	If CmpColorEx("327|1262|0B81FA", 0.9) = 1 Then 
+        		Touch 327, 1262, 30
+        	End If
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
         	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
         	error_num_one = error_num_one + 1
         	If error_num_one > 5 Then 
@@ -901,31 +983,52 @@ Function skills
         End If
     Wend
 	//技能6
+<<<<<<< HEAD:anjian.c
 	If CmpColorEx("975|1654|FFFFFF",1) = 1 And skill_6 = True Then
+=======
+	If CmpColorEx("975|1654|FFFFFF",1) = 1 Then
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能5
+<<<<<<< HEAD:anjian.c
     If CmpColorEx("795|1654|FFFFFF",1) = 1 And skill_5 = True Then
+=======
+    If CmpColorEx("795|1654|FFFFFF",1) = 1 Then
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能4
+<<<<<<< HEAD:anjian.c
     If CmpColorEx("619|1654|FFFFFF",1) = 1 And skill_4 = True Then
+=======
+    If CmpColorEx("619|1654|FFFFFF",1) = 1 Then
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能3
+<<<<<<< HEAD:anjian.c
     If CmpColorEx("440|1654|FFFFFF",1) = 1 And skill_3 = True Then
+=======
+    If CmpColorEx("440|1654|FFFFFF",1) = 1 Then
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If	
     //技能2
+<<<<<<< HEAD:anjian.c
     If CmpColorEx("260|1654|FFFFFF",1) = 1 And skill_2 = True Then
+=======
+    If CmpColorEx("260|1654|FFFFFF",1) = 1 Then
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(5, 15)
     	Delay RndEx(20, 30)
 	End If
     //技能1
+<<<<<<< HEAD:anjian.c
     If skill_1 = True Then 
     	error_num_one = 0
 		While CmpColorEx("75|1654|FFFFFF", 0.9) = 1
@@ -940,6 +1043,10 @@ Function skills
     End If
     
 
+=======
+    Touch RndEx(80, 90), RndEx(1700, 1740),RndEx(5, 15)
+	Delay RndEx(20, 30)
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 End Function
 //蜕变
 Function prestige
@@ -1080,8 +1187,12 @@ Function update(flat)
             End If          
             If last_check <> -1 And case_3 = 0 Then 
                 //最后可否升级识别
+<<<<<<< HEAD:anjian.c
 				FindColor 824, 1388, 856, 1839, "11BBEE", 0, 1, intX, intY
 				error_num_two = 0
+=======
+				FindColor 824,1388,856,1839,"11BBEE",0,1,intX,intY
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 				While intX > -1 And intY > -1
 					Call update_one(3)//单一页面升级
                     Swipe 1000, 1500, 1000, 1300, 200
@@ -1125,10 +1236,17 @@ Function update_one(flat)
     	FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
     End Select
     error_num_one = 0
+<<<<<<< HEAD:anjian.c
     While up1X > -1
 //      TracePrint "升级识别"&flat&":x="&up1X&"y="&up1Y
         Touch up1X+3,up1Y+3, RndEx(5,15)
         Delay RndEx(35,55)
+=======
+    While up1X > -1 And up1Y > -1
+//      TracePrint "升级识别"&flat&":x="&up1X&"y="&up1Y
+        Touch up1X+10,up1Y+10, RndEx(5,15)
+        Delay RndEx(25,55)
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
         Call close_ad()
         Select Case flat
 		Case 1
@@ -1139,7 +1257,11 @@ Function update_one(flat)
     		FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
     	End Select
         error_num_one = error_num_one + 1
+<<<<<<< HEAD:anjian.c
         If error_num_one > 40 Then 
+=======
+        If error_num_one > 30 Then 
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
             TracePrint"出错"
             Call close_ad()
             Exit While
@@ -1154,6 +1276,7 @@ Function ocrchar_blue(accuracy)
 	UseDict(1)
 	Dim ocrchar
 	Dim error_num_one = 0
+<<<<<<< HEAD:anjian.c
 	//降下物品栏
 	While CmpColorEx("969|1086|303843",1) = 1
         Touch 968, 1089, 150
@@ -1167,13 +1290,19 @@ Function ocrchar_blue(accuracy)
     Wend
  	Delay 500
  	error_num_one = 0
+=======
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 	Do
 		//搜索精准性
 		Select Case accuracy
 		Case 8
     		ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", 0.8)
 		Case 9
+<<<<<<< HEAD:anjian.c
     		ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", 0.9)
+=======
+    		ocrchar = Ocr(39, 1561, 183, 1600, "FFF534-111111", 0.9)
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 		Case 10
     		ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", 1)
 		End Select
@@ -1206,7 +1335,11 @@ End Function
 Function GameGuardian()
 	TracePrint "GameGuardian"
 	Dim error_num_one,error_num_two
+<<<<<<< HEAD:anjian.c
     
+=======
+    //降下选择栏
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     Dim checkX,checkY,intX,intY,intX1,intY1
 	Call ocrchar_blue(9)
 	
@@ -1215,6 +1348,7 @@ Function GameGuardian()
 	If intX > -1 Then
 		TracePrint "打开GameGuardian-x:"&intX&"y:"&intY
 		Touch intX, intY, 30
+<<<<<<< HEAD:anjian.c
 	Else 
 		TracePrint"打开GameGuardian出错"
 		GameGuardian_flat = True
@@ -1228,6 +1362,8 @@ Function GameGuardian()
 		KeyPress "Back"
 		GameGuardian_flat = True
 		Exit Function
+=======
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 	End If
 	//选择tap titans2	
 	FindColor 117,216,257,346,"725DF5",0,0.9,intX,intY
@@ -1248,7 +1384,12 @@ Function GameGuardian()
 		Exit Function
 	End If
 	/******************第一次修改*************/
+<<<<<<< HEAD:anjian.c
 	Call search(1)//搜索
+=======
+		//搜索
+	Call search(1)
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 	Delay 1500
 //	判断是否搜索到数据
 	FindColor 13,414,87,770, "C4CB80", 1, 1, intX, intY
@@ -1286,11 +1427,19 @@ Function GameGuardian()
 	Call database(9)
 	/******************天降cd*************/
 	TracePrint "天降cd"
+<<<<<<< HEAD:anjian.c
 	Call change_database(438, 1652, "1.15", 1)//1为普通模式
 	Delay 1000
 	/******************技能cd2*************/	
 	TracePrint "技能cd2"
 	Call change_database(200, 303, "4", 1)//1为普通模式
+=======
+	Call change_database(438, 1652, "1.2", 1)//1为普通模式
+	Delay 1000
+	/******************技能cd2*************/	
+	TracePrint "技能cd2"
+	Call change_database(200, 303, "5", 1)//1为普通模式
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 	Delay 1000
 	/******************第二次修改*************/
 	Call search(2)//搜索
@@ -1312,7 +1461,11 @@ Function GameGuardian()
             	Exit While
         	End If
 		Wend
+<<<<<<< HEAD:anjian.c
 //		If error_num_one > 1 Then 
+=======
+		If error_num_one > 1 Then 
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 			Call update_main(1)//升级.初始化模式
 //		End If
 
@@ -1450,8 +1603,12 @@ Function search(flat)
 	Delay 2000
 	//隐藏
 	FindPic 816,542,928,1243, "Attachment:隐藏.png","000000",0, 0.8, intX, intY
+<<<<<<< HEAD:anjian.c
 	error_num_one = 0
 	TracePrint "等待搜索-x:"&intX&"y:"&intY
+=======
+	error_num_one=0
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 	While intX > -1
 		Delay 1000
 		error_num_one = error_num_one + 1
@@ -1470,6 +1627,15 @@ Function search(flat)
 		Touch intX, intY, 10
 	End If
 	Delay 1500
+<<<<<<< HEAD:anjian.c
+=======
+	FindPic 643,528,759,1274, "Attachment:取消.png", "000000", 0, 0.8, intX, intY
+	If intX > -1 Then 
+		TracePrint "点击取消"
+		Touch intX, intY, 10
+	End If
+
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
 End Function
 //数据栏
 Function database(num)
@@ -1641,10 +1807,26 @@ Function swipe_up(num)
 		Call close_ad()//广告
 	Next
 End Function
+<<<<<<< HEAD:anjian.c
 //下滑
 Function swipe_down(num)
     TracePrint "下滑"
     For num
+=======
+//小的下滑
+Function s_swipe_down
+    TracePrint "小的下滑"
+	For 7  
+    	Swipe 1000, 1500, 1000, 1300, 100
+    	Delay RndEx(200, 255)
+		Call close_ad()//广告 	
+	Next
+End Function
+//大的下滑
+Function b_swipe_down
+    TracePrint "大的下滑"
+    For 22
+>>>>>>> f00cb5d678986f7f5c2725c21d6e4e6232f93671:anjian.vb
     	Swipe 1000, 1650, 1000, 1300, 100
     	Delay RndEx(200, 255)
 		Call close_ad()//广告
