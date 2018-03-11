@@ -35,6 +35,7 @@ Dim update_main_init_time
 Dim updata_mistake
 Dim update_main_num, update_main_num1, update_main_num2//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
+Dim reboot_time//定时重启
 //部落时间
 Dim tribe_time
 //蓝量
@@ -94,10 +95,11 @@ TracePrint iif(GameGuardian_true, "修改:开启", "修改:关闭 ")
 Dim delay_time = ReadUIConfig("textedit_delay","0")
 delay_time = CInt(delay_time)*60*1000
 TracePrint  "等待时间"&delay_time
-//重启选项
-Dim reboot_time = ReadUIConfig("textedit_reboot_delay","0")
-reboot_time = CInt(reboot_time)*60*1000
-TracePrint  reboot_time
+//定时重启选项
+Dim reboot_time_temp = ReadUIConfig("textedit_reboot_delay","0")
+reboot_time_temp = CInt(reboot_time_temp)*60*1000
+TracePrint  reboot_time_temp
+reboot_time = reboot_time_temp//定时重启
 //屏幕分辨率检测
 Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
@@ -106,13 +108,13 @@ Dim temp1,temp2,temp3,temp4,temp5
 //========================================初始化结束=================================================//
 If delay_time > 0 Then 
 	Delay delay_time
-	RunApp "com.gamehivecorp.taptitans2"
-	Delay 120000
+//	RunApp "com.gamehivecorp.taptitans2"
+//	Delay 120000
 End If
 
+Call Screen()//屏幕适配 
 Call check_status()
 Call close_ad()
-Call Screen()//屏幕适配 
 Call main()
 Function init()
 //	Sys.ClearMemory() //释放内存
@@ -133,6 +135,7 @@ Function init()
 	update_main_init_time = update_time
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
+	
 /*****************************************************/
     //显示信息
     temp1 = iif(skills_true, "技能:开启", "技能:关闭")
@@ -140,7 +143,8 @@ Function init()
 	temp3 = iif(tribe_true, "部落:开启", "部落:关闭")	
 	temp4 = iif(fairy_true, "仙女:开启", "仙女:关闭 ")
 	temp5 = iif(GameGuardian_true, "修改:开启", "修改:关闭 ")
-    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&reboot_time/60000&"分钟\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4&"\n"&temp5, 5000,screenX/2-275,screenY/2-550
+    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_temp)/60000) &"分钟\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4&"\n"&temp5, 5000,screenX/2-275,screenY/2-550
+	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_temp)/60000) &"分钟\n"&temp1&"\n"&temp2&"\n"&temp3&"\n"&temp4&"\n"&temp5
 	Touch 500, 500, 200
 	Delay 1000
 	Touch 500, 500, 200
@@ -153,10 +157,7 @@ Function init()
     Call egg()//宠物蛋
     Call chest()//宝箱
     Call Daily_reward()//每日奖励
-    If tribe_true = True Then
-        Call tribe()
-        Delay 1000
-    End If 
+    Call tribe()
 	Call close_ad()//广告
     Call hum(4)//成就
     //减少高层数开始时的全面升级次数
@@ -189,16 +190,17 @@ Function main
     	Wend
 	End If
 	Call init()  //初始化
+	Dim t_time
     Do
     	TracePrint "程序运行："& (CInt(TickCount()/1000))/60&"分钟"
     	
-    	Dim t_time = TickCount()
+       	t_time = TickCount()
+        Call kill()//点杀
+        TracePrint "kill()*************"&(TickCount()-t_time)/1000&"秒"
+        
+    	t_time = TickCount()
 		Call check_status()
 		TracePrint "check_status()******"&(TickCount()-t_time)/1000&"秒"
-		
-		t_time = TickCount()
-		Call update_main(0)//定时升级
-		TracePrint "update_main(0)******"&(TickCount()-t_time)/1000&"秒"
 		
 		t_time = TickCount()
         Call layer()//层数 
@@ -209,12 +211,14 @@ Function main
         TracePrint "layer_check()******"&(TickCount()-t_time)/1000&"秒"
         
 		t_time = TickCount()
+		Call update_main(0)//定时升级
+		TracePrint "update_main(0)******"&(TickCount()-t_time)/1000&"秒"
+        
+		t_time = TickCount()
         Call sendmessage(ocrchar_layer)//邮件内容记录
         TracePrint "sendmessage(ocrchar_layer)"&(TickCount()-t_time)/1000&"秒"
         
-       	t_time = TickCount()
-        Call kill()//点杀
-        TracePrint " kill()*************"&(TickCount()-t_time)/1000&"秒"
+        Call close_ad()
     Loop
 End Function
 //退出游戏
@@ -252,12 +256,12 @@ Function kill_app()
 	Delay 1500
 	KillApp "com.gamehivecorp.taptitans2"
 	//等待修改器的确认游戏退出
-    FindPic 91,736,992,1222, "Attachment:确定.png","000000",0, 0.8, intX, intY
+    FindPic 91,736,992,1222, "Attachment:修改器确定.png","000000",0, 0.8, intX, intY
 	error_num_one = 0
 	Do
 		TracePrint"等待修改器的确认游戏退出"
 		Delay 500
-		FindPic 91,736,992,1222, "Attachment:确定.png","000000",0, 0.8, intX, intY
+		FindPic 91,736,992,1222, "Attachment:修改器确定.png","000000",0, 0.8, intX, intY
 		error_num_one = error_num_one + 1
         If error_num_one > 10 Then 
             TracePrint"层数出错"
@@ -300,7 +304,7 @@ Function check_status()
 		EndScript
 	End If
 	//识别修改器的确认游戏退出
-	FindPic 91, 736, 992, 1222, "Attachment:确定.png", "000000", 0, 0.8, intX, intY
+	FindPic 91, 736, 992, 1222, "Attachment:修改器确定.png", "000000", 0, 0.8, intX, intY
 	If intX > -1 Then 
 		Touch intX, intY, 10
 	End If
@@ -316,7 +320,7 @@ Function check_status()
 			End If
 			Delay 2000
 			//识别修改器的确认游戏退出
-			FindPic 91, 736, 992, 1222, "Attachment:确定.png", "000000", 0, 0.8, intX, intY
+			FindPic 91, 736, 992, 1222, "Attachment:修改器确定.png", "000000", 0, 0.8, intX, intY
 			If intX > -1 Then 
 				Touch intX, intY, 10
 			End If
@@ -329,7 +333,6 @@ Function check_status()
     	Delay 2000
         Call main()
     End If
-
 End Function
 
 Function update_main(update_main_flat)
@@ -340,7 +343,7 @@ Function update_main(update_main_flat)
     	ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
     	Call close_ad()//广告   	
 		FindColor 187,47,211,66,"A8B6E7-000111",0,1,intX,intY
-		If intX > -1 And tribe_true = True Then
+		If intX > -1  Then
             Call tribe()
             Delay 1000
         End If
@@ -371,26 +374,27 @@ Function kill()
 	dim kill_time,t_temp
     For 5
         t_temp=TickCount()
-        Call close_ad()//广告
+        If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
+			Call little_fairy()//小仙女
+		End If
+
         Call boss()//启动boss
         If skills_true = true Then 
             Call skills()//技能
         End If
         //技能延迟&点击
 //        error_num_one = 0
-        Do
+        For 14
             Touch RndEx(250,830), RndEx(320, 1000),RndEx(10, 15)
             Delay RndEx(140, 160)
-//            error_num_one = error_num_one + 1
-//            If error_num_one > 12 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And error_num_one > 5) Then 
-            kill_time = TickCount() - t_temp 
-            If kill_time > 2300 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And kill_time > 1200) Then 
-            	Exit Do
+//            kill_time = TickCount() - t_temp 
+//            If kill_time > 2300 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And kill_time > 1200) Then 
+            If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
+            	Exit For
             End If
-        Loop
+        Next
 //        TracePrint kill_time
     Next
-
 End Function
 //判断层数
 Function layer()
@@ -482,7 +486,7 @@ Function layer_check()
             auto_tribe_time = TickCount()
             Exit Function
         //自动升级
-        ElseIf auto_updata_flat >= 2 or CmpColorEx("760|162|2663EF",0.9) = 1 Then
+        ElseIf auto_updata_flat >= 2 or CmpColorEx("564|166|2663EF",0.9) = 1 Then
             TracePrint "自动升级"
             updata_mistake = updata_mistake + 1
 			Call update_main(2)
@@ -577,6 +581,9 @@ Function hero(flat)
 End Function
 //部落
 Function tribe()
+    If tribe_true = False Then
+		Exit Function
+    End If 
     TracePrint "进入部落"
     Call close_ad()
     Dim ocrchar_diamond,timeX,timeY,intX,intY,error_num_one
@@ -620,96 +627,66 @@ Function tribe()
     If ocrchar_diamond = "" Then 
     	ocrchar_diamond = "0"
     End If
-	ocrchar_diamond =CInt(ocrchar_diamond)
-    If  timeX = -1 Then  //ocrchar = "战斗" or
+	ocrchar_diamond = CInt(ocrchar_diamond)
+    Dim tribe_flat = False
+    Select Case tribe_true_num
+	Case 0
+    	If ocrchar_diamond = 0 and timeX = -1 Then 
+    		tribe_flat=True
+    	End If
+	Case 1
+    	If ocrchar_diamond <= 5 Then 
+			tribe_flat=True
+    	End If
+	Case 2
+    	If ocrchar_diamond <= 25 Then 
+			tribe_flat=True
+    	End If
+	Case 3
+    	If ocrchar_diamond <= 50 Then 
+			tribe_flat=True
+    	End If
+	End Select
+    If timeX = -1 or tribe_flat=True  Then
         //点击“战斗”
         TracePrint"点击战斗"
-        Dim tribe_flat = False
-        Select Case tribe_true_num
-		Case 0
-    		If ocrchar_diamond = 0 Then 
-    			tribe_flat=True
-    		End If
-		Case 1
-    		If ocrchar_diamond <= 5 Then 
-				tribe_flat=True
-    		End If
-		Case 2
-    		If ocrchar_diamond <= 25 Then 
-				tribe_flat=True
-    		End If
-		Case 3
-    		If ocrchar_diamond <= 50 Then 
-				tribe_flat=True
-    		End If
-		End Select
-		If tribe_flat=True Then 
-			Touch 699,1767, 150
-        	Delay 1500
-        	Touch 723,1058, 150
-        	Delay 1000
-        Else
-    		Delay 2000
-			Call close_ad()//广告
-			Exit Function
-		End If
+		Touch 699,1767, 150
+        Delay 1500
+        Touch 723,1058, 150
+        Delay 1000
         //点击部落boss
         //第一次打boss35秒
         TracePrint "循环点击35秒"
 //        tribe_time = TickCount()
-        error_num_one = 0
-        DO
+//        error_num_one = 0
+        For 633
             //点击延迟
-            Delay RndEx(50, 120)
-            For 40
-                //点击延迟
-                Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
-                Delay RndEx(30, 50)
-            Next
-            error_num_one = error_num_one + 1
-            If error_num_one > 14 Then 
-//            If TickCount() - tribe_time > 35000 Then 
-            	Exit Do
-            End If
-        Loop
-        //之后的boos检测结束
-//        tribe_time = TickCount()
-		error_num_one = 0
-        DO
-            //点击延迟
-            Delay RndEx(50, 120)
-            For 40
-                //点击延迟
-                Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
-                Delay RndEx(30, 50)
-            Next
-            error_num_one = error_num_one + 1
-            If error_num_one > 2 Then 
-//            If TickCount() - tribe_time > 5000 Then 
-            	Exit Do
-            End If
-        Loop
+            Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
+            Delay RndEx(30, 50)
+//            error_num_one = error_num_one + 1
+//            If error_num_one > 14 Then 
+//            If TickCount() - tribe_time > 38000 Then 
+//            	Exit Do
+//            End If
+        Next
+        Delay 1500
         //离开部落boos界面
-        SetDictEx(0, "Attachment:文字.txt") 
-   	 	UseDict (0)
-        error_num_one = 0
-        ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
-        While ocrchar = "点击继续"
-            TouchDown RndEx(370, 380), RndEx(1060, 1080), 1
-            Delay RndEx(10, 30)
-            TouchUp 1
-            Delay RndEx(200, 500)
+        TracePrint "离开部落boos界面"
+        FindPic 453,82,554,185,"Attachment:部落boss退出任务.png","000000",0,0.9,intX,intY
+		error_num_one = 0
+		While intX > -1
+			Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
             Delay 2000
-            ocrchar = Ocr(388, 1660, 693, 1743, "FFFFFF", 0.9)
+            FindPic 453,82,554,185,"Attachment:部落boss退出任务.png","000000",0,0.9,intX,intY
             error_num_one = error_num_one + 1
-            If error_num_one > 5 Then 
+            If error_num_one > 10 Then 
                 TracePrint"出错"
                 Exit While
             End If
-        Wend
+		Wend
     End If	
-	Call close_ad()//广告
-    Delay 2000
+//	Call close_ad()//广告
+    Delay 1500
 	Call close_ad()//广告
 End Function
 
@@ -719,7 +696,7 @@ Function close_ad()
 	If CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0 Then 
 		TracePrint "界面被遮挡"
     	//识别小仙女
-    	Delay 1000
+//    	Delay 1000
 		If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
 			Call little_fairy()//小仙女
     	Else 
@@ -760,7 +737,7 @@ Function little_fairy()
         TracePrint"已点击观看"
         //判断收集字符出现
         error_num_one = 0
-		FindPic 467,1447,601,1541,"Attachment:收集.png","000000",0,0.9,intX,intY
+		FindPic 467,1447,601,1541,"Attachment:小仙女收集.png","000000",0,0.9,intX,intY
         While intX = -1
             TracePrint "等待收集"
             Delay 1000
@@ -771,7 +748,7 @@ Function little_fairy()
                 Delay 500
             End If
             Call close_window()
-            FindPic 467,1447,601,1541,"Attachment:收集.png","000000",0,0.9,intX,intY
+            FindPic 467,1447,601,1541,"Attachment:小仙女收集.png","000000",0,0.9,intX,intY
             error_num_one = error_num_one + 1
             If error_num_one > 60 Then 
                 TracePrint"出错"
@@ -781,7 +758,7 @@ Function little_fairy()
         Delay 500
     End If
     //点击收集字符
-	FindPic 467,1447,601,1541,"Attachment:收集.png","000000",0,0.9,intX,intY
+	FindPic 467,1447,601,1541,"Attachment:小仙女收集.png","000000",0,0.9,intX,intY
     error_num_one = 0
     While intX > -1
         Tap 534, 1493
@@ -789,7 +766,7 @@ Function little_fairy()
         ShowMessage "收集", 1500,screenX/2-150,screenY/4-200
         Delay 1000
         Call close_window()
-		FindPic 467,1447,601,1541,"Attachment:收集.png","000000",0,0.9,intX,intY
+		FindPic 467,1447,601,1541,"Attachment:小仙女收集.png","000000",0,0.9,intX,intY
         error_num_one = error_num_one + 1
         If error_num_one > 5 Then 
             TracePrint"出错"
@@ -804,6 +781,12 @@ Function close_window()
 	Dim closeX,closeY,error_num_one
 	If CmpColorEx("987|1849|3E6BE5",0.9) = 1 Then
 		Touch 987, 1849, 100
+	End If
+	//捡掉落物品
+	If CmpColorEx("986|1883|060703", 1) = 1 Then 
+		Touch 500, 800, 15
+		Delay 1000
+		Touch 500, 800,15
 	End If
 	error_num_one = 0
 	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
@@ -1383,13 +1366,13 @@ Function change_database(intX, intY, str, flat)
 	InputText str
 	Delay 2000
 	If flat = 2 Then 
-		FindPic 158,453,248,877, "Attachment:冻结.png","000000",0, 0.8, intX, intY
+		FindPic 158,453,248,877, "Attachment:修改器冻结.png","000000",0, 0.8, intX, intY
 		If intX > -1 And intY > -1 Then 
 			Touch intX, intY, 10
 		End If
 		Delay 1000	
 	End If
-	FindPic 854,867,943,1323, "Attachment:是.png","000000",0, 0.8, intX, intY
+	FindPic 854,867,943,1323, "Attachment:修改器是.png","000000",0, 0.8, intX, intY
 	If intX > -1 And intY > -1 Then 
 		Touch intX, intY, 10
 	End If
@@ -1435,7 +1418,7 @@ Function search(flat)
 	End If
 	Delay 2000
 	//新搜索
-	FindPic 63,687,976,1382, "Attachment:新搜索.png","000000",0, 0.8, intX, intY
+	FindPic 63,687,976,1382, "Attachment:修改器新搜索.png","000000",0, 0.8, intX, intY
 	If intX > -1 And intY > -1 Then 
 		TracePrint "新搜索-x:"&intX&"y:"&intY
 		Touch intX, intY, 10
@@ -1449,7 +1432,7 @@ Function search(flat)
 	End If
 	Delay 2000
 	//隐藏
-	FindPic 816,542,928,1243, "Attachment:隐藏.png","000000",0, 0.8, intX, intY
+	FindPic 816,542,928,1243, "Attachment:修改器隐藏.png","000000",0, 0.8, intX, intY
 	error_num_one = 0
 	TracePrint "等待搜索-x:"&intX&"y:"&intY
 	While intX > -1
@@ -1460,11 +1443,11 @@ Function search(flat)
             Call close_ad()
             Exit While
         End If
-		FindPic 763,1112,979,1250, "Attachment:隐藏.png","000000",0, 0.8, intX, intY
+		FindPic 763,1112,979,1250, "Attachment:修改器隐藏.png","000000",0, 0.8, intX, intY
 	Wend
 	TracePrint "等待搜索结束"
 	Delay 1500
-	FindPic 643,528,759,1274, "Attachment:取消.png", "000000", 0, 0.8, intX, intY
+	FindPic 643,528,759,1274, "Attachment:修改器取消.png", "000000", 0, 0.8, intX, intY
 	If intX > -1 Then 
 		TracePrint "点击取消"
 		Touch intX, intY, 10
