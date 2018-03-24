@@ -319,6 +319,7 @@ Function check_status()
 				RunApp "com.gamehivecorp.taptitans2"
 			End If
 			Delay 2000
+			Touch 500,500,10
 			//识别修改器的确认游戏退出
 			FindPic 91, 736, 992, 1222, "Attachment:修改器确定.png", "000000", 0, 0.8, intX, intY
 			If intX > -1 Then 
@@ -1211,12 +1212,25 @@ Function GameGuardian()
 		KeyPress "Back"
 		GameGuardian_flat = True
 		Exit Function
-	End If
-	//选择tap titans2	
+	End If	
+	//选择tap titans2//中间	
 	FindColor 117,216,257,346,"725DF5",0,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
 		TracePrint "选择tap titans2-x:"&intX&"y:"&intY
 		Touch intX, intY, 30
+	End If
+	//选择tap titans2//左上角
+	FindColor 0,0,100,100,"725DF5",0,0.9,intX,intY
+	If intX = -1 And intY = -1 Then
+		TracePrint "选择tap titans2-x:"&intX&"y:"&intY
+		Touch 50, 50, 30
+		Delay 1500
+		//选择tap titans2//中间	
+		FindColor 117,216,257,346,"725DF5",0,0.9,intX,intY
+		If intX > -1 And intY > -1 Then
+			TracePrint "选择tap titans2-x:"&intX&"y:"&intY
+			Touch intX, intY, 30
+		End If
 	End If
 	//点击搜索栏
 	Delay 600
@@ -1304,7 +1318,7 @@ Function GameGuardian()
 		If Myblue(0) = Myblue(1) Then 
 			blue_num = Myblue(0) & ";" & Myblue(1) & "::5" 
 		Else 
-			blue_num = Myblue(0) & "~" & CStr(CInt(Myblue(0)) + 10) & ";" & Myblue(1) & "::5"
+			blue_num =  CStr(CInt(Myblue(0)) + 5) & "~" & CStr(CInt(Myblue(0)) + 35) & ";" & Myblue(1) & "::5"
 		End If
 		//打开GameGuardian
 		FindMultiColor 5,768,147,1685,"C5008B","6|-35|CCCCCC",1,1,intX,intY
@@ -1500,7 +1514,7 @@ Function Daily_reward
 			Delay 2000
     	End If
         For 4
-        	Call close_ad()//广告
+//        	Call close_ad()//广告
         	Delay 1000
     		Touch 500, 500, 200
         Next
@@ -1520,7 +1534,7 @@ Function egg
 		End If
 		Delay 3000
         For 6
-        	Call close_ad()//广告
+//        	Call close_ad()//广告
         	Delay 1000
     		Touch 500, 500, 200
         Next
@@ -1538,7 +1552,7 @@ Function chest
         TracePrint intY
         Touch intX, intY, 200
         For 4
-        	Call close_ad()//广告
+//        	Call close_ad()//广告
         	Delay 1000
     		Touch 500, 500, 200
         Next
