@@ -593,14 +593,11 @@ Function tribe()
     Touch 188,79, 150
     Delay 2000
     //部落聊天界面检测
-	FindPic 377,65,699,175,"Attachment:部落聊天.png","000000",0,0.9,intX,intY
     error_num_one=0
-    While intX = -1
+    While CmpColorEx("452|259|404348",1) = 0
         TracePrint"部落聊天界面检测"
-        Call close_ad()
         Touch 188, 79, 150
         Delay 1000
-		FindPic 377,65,699,175,"Attachment:部落聊天.png","000000",0,0.9,intX,intY
         error_num_one = error_num_one + 1
         If error_num_one > 20 Then 
             TracePrint"出错"
@@ -610,13 +607,12 @@ Function tribe()
     Touch 204, 1749, 150
     Delay 4000
     //部落任务界面检测
-	FindPic 377,65,699,175,"Attachment:部落任务.png","000000",0,0.9,intX,intY
+	
     error_num_one=0
-    While intX = -1
+    While CmpColorEx("452|259|404348",1) = 1
         TracePrint"部落任务界面检测"
         Touch 204, 1749, 150
         Delay 1000
-		FindPic 377,65,699,175,"Attachment:部落任务.png","000000",0,0.9,intX,intY
         error_num_one = error_num_one + 1
         If error_num_one > 20 Then 
             TracePrint"出错"
@@ -1018,7 +1014,7 @@ Function update(flat)
     TracePrint "升级" &flat
     //购买框识别
     error_num_one=0
-    FindColor 805, 1174, 1072, 1765, "525241", 1, 1, checkX, checkY//识别物品栏
+    FindColor 775,1182,816,1245, "525241", 1, 1, checkX, checkY//识别物品栏
     While (checkX = -1 And checkY = -1) or last_check = -1        
         //物品栏下箭头
         FindColor 932,1061,1004,1104,"303845",1,1,boxX, boxY
@@ -1095,7 +1091,7 @@ Function update(flat)
             Call close_ad()
             Exit While
         End If
-        FindColor 926, 1174, 1072, 1765, "525241", 1, 1, checkX, checkY
+        FindColor 775,1182,816,1245, "525241", 1, 1, checkX, checkY
     Wend
     Call close_ad()//广告
     Delay 150
@@ -1565,7 +1561,8 @@ Function achievement
 	TracePrint "成就"
 	Dim error_num_one = 0
     //购买框识别
-    FindColor 805,1174,1072,1765,"535141",1,1,checkX,checkY
+   
+    FindColor 775,1182,816,1245, "525241", 1, 1, checkX, checkY//识别物品栏
     While checkX = -1 And checkY = -1
         TracePrint "物品栏识别"
         //物品栏下箭头
@@ -1587,7 +1584,7 @@ Function achievement
         TracePrint "上滑"
         Delay 100
 		Call close_ad()//广告
-        FindColor 926, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY
+        FindColor 775,1182,816,1245, "525241", 1, 1, checkX, checkY//识别物品栏
         error_num_one = error_num_one + 1
         If error_num_one > 5 Then 
             TracePrint"出错"
