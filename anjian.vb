@@ -291,7 +291,7 @@ Function check_status()
     	
     End If
     //检测界面是否被遮挡
-	If CmpColorEx("64|35|6D6858,992|1886|3F4423", 1) = 1 Then 
+    If CmpColorEx("65|34|6D6859,990|1887|414424",1)= 1 Then  
 		TracePrint "检测界面没有被遮挡，跳出"
 		Exit Function
     End If
@@ -314,10 +314,12 @@ Function check_status()
         Dim start_time = TickCount()//开始时间
     	//检测界面
     	Dim intX, intY
-		While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
+
+		While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
 			If Sys.IsRunning("com.gamehivecorp.taptitans2") = False Then 
 				RunApp "com.gamehivecorp.taptitans2"
 			End If
+			ShowMessage "等待游戏", screenX/2-280,screenY/4-200
 			Delay 2000
 			Touch 500,500,10
 			//识别修改器的确认游戏退出
@@ -597,6 +599,7 @@ Function tribe()
         TracePrint"部落聊天界面检测"
         Touch 188, 79, 150
         Delay 1000
+        Call close_ad()
 		FindPic 377,65,699,175,"Attachment:部落聊天.png","000000",0,0.9,intX,intY
         error_num_one = error_num_one + 1
         If error_num_one > 20 Then 
@@ -694,7 +697,7 @@ End Function
 //关广告
 Function close_ad()
     //检测界面是否被遮挡
-	If CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0 Then 
+	If CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0 Then 
 		TracePrint "界面被遮挡"
     	//识别小仙女
 //    	Delay 1000
@@ -821,7 +824,7 @@ Function close_window()
             	Exit While
         	End If 
     	Wend
-    	If CmpColorEx("64|35|6D6858,992|1886|3F4423", 1) = 0 Then 
+    	If CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0 Then 
     		error_num_one = 0
 			Do
 				TracePrint"等待识别退出"
@@ -875,7 +878,7 @@ Function skills
     //降下选择栏
     Dim checkX,checkY,error_num_one
     error_num_one = 0
-    While CmpColorEx("969|1086|303843",1) = 1
+    While CmpColorEx("967|1088|303845",1) = 1
         Touch 968, 1089, 50
        	Delay 500
     	error_num_one = error_num_one + 1
@@ -934,15 +937,15 @@ Function prestige
     	Call mail(ocrchar_layer)
     	send_flag = 0
     End If
-    //本人等级提升|解锁技能|英雄等级提升
+    //蜕变
 	Dim pX,pY,intX,intY,error_num_one,error_num_two
-    FindColor 760,1707,1046,1826,"146EEE|08B1FC|CBA641",1,1,pX,pY
+    FindColor 760,1707,1046,1826,"0448A7",1,1,pX,pY
     If pX > -1 And pY > -1 Then 
     	error_num_one=0
 		While pX > -1
         	Touch pX, pY, 100
         	Delay 1000
-        	FindColor 760, 1707, 1046, 1826, "146EEE|08B1FC|CBA641", 1, 1, pX, pY
+        	FindColor 760, 1707, 1046, 1826, "0448A7", 1, 1, pX, pY
         	error_num_one = error_num_one + 1
         	If error_num_one > 5 Then 
             	TracePrint"出错"
@@ -950,33 +953,33 @@ Function prestige
         	End If
         Wend
         Delay 1000
-//		FindPic 445, 374, 632, 483, "Attachment:蜕变.png", "000000", 0, 0.9, intX, intY
 		error_num_one=0
-		Do
+//		Do
 			TracePrint "点击第一层蜕变"
-			FindPic 183,1211,863,1523,"Attachment:蜕变1.png","000000",0,0.9,intX,intY
-			Touch intX, intY, 100
+//			FindPic 183,1211,863,1523,"Attachment:蜕变1.png","000000",0,0.9,intX,intY
+			Touch 535,1504,100
+//			Touch intX, intY, 100
 			Delay 1000
-        	error_num_one = error_num_one + 1
-        	If error_num_one > 5 Then 
-            	TracePrint"出错"
-            	Exit Do
-        	End If
-		Loop While intX > -1
+//        	error_num_one = error_num_one + 1
+//        	If error_num_one > 5 Then 
+//            	TracePrint"出错"
+//            	Exit Do
+//        	End If
+//		Loop While intX > -1
 		Delay 1000
-//		FindPic 443, 601, 634, 704, "Attachment:蜕变.png", "000000", 0, 0.8, intX, intY
 		error_num_one=0
-		Do
+//		Do
 			TracePrint "点击第二层蜕变"
-			FindPic 183,1211,863,1523,"Attachment:蜕变1.png","000000",0,0.9,intX,intY
-			Touch intX, intY, 100
+//			FindPic 183,1211,863,1523,"Attachment:蜕变1.png","000000",0,0.9,intX,intY
+//			Touch intX, intY, 100
+			Touch 757,1271, 100
 			Delay 1000
-        	error_num_one = error_num_one + 1
-        	If error_num_one > 5 Then 
-            	TracePrint"出错"
-            	Exit Do
-        	End If
-		Loop While intX > -1
+//        	error_num_one = error_num_one + 1
+//        	If error_num_one > 5 Then 
+//            	TracePrint"出错"
+//            	Exit Do
+//        	End If
+//		Loop While intX > -1
     End If
 	//蜕变等待
 	TracePrint "蜕变等待10秒"
@@ -1018,13 +1021,13 @@ Function update(flat)
     FindColor 805, 1174, 1072, 1765, "535141", 1, 1, checkX, checkY//识别物品栏
     While (checkX = -1 And checkY = -1) or last_check = -1        
         //物品栏下箭头
-        FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
+        FindColor 932,1061,1004,1104,"303845",1,1,boxX, boxY
         If boxX = -1 And boxX = -1 Then 
             TracePrint "物品栏下箭头x="&boxX&"y="&boxX
             Call close_ad()//广告
             Delay 2000
             Call close_ad()//广告
-            FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
+            FindColor 932,1061,1004,1104,"303845",1,1,boxX, boxY
             If boxX = -1 And boxX = -1 Then 
 				box_flat =1
             End If 
@@ -1133,15 +1136,17 @@ End Function
 
 Function ocrchar_blue(accuracy)
 	//识别魔法量
+	TracePrint "识别魔法量"
 	SetRowsNumber(0)
 	SetDictEx(1, "Attachment:数字.txt")
 	UseDict(1)
 	Dim ocrchar
 	Dim error_num_one = 0
 	//降下物品栏
-	While CmpColorEx("969|1086|303843",1) = 1
+	While CmpColorEx("967|1088|303845",1) = 1
         Touch 968, 1089, 150
        	Delay 550
+       	TracePrint "降下物品栏"
        	error_num_one = error_num_one + 1
         If error_num_one > 5 Then 
             TracePrint"出错&stop"
@@ -1190,7 +1195,6 @@ End Function
 Function GameGuardian()
 	TracePrint "GameGuardian"
 	Dim error_num_one,error_num_two
-    
     Dim checkX,checkY,intX,intY,intX1,intY1
 	Call ocrchar_blue(9)
 	
@@ -1214,22 +1218,19 @@ Function GameGuardian()
 		Exit Function
 	End If	
 	//选择tap titans2//中间	
-	FindColor 117,216,257,346,"725DF5",0,0.9,intX,intY
-	If intX > -1 And intY > -1 Then
+	If CmpColorEx("189|248|0081FF", 1) = 1 Then 
 		TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-		Touch intX, intY, 30
+		Touch 189,248, 30
 	End If
 	//选择tap titans2//左上角
-	FindColor 0,0,100,100,"725DF5",0,0.9,intX,intY
-	If intX = -1 And intY = -1 Then
+	If CmpColorEx("72|43|0081FF",1) = 1 Then
 		TracePrint "选择tap titans2-x:"&intX&"y:"&intY
 		Touch 50, 50, 30
 		Delay 1500
 		//选择tap titans2//中间	
-		FindColor 117,216,257,346,"725DF5",0,0.9,intX,intY
-		If intX > -1 And intY > -1 Then
+		If CmpColorEx("189|248|0081FF", 1) = 1 Then 
 			TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-			Touch intX, intY, 30
+			Touch 189,248, 30
 		End If
 	End If
 	//点击搜索栏
@@ -1298,7 +1299,7 @@ Function GameGuardian()
 	while intX = -1 or intY1 > -1
 		TracePrint "出错"
 		error_num_two = 0
-		While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
+		While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
 			KeyPress "Back"
 			Delay 1000
 			Call close_ad()
@@ -1346,7 +1347,7 @@ Function GameGuardian()
 	Delay 1000
 	/*****************退出修改器界面********************/
 	error_num_one = 0
-	While CmpColorEx("64|35|6D6858,992|1886|3F4423",1) = 0
+	While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
 //		Touch 1008, 72, 10
 		KeyPress "Back"
 		Delay 1000
@@ -1568,12 +1569,12 @@ Function achievement
     While checkX = -1 And checkY = -1
         TracePrint "物品栏识别"
         //物品栏下箭头
-        FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
+        FindColor 932,1061,1004,1104,"303845",1,1,boxX, boxY
         If boxX = -1 And boxY = -1 Then 
             TracePrint "物品栏下箭头x="&boxX&"y="&boxY
             Call close_ad()
             Delay 2000
-            FindColor 932,1061,1004,1104,"303843",1,1,boxX, boxY
+            FindColor 932,1061,1004,1104,"303845",1,1,boxX, boxY
             If boxX = -1 And boxY = -1 Then 
                 TracePrint "error.achievement"
                 Call achievement()
