@@ -599,7 +599,10 @@ Function tribe()
         TracePrint"部落聊天界面检测"
         Touch 188, 79, 150
         Delay 1000
-        Call close_ad()
+        //识别小仙女
+		If CmpColorEx("300|800|FFFFD8", 1) = 1 Then 
+			Call little_fairy()//小仙女
+    	End If
         error_num_one = error_num_one + 1
         If error_num_one > 20 or CmpColorEx("899|228|EFD652",1) = 1 Then 
             TracePrint"出错"
@@ -786,11 +789,16 @@ Function close_window()
 		Touch 987, 1849, 100
 	End If
 	//捡掉落物品
-	If CmpColorEx("986|1883|060703", 1) = 1 Then 
-		Touch 500, 800, 15
-		Delay 1000
-		Touch 500, 800,15
+	FindColor 534,499,557,576,"FFFFFF",0,1,closeX,closeY//判断白色部分
+	If closeX > -1 And closeY > -1 Then 
+		FindColor 534,499,557,576,"000000",0,1,closeX,closeY//判断黑色部分
+		If closeX > -1 And closeY > -1 Then
+			Touch 534,499,200//判断出掉落物品
+			TracePrint"掉落物品"
+//			Exit Function
+		End If
 	End If
+	//"关闭窗口"
 	error_num_one = 0
 	FindColor 879, 80, 1000, 640, "303843", 1, 1, closeX, closeY
 	If closeX > -1 Then 
@@ -833,6 +841,7 @@ Function close_window()
 				error_num_one = error_num_one + 1
         		If error_num_one > 5 Then 
             		TracePrint"出错"
+            		Touch 534,499,200//判断出掉落物品
             		Exit do
         		End If
 			Loop While closeX = -1
@@ -952,33 +961,29 @@ Function prestige
         	End If
         Wend
         Delay 1000
-//		FindPic 445, 374, 632, 483, "Attachment:蜕变.png", "000000", 0, 0.9, intX, intY
 		error_num_one=0
 		Do
 			TracePrint "点击第一层蜕变"
-			FindPic 183,1211,863,1523,"Attachment:蜕变1.png","000000",0,0.9,intX,intY
-			Touch intX, intY, 100
+			Touch 541, 1484, 100
 			Delay 1000
         	error_num_one = error_num_one + 1
         	If error_num_one > 5 Then 
             	TracePrint"出错"
             	Exit Do
         	End If
-		Loop While intX > -1
+		Loop While CmpColorEx("536|1453|D7AA28-111111",0.9) = 1
 		Delay 1000
-//		FindPic 443, 601, 634, 704, "Attachment:蜕变.png", "000000", 0, 0.8, intX, intY
 		error_num_one=0
 		Do
 			TracePrint "点击第二层蜕变"
-			FindPic 183,1211,863,1523,"Attachment:蜕变1.png","000000",0,0.9,intX,intY
-			Touch intX, intY, 100
+			Touch 736, 1272, 100
 			Delay 1000
         	error_num_one = error_num_one + 1
         	If error_num_one > 5 Then 
             	TracePrint"出错"
             	Exit Do
         	End If
-		Loop While intX > -1
+		Loop While CmpColorEx("740|1245|D7AA28-111111",0.9) = 1
     End If
 	//蜕变等待
 	TracePrint "蜕变等待10秒"
@@ -1089,12 +1094,12 @@ Function update(flat)
         TracePrint "上滑"
         Delay 100
         error_num_one = error_num_one + 1
-        If error_num_one > 40 Then 
+        If error_num_one > 25 Then 
             TracePrint"出错"
             Call close_ad()
             Exit While
         End If
-        FindColor 926, 1174, 1072, 1765, "525241", 1, 1, checkX, checkY
+         FindColor 805, 1174, 1072, 1765, "525241", 1, 1, checkX, checkY//识别物品栏
     Wend
     Call close_ad()//广告
     Delay 150
@@ -1114,24 +1119,40 @@ Function update_one(flat)
     While up1X > -1
 //      TracePrint "升级识别"&flat&":x="&up1X&"y="&up1Y
         Touch up1X+3,up1Y+3, RndEx(5,15)
-        Delay RndEx(35,55)
+        Delay RndEx(55,100)
         Call close_ad()
         Select Case flat
 		Case 1
-			FindColor 926,1174,1072,1603, "146EEE|08B1FC|CBA641|", 7, 1, up1X, up1Y
+			FindColor 926, 1174, 1072, 1603, "146EEE|08B1FC|CBA641|", 7, 1, up1X, up1Y
+			If error_num_one > 60 Then 
+            	TracePrint"出错"
+            	Call close_ad()
+            	Exit While
+        	End If
 		Case 2
 			FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 5, 1, up1X, up1Y
+			If error_num_one > 30 Then 
+            	TracePrint"出错"
+            	Call close_ad()
+            	Exit While
+            End If
 		Case 3
     		FindColor 926, 1190, 1054, 1791, "778ACC-111111|146EEE|08B1FC|CBA641|4872B3-111111|A9914F-111111|B9A66E-111111|023D97-333333|886405-333333", 0, 1, up1X, up1Y
+			If error_num_one > 30 Then 
+            	TracePrint"出错"
+            	Call close_ad()
+            	Exit While
+            End If
     	End Select
         error_num_one = error_num_one + 1
-        If error_num_one > 40 Then 
-            TracePrint"出错"
-            Call close_ad()
-            Exit While
-        End If
+
     Wend
 End Function
+
+Function Artifact()
+	
+End Function
+
 
 Function ocrchar_blue(accuracy)
 	//识别魔法量
@@ -1637,6 +1658,7 @@ Function swipe_down(num)
 		Call close_ad()//广告
 	Next
 End Function
+//适配分辨率
 Function Screen
     Dim scrX,scrY
     //这里设置成开发的分辨率
