@@ -162,12 +162,14 @@ Function init()
     Call Daily_reward()//每日奖励
     Call tribe()
 	Call close_ad()//广告
-    Call hum(4)//成就
+    
     //减少高层数开始时的全面升级次数
     update_main_num = iif(ocrchar_layer > 6500, 2, 0)
     update_main_num1 = 0
     update_main_num2 = 0
 	Call update_main(1)//升级.初始化模式
+//	Call hum(4)//成就
+	Call Navbar_main("hero",4)//成就
 /*****************************************************/
 	send_flag = 1  //发送邮箱，必须在检测layer()后
 	update_main_time = TickCount()
@@ -350,15 +352,15 @@ Function update_main(update_main_flat)
             Call tribe()
             Delay 1000
         End If
-		//超过6000层之后达到最高层，不需要升级
-        If ocrchar_layer < 6000 or update_main_num < 2 or update_main_flat=1 or updata_mistake >2 Then//update_main_num为超过6000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
-        	Call hum(3)//日常升级本人
-        	Call hum(1)//升级
-        	Call hero(1)//升级
+		//update_main_num为超过6000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
+        If ocrchar_layer < 6000 or update_main_num < 3 or update_main_flat=1 or updata_mistake >2 Then
+        	Call Navbar_main("hero",3)//升级本人
+        	Call Navbar_main("hero",1)//升级技能
+        	Call Navbar_main("mercenary",1)//升级佣兵
         	update_main_num1 = update_main_num1 + 1
         Else 
-        	Call hero(2)//升级
-        	Call hum(3)//日常升级本人
+        	Call Navbar_main("mercenary",2)//升级佣兵
+        	Call Navbar_main("hero",3)//升级本人
         	update_main_num2 = update_main_num2 + 1
         End If
         If ocrchar_layer > 6000 Then 
@@ -386,12 +388,9 @@ Function kill()
             Call skills()//技能
         End If
         //技能延迟&点击
-//        error_num_one = 0
         Do
             Touch RndEx(250,830), RndEx(320, 1000),RndEx(10, 15)
             Delay RndEx(140, 160)
-//            error_num_one = error_num_one + 1
-//            If error_num_one > 12 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And error_num_one > 5) Then 
             kill_time = TickCount() - t_temp 
             If kill_time > 2300 or (CmpColorEx("83|1654|FFFFFF", 1) = 1 And kill_time > 1200) Then 
             	Exit Do
@@ -447,7 +446,7 @@ Function layer_check()
 			Call  GameGuardian()
 			Exit Function
 		End If
-    	Call hum(2)
+    	Call Navbar_main("hero",2)//蜕变
     	Exit Function
 	ElseIf Abs(ocrchar_layer - ocrchar_layer_temp) < 4 Then
 		//蜕变
@@ -463,7 +462,7 @@ Function layer_check()
 				Call  GameGuardian()
 				Exit Function
 			End If
-    		Call hum(2)
+    		Call Navbar_main("hero",2)//蜕变
     		Exit Function
 		End If
         TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
@@ -486,7 +485,7 @@ Function layer_check()
              	auto_tribe_temp = 0
             End If
             /***************************************/
-            Call hum(2)
+            Call Navbar_main("hero",2)//蜕变
             auto_tribe_time = TickCount()
             Exit Function
         //自动升级
@@ -507,82 +506,7 @@ Function layer_check()
     End If
 	//    layer() = ocrchar_layer
 End Function
-//个人
-Function hum(flat)
-    TracePrint	"hum" 
-    Dim humX,humY,error_num_one
-	Call close_ad()//广告
-    //识别
-    FindColor 59,1865,102,1907, "203C96", 1, 1, humX, humY
-    error_num_one = 0
-    while humX > -1 And humY > -1
-        TracePrint	"hum正在点开" 
-        Touch 85, 1891, 100
-        Delay 2000
-        Call close_ad()//广告
-      	FindColor 59, 1865, 102, 1907, "203C96", 1, 1, humX, humY      	
-        error_num_one = error_num_one + 1
-        If error_num_one > 10 Then 
-            TracePrint"hum()出错"
-            Exit While
-        End If
-    Wend
-    If humX = -1 And humY = -1 Then 
-        TracePrint	"hum已经点开"
-        If flat = 1 Then 
-            //升级
-            Delay 200
-            Call swipe_down(6)
-            Delay 200
-            Call update(1)
-        ElseIf flat = 2 Then
-            //蜕变
-            For 3
-            	Call swipe_down(6)
-            	Delay 1000
-            Next
-            Call prestige()
-        ElseIf flat = 3 Then
-            //日常升级
-            Delay 200
-            Call update(1)
-        ElseIf flat = 4 Then
-            //成就
-            Delay 200
-            Call achievement()
-        End If
-    End If
-End Function
-//英雄
-Function hero(flat)
-    TracePrint	"hero" 
-    Dim heroX,heroY,error_num_one
-	Call close_ad()//广告
-    FindColor 245,1850,294,1879,"615620",1,1,heroX,heroY
-    error_num_one = 0
-    while heroX > -1 And heroY > -1 	
-        TracePrint	"hero正在点开"
-        Touch 267,1890, 100
-		Delay 2000
-		Call close_ad()//广告
-        FindColor 245,1850,294,1879,"615620",1,1,heroX,heroY
-        error_num_one = error_num_one + 1
-        If error_num_one > 10 Then 
-            TracePrint"hero()出错"
-            Exit While
-        End If
-    Wend
-    If heroX = -1 And heroY = -1 Then 	
-		If flat=1 Then 
-            	Call swipe_down(20)
-            	Delay 300
-           		Call update(2)
-        ElseIf flat = 2 Then
-            	Delay 300
-           		Call update(3)         
-        End If
-    End If
-End Function
+
 //部落
 Function tribe()
     If tribe_true = False Then
@@ -1044,7 +968,7 @@ Function update(flat)
         	TracePrint "从下往上两格"
         	If box_flat =1 Then 
                 TracePrint "error.hum(1)"
-                Call hum(1)
+                Call Navbar_main("hero",1)
                 Exit Function
             End If 
             //可否升级识别
@@ -1055,7 +979,7 @@ Function update(flat)
         	TracePrint "从下往上四格"
         	If box_flat =1 Then 
                 TracePrint "error.hero(1)"
-                Call hero(1)
+                Call Navbar_main("mercenary",1)
                 Exit Function
             End If         
             //可否升级识别
@@ -1066,7 +990,7 @@ Function update(flat)
         	TracePrint "从上往下"
         	If box_flat =1 Then 
                 TracePrint "error.hero(2)"
-                Call hero(2)
+                Call Navbar_main("mercenary",2)
                 Exit Function
             End If          
             If last_check <> -1 And case_3 = 0 Then 
@@ -1726,3 +1650,118 @@ Function OnScriptExit()
     KeepScreen False
     Log.Close
 End Function
+
+
+
+
+
+
+
+//下面面板功能
+Function Navbar_main(navbar_name,flat)
+    Dim intX,intY,error_num_one
+    Call close_ad()//广告
+	If navbar_name = "hero" Then 
+		TracePrint "英雄" 
+    	If Navbar_one_check(1) Then //识别英雄
+        	Select Case flat
+        	Case 1
+            	//升级英雄与技能
+            	Delay 200
+            	Call swipe_down(6)
+            	Delay 200
+            	Call update(1)
+        	Case 2
+            	//蜕变
+            	Call swipe_down(18)
+            	Delay 1000
+            	Call prestige()
+        	Case 3
+            	//只升级英雄
+            	Delay 200
+            	Call update(1)
+        	Case 4
+            	//成就
+            	Delay 200
+            	Call achievement()
+    		End Select
+
+    	End If
+    
+    ElseIf navbar_name = "mercenary" Then 
+        TracePrint	"佣兵" 
+		If Navbar_one_check(2) Then  //识别佣兵
+    		TracePrint	"佣兵已经点开"
+			Select Case flat
+        	Case 1
+            	Call swipe_down(20)
+            	Delay 300
+           		Call update(2)
+        	Case 2 
+            	Delay 300
+           		Call update(3)
+           	End Select
+    	End If
+    	
+    ElseIf navbar_name = "artifact" Then 
+    	TracePrint	"神器" 
+		If Navbar_one_check(5) Then //识别神器
+    		TracePrint	"佣兵已经点开"
+//			Call artifact_update()
+    	End If
+	End If	
+	
+End Function
+TracePrint Navbar_one_check(1)
+
+Function Navbar_one_check(num)
+	Dim intX,intY,colour,message_open,message_unopen,error_num_one,cmpColors,MyArray(3)
+	Select Case num
+		Case 1
+			intX=87
+			intY=1883
+			colour = "203C96"
+			message_open = "英雄已经点开"
+			message_unopen = "英雄正在点开"
+		Case 2
+			intX=270
+			intY=1887
+			colour = "615620"
+			message_open = "已经点开"
+			message_unopen = "佣兵正在点开"
+		Case 5
+			intX=810
+			intY=1884
+			colour = "793045"
+			message_open = "神器已经点开"
+			message_unopen = "神器正在点开"
+
+	End Select
+	//融合字符串
+	MyArray(0) = intX
+	MyArray(1) = intY
+	MyArray(2) = colour
+	cmpColors=Join(MyArray, "|")
+	TracePrint cmpColors
+ 	error_num_one = 0
+	While CmpColorEx(cmpColors,1) = 1//识别未打开
+        TracePrint	message_unopen
+        Touch intX,intY, 100
+		Delay 2000
+//		Call close_ad()//广告
+        error_num_one = error_num_one + 1
+        If error_num_one > 10 Then 
+            TracePrint message_unopen&"出错"
+            Exit While
+        End If
+        
+    Wend
+    If CmpColorEx(cmpColors,1) = 0 Then //识别已打开
+    	TracePrint	message_open
+    	Navbar_one_check = True
+    Else 
+    	Navbar_one_check = False
+    End If
+	
+End Function
+
