@@ -1056,98 +1056,105 @@ Function skills
     End If
     
 	//技能6
-	If CmpColorEx("975|1654|00AEFF", 1) = 0 And skill_6 = True Then
-    	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(50, 55)
-    	Delay RndEx(20, 30)
-    	str_skill = "6" & str_skill
-    	skillerror_6 = skillerror_6 + 1
-		If skillerror_6 > 50 Then 
-    		Call Navbar_main("hero",1)//升级本人与技能
-    	End If
-	Else 
-		skillerror_6 = 0
-	End If
+	skillerror_6 = skill_one(975,1654, skill_6,skillerror_6)
+//	If CmpColorEx("975|1654|00AEFF", 1) = 0 And skill_6 = True Then
+//    	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(50, 55)
+//    	Delay RndEx(20, 30)
+//    	str_skill = "6" & str_skill
+//    	skillerror_6 = skillerror_6 + 1
+//		If skillerror_6 > 50 Then 
+//    		Call Navbar_main("hero",1)//升级本人与技能
+//    	End If
+//	Else 
+//		skillerror_6 = 0
+//	End If
     //技能5
-    If CmpColorEx("795|1654|00AEFF", 1) = 0 And skill_5 = True Then
-    	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(50, 55)
-    	Delay RndEx(20, 30)
-    	str_skill = "5" & str_skill
-    	skillerror_5 = skillerror_5 + 1
-		If skillerror_5 > 50 Then 
-    		Call Navbar_main("hero",1)//升级本人与技能
-    	End If
-	Else 
-		skillerror_5 = 0
-	End If
+    skillerror_5 = skill_one(795,1654, skill_5,skillerror_5)
+//    If CmpColorEx("795|1654|00AEFF", 1) = 0 And skill_5 = True Then
+//    	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(50, 55)
+//    	Delay RndEx(20, 30)
+//    	str_skill = "5" & str_skill
+//    	skillerror_5 = skillerror_5 + 1
+//		If skillerror_5 > 50 Then 
+//    		Call Navbar_main("hero",1)//升级本人与技能
+//    	End If
+//	Else 
+//		skillerror_5 = 0
+//	End If
     //技能4
-    If CmpColorEx("619|1654|00AEFF", 1) = 0 And skill_4 = True Then
-    	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(50, 55)
-    	Delay RndEx(20, 30)
-    	str_skill = "4" & str_skill
-    	skillerror_4 = skillerror_4 + 1
-		If skillerror_4 > 50 Then 
-    		Call Navbar_main("hero",1)//升级本人与技能
-    	End If
-	Else 
-		skillerror_4 = 0
-	End If
+    skillerror_4 = skill_one(619,1654, skill_4,skillerror_4)
+//    If CmpColorEx("619|1654|00AEFF", 1) = 0 And skill_4 = True Then
+//    	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(50, 55)
+//    	Delay RndEx(20, 30)
+//    	str_skill = "4" & str_skill
+//    	skillerror_4 = skillerror_4 + 1
+//		If skillerror_4 > 50 Then 
+//    		Call Navbar_main("hero",1)//升级本人与技能
+//    	End If
+//	Else 
+//		skillerror_4 = 0
+//	End If
     //技能3
-    If CmpColorEx("440|1654|00AEFF", 1) = 0 And skill_3 = True Then
-    	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(50, 55)
-    	Delay RndEx(20, 30)
-    	str_skill = "3" & str_skill
-    	skillerror_3 = skillerror_3 + 1
-		If skillerror_3 > 50 Then 
-    		Call Navbar_main("hero",1)//升级本人与技能
-    	End If
-	Else 
-		skillerror_3 = 0
-	End If	
+    skillerror_3 = skill_one(440,1654, skill_3,skillerror_3)
+//    If CmpColorEx("440|1654|00AEFF", 1) = 0 And skill_3 = True Then
+//    	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(50, 55)
+//    	Delay RndEx(20, 30)
+//    	str_skill = "3" & str_skill
+//    	skillerror_3 = skillerror_3 + 1
+//		If skillerror_3 > 50 Then 
+//    		Call Navbar_main("hero",1)//升级本人与技能
+//    	End If
+//	Else 
+//		skillerror_3 = 0
+//	End If	
     //技能2
-    If CmpColorEx("263|1654|00AEFF", 1) = 0 And skill_2 = True Then
-    	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(50, 55)
-    	Delay RndEx(20, 30)
-    	str_skill = "2" & str_skill
-    	skillerror_2 = skillerror_2 + 1
-		If skillerror_2 > 50 Then 
-    		Call Navbar_main("hero",1)//升级本人与技能
-    	End If
-    Else 
-		skillerror_2 = 0
-	End If
+    skillerror_2 = skill_one(263,1654, skill_2,skillerror_2)
+//    If CmpColorEx("263|1654|00AEFF", 1) = 0 And skill_2 = True Then
+//    	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(50, 55)
+//    	Delay RndEx(20, 30)
+//    	str_skill = "2" & str_skill
+//    	skillerror_2 = skillerror_2 + 1
+//		If skillerror_2 > 50 Then 
+//    		Call Navbar_main("hero",1)//升级本人与技能
+//    	End If
+//    Else 
+//		skillerror_2 = 0
+//	End If
     //技能1
-    If CmpColorEx("89|1651|00AEFF", 1) = 0 And skill_1 = True Then 
-		Touch RndEx(80, 90), RndEx(1700, 1740), RndEx(50, 55)
-		Delay RndEx(50, 60)
-		str_skill = "1" & str_skill
-		skillerror_1 = skillerror_1 + 1
-		If skillerror_1 > 50 Then 
-    		Call Navbar_main("hero",1)//升级本人与技能
-    	End If
-	Else 
-		skillerror_1 = 0
-    End If
+//    If CmpColorEx("89|1651|00AEFF", 1) = 0 And skill_1 = True Then 
+//		Touch RndEx(80, 90), RndEx(1700, 1740), RndEx(50, 55)
+//		Delay RndEx(50, 60)
+//		str_skill = "1" & str_skill
+//		skillerror_1 = skillerror_1 + 1
+//		If skillerror_1 > 50 Then 
+//    		Call Navbar_main("hero",1)//升级本人与技能
+//    	End If
+//	Else 
+//		skillerror_1 = 0
+//    End If
     
-    skill_one(intX,intY, num,error)
+    skillerror_1 = skill_one(89,1651, skill_1,skillerror_1)
     
     
-    //技能未使用统计报错
-    If str_skill = "123456" Then 
-    	skill_notuse = skill_notuse + 1
-    	If skill_notuse > 20 Then 
-    		Call Navbar_main("hero",1)//升级本人与技能
-    	End If
-    Else 
-    	skill_notuse = 0
-    End If
-    
-
+//    //技能未使用统计报错
+//    If str_skill = "123456" Then 
+//    	skill_notuse = skill_notuse + 1
+//    	If skill_notuse > 20 Then 
+//    		Call Navbar_main("hero",1)//升级本人与技能
+//    	End If
+//    Else 
+//    	skill_notuse = 0
+//    End If
+//    
+//
     
     
     TracePrint str_skill
 End Function
-
-Function skill_one(intX,intY, num,error)
+skillerror_1 = skill_one(89,1651, skill_1,skillerror_1)
+Function skill_one(intX, intY, num, error)
+	TracePrint num
+	Dim MyArray(3),cmpColors
 	//技能num
 	//融合字符串
 	MyArray(0) = intX
@@ -1155,11 +1162,13 @@ Function skill_one(intX,intY, num,error)
 	MyArray(2) = "00AEFF"
 	cmpColors = Join(MyArray, "|")
 	If CmpColorEx(cmpColors, 1) = 0 And num = True Then
-    	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(50, 55)
-    	Delay RndEx(20, 30)
+    	Touch RndEx(intX-30, intX+30), RndEx(intY+50, intY+100),RndEx(50, 55)
+    	Delay RndEx(20, 50)
     	error = error + 1
-		If error > 50 Then 
+		If error > 100 Then 
+			TracePrint "技能无法使用"
     		Call Navbar_main("hero",1)//升级本人与技能
+    		error = 0
     	End If
 	Else 
 		error = 0
