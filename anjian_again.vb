@@ -36,6 +36,9 @@ Dim updata_mistake
 Dim update_main_num, update_main_num1, update_main_num2//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
+//初始化技能
+Dim skill_notuse = 0//技能未使用统计报错
+Dim skillerror_1=0,skillerror_2=0,skillerror_3=0,skillerror_4=0,skillerror_5=0,skillerror_6=0
 //部落时间
 Dim tribe_time
 //蓝量
@@ -1056,40 +1059,115 @@ Function skills
 	If CmpColorEx("975|1654|00AEFF", 1) = 0 And skill_6 = True Then
     	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(50, 55)
     	Delay RndEx(20, 30)
-    	str_skill = "6"&str_skill
+    	str_skill = "6" & str_skill
+    	skillerror_6 = skillerror_6 + 1
+		If skillerror_6 > 50 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+	Else 
+		skillerror_6 = 0
 	End If
     //技能5
     If CmpColorEx("795|1654|00AEFF", 1) = 0 And skill_5 = True Then
     	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(50, 55)
     	Delay RndEx(20, 30)
-    	str_skill = "5"&str_skill
+    	str_skill = "5" & str_skill
+    	skillerror_5 = skillerror_5 + 1
+		If skillerror_5 > 50 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+	Else 
+		skillerror_5 = 0
 	End If
     //技能4
     If CmpColorEx("619|1654|00AEFF", 1) = 0 And skill_4 = True Then
     	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(50, 55)
     	Delay RndEx(20, 30)
-    	str_skill = "4"&str_skill
+    	str_skill = "4" & str_skill
+    	skillerror_4 = skillerror_4 + 1
+		If skillerror_4 > 50 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+	Else 
+		skillerror_4 = 0
 	End If
     //技能3
     If CmpColorEx("440|1654|00AEFF", 1) = 0 And skill_3 = True Then
     	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(50, 55)
     	Delay RndEx(20, 30)
-    	str_skill = "3"&str_skill
+    	str_skill = "3" & str_skill
+    	skillerror_3 = skillerror_3 + 1
+		If skillerror_3 > 50 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+	Else 
+		skillerror_3 = 0
 	End If	
     //技能2
     If CmpColorEx("263|1654|00AEFF", 1) = 0 And skill_2 = True Then
     	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(50, 55)
     	Delay RndEx(20, 30)
-    	str_skill = "2"&str_skill
+    	str_skill = "2" & str_skill
+    	skillerror_2 = skillerror_2 + 1
+		If skillerror_2 > 50 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+    Else 
+		skillerror_2 = 0
 	End If
     //技能1
     If CmpColorEx("89|1651|00AEFF", 1) = 0 And skill_1 = True Then 
 		Touch RndEx(80, 90), RndEx(1700, 1740), RndEx(50, 55)
 		Delay RndEx(50, 60)
-		str_skill = "1"&str_skill
+		str_skill = "1" & str_skill
+		skillerror_1 = skillerror_1 + 1
+		If skillerror_1 > 50 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+	Else 
+		skillerror_1 = 0
     End If
+    
+    skill_one(intX,intY, num,error)
+    
+    
+    //技能未使用统计报错
+    If str_skill = "123456" Then 
+    	skill_notuse = skill_notuse + 1
+    	If skill_notuse > 20 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+    Else 
+    	skill_notuse = 0
+    End If
+    
+
+    
+    
     TracePrint str_skill
 End Function
+
+Function skill_one(intX,intY, num,error)
+	//技能num
+	//融合字符串
+	MyArray(0) = intX
+	MyArray(1) = intY
+	MyArray(2) = "00AEFF"
+	cmpColors = Join(MyArray, "|")
+	If CmpColorEx(cmpColors, 1) = 0 And num = True Then
+    	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(50, 55)
+    	Delay RndEx(20, 30)
+    	error = error + 1
+		If error > 50 Then 
+    		Call Navbar_main("hero",1)//升级本人与技能
+    	End If
+	Else 
+		error = 0
+	End If
+	skill_one = error
+End Function
+
+
 //蜕变
 Function prestige
 	Call close_ad()//广告
@@ -1261,7 +1339,7 @@ Function update_one(error_onemax)
     While up1X > -1
       TracePrint "升级识别:x="&up1X&"y="&up1Y
         Touch up1X-100,up1Y+50, RndEx(20,55)
-        Delay RndEx(100,200)
+        Delay RndEx(100,150)
         Call close_ad()
         FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
         error_one = error_one + 1
