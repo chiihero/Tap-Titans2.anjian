@@ -1195,12 +1195,11 @@ Function update(flat,error_onemax)
         		Call close_ad()//广告
            		Delay 2000
         	End If
-			//物品栏下箭头
+			//物品栏下箭头高
             If CmpColorEx("864|28|303845",1) = 0 Then 
 				box_flat =1
             End If 
 		End If
-
         //以防出错标记
         //从下往上
         If flat = 1 Then 
@@ -1774,10 +1773,10 @@ Function achievement
 	TracePrint "成就"
 	Dim error_one = 0
     //购买框识别
-    FindColor 759,115,821,344,"525241",1,1,checkX,checkY
+    FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
     While checkX = -1 And checkY = -1
         TracePrint "物品栏识别"
-        //物品栏下箭头
+        //物品栏下箭头高
         If CmpColorEx("864|28|303845", 1) = 0 Then 
             TracePrint "物品栏下箭头"
             //物品栏下箭头矮
@@ -1787,6 +1786,7 @@ Function achievement
         		Call close_ad()//广告
         	End If
         	Delay 2000
+        	//物品栏下箭头高
             If CmpColorEx("864|28|303845", 1) = 0 Then 
                 TracePrint "error.achievement"
                 Exit Function
@@ -1794,13 +1794,12 @@ Function achievement
             End If
         End If 
         //以防出错标记
-        error_one=0
         Delay 100
         Swipe 1000, 1300, 1000, 1600, 200
         TracePrint "上滑"
-        Delay 100
+        Delay 1000
 		Call close_ad()//广告
-        FindColor 926, 1174, 1072, 1765, "525241", 1, 1, checkX, checkY
+        FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
         error_one = error_one + 1
         If error_one > 5 Then 
             TracePrint"出错"
