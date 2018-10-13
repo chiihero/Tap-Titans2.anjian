@@ -1,4 +1,4 @@
-//2018年10月9日14:25:43
+//2018年10月13日18:25:04
 //========================================初始化开始=================================================//
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
@@ -37,7 +37,7 @@ Dim update_main_num, update_main_num1, update_main_num2//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
 //初始化技能
-Dim skill_notuse = 0//技能未使用统计报错
+//技能未使用统计报错
 Dim skillerror_1=0,skillerror_2=0,skillerror_3=0,skillerror_4=0,skillerror_5=0,skillerror_6=0
 //部落时间
 Dim tribe_time
@@ -160,6 +160,11 @@ If delay_time > 0 Then
 End If
 
 Call Screen()//屏幕适配 
+Touch 500, 500, 200
+Delay 1000
+Touch 500, 500, 200
+Delay 1000
+Touch 500, 500, 200
 //欢迎回来收集
 If CmpColorEx("543|1416|0C81FB",1) = 1 Then
 	Touch 543,1416,100
@@ -191,17 +196,10 @@ Function init()
 	update_main_init_time = update_time
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
-	
 /*****************************************************/
     //显示信息
-
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_temp)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
 	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_temp)/60000) &"分钟\n！！！初始化成功！！！"
-	Touch 500, 500, 200
-	Delay 1000
-	Touch 500, 500, 200
-	Delay 1000
-	Touch 500, 500, 200
 	Call close_ad()//广告
     Call layer()//层数
     Call prestige_check()//层数处理
@@ -302,7 +300,7 @@ Function main
         Call close_ad()
         //游戏挂机10分钟自动暗屏省电
         If TickCount() > 600000 Then 
-        	Device.SetBacklightLevel(5)//设置亮度
+        	Device.SetBacklightLevel(0)//设置亮度
         End If
     Loop
 End Function
@@ -754,7 +752,6 @@ Function Navbar_one_check(num)
 	
 End Function
 
-
 //部落
 Function tribe()
 	If tribe_num = 0 Then 
@@ -838,13 +835,11 @@ Function tribe()
         //点击部落boss
         //第一次打boss35秒
         TracePrint "循环点击35秒"
-        Dim i = 0
-        While i < 600
+        For 600
             //点击延迟
             Touch RndEx(250, 880), RndEx(342, 970), RndEx(15, 25)
             Delay RndEx(40, 70)
-            i = i + 1
-        Wend
+        Next
         //离开部落boos界面
         Delay 1500
         FindPic 453,82,554,185,"Attachment:部落boss退出任务.png","000000",0,0.7,intX,intY
@@ -910,7 +905,7 @@ Function little_fairy()
             End If
         Wend
         TracePrint"已点击观看"
-        Delay 30000
+        Delay 35000
         //判断收集字符出现
         error_one = 0
         While CmpColorEx("422|1413|FFFFFF",0.9) = 0
@@ -1045,7 +1040,7 @@ End Function
 Function skills
     TracePrint "技能"
     //降下选择栏
-    Dim checkX,checkY,str_skill = ""
+    Dim checkX,checkY
     //关闭面板
     If CmpColorEx("1009|32|303845",1) = 1 Then
         Touch 1009,32, 50
@@ -1057,103 +1052,25 @@ Function skills
     
 	//技能6
 	skillerror_6 = skill_one(975,1654, skill_6,skillerror_6)
-//	If CmpColorEx("975|1654|00AEFF", 1) = 0 And skill_6 = True Then
-//    	Touch RndEx(946, 1027), RndEx(1682, 1755),RndEx(50, 55)
-//    	Delay RndEx(20, 30)
-//    	str_skill = "6" & str_skill
-//    	skillerror_6 = skillerror_6 + 1
-//		If skillerror_6 > 50 Then 
-//    		Call Navbar_main("hero",1)//升级本人与技能
-//    	End If
-//	Else 
-//		skillerror_6 = 0
-//	End If
+
     //技能5
     skillerror_5 = skill_one(795,1654, skill_5,skillerror_5)
-//    If CmpColorEx("795|1654|00AEFF", 1) = 0 And skill_5 = True Then
-//    	Touch RndEx(772, 848), RndEx(1682, 1755),RndEx(50, 55)
-//    	Delay RndEx(20, 30)
-//    	str_skill = "5" & str_skill
-//    	skillerror_5 = skillerror_5 + 1
-//		If skillerror_5 > 50 Then 
-//    		Call Navbar_main("hero",1)//升级本人与技能
-//    	End If
-//	Else 
-//		skillerror_5 = 0
-//	End If
+
     //技能4
     skillerror_4 = skill_one(619,1654, skill_4,skillerror_4)
-//    If CmpColorEx("619|1654|00AEFF", 1) = 0 And skill_4 = True Then
-//    	Touch RndEx(590, 666), RndEx(1682, 1755),RndEx(50, 55)
-//    	Delay RndEx(20, 30)
-//    	str_skill = "4" & str_skill
-//    	skillerror_4 = skillerror_4 + 1
-//		If skillerror_4 > 50 Then 
-//    		Call Navbar_main("hero",1)//升级本人与技能
-//    	End If
-//	Else 
-//		skillerror_4 = 0
-//	End If
+
     //技能3
     skillerror_3 = skill_one(440,1654, skill_3,skillerror_3)
-//    If CmpColorEx("440|1654|00AEFF", 1) = 0 And skill_3 = True Then
-//    	Touch RndEx(406, 480), RndEx(1682, 1755),RndEx(50, 55)
-//    	Delay RndEx(20, 30)
-//    	str_skill = "3" & str_skill
-//    	skillerror_3 = skillerror_3 + 1
-//		If skillerror_3 > 50 Then 
-//    		Call Navbar_main("hero",1)//升级本人与技能
-//    	End If
-//	Else 
-//		skillerror_3 = 0
-//	End If	
+
     //技能2
     skillerror_2 = skill_one(263,1654, skill_2,skillerror_2)
-//    If CmpColorEx("263|1654|00AEFF", 1) = 0 And skill_2 = True Then
-//    	Touch RndEx(264, 303), RndEx(1682, 1755),RndEx(50, 55)
-//    	Delay RndEx(20, 30)
-//    	str_skill = "2" & str_skill
-//    	skillerror_2 = skillerror_2 + 1
-//		If skillerror_2 > 50 Then 
-//    		Call Navbar_main("hero",1)//升级本人与技能
-//    	End If
-//    Else 
-//		skillerror_2 = 0
-//	End If
-    //技能1
-//    If CmpColorEx("89|1651|00AEFF", 1) = 0 And skill_1 = True Then 
-//		Touch RndEx(80, 90), RndEx(1700, 1740), RndEx(50, 55)
-//		Delay RndEx(50, 60)
-//		str_skill = "1" & str_skill
-//		skillerror_1 = skillerror_1 + 1
-//		If skillerror_1 > 50 Then 
-//    		Call Navbar_main("hero",1)//升级本人与技能
-//    	End If
-//	Else 
-//		skillerror_1 = 0
-//    End If
-    
+
+ 	//技能1
     skillerror_1 = skill_one(89,1651, skill_1,skillerror_1)
-    
-    
-//    //技能未使用统计报错
-//    If str_skill = "123456" Then 
-//    	skill_notuse = skill_notuse + 1
-//    	If skill_notuse > 20 Then 
-//    		Call Navbar_main("hero",1)//升级本人与技能
-//    	End If
-//    Else 
-//    	skill_notuse = 0
-//    End If
-//    
-//
-    
-    
-    TracePrint str_skill
+ 
 End Function
-skillerror_1 = skill_one(89,1651, skill_1,skillerror_1)
+//单一技能点击
 Function skill_one(intX, intY, num, error)
-	TracePrint num
 	Dim MyArray(3),cmpColors
 	//技能num
 	//融合字符串
@@ -1283,10 +1200,7 @@ Function update(flat,error_onemax)
 				box_flat =1
             End If 
 		End If
-		//使判断到最后时候在执行一次
-		If checkX > -1 Then 
-			last_check = 1  
-		End If
+
         //以防出错标记
         //从下往上
         If flat = 1 Then 
@@ -1327,10 +1241,11 @@ Function update(flat,error_onemax)
         TracePrint "上滑"
         Delay 1000
         error_one = error_one + 1
-        If error_one > 40 Then 
+        //使判断到最后时候在执行一次
+        If error_one > 40 or checkX > -1 Then 
             TracePrint"出错"
             Call close_ad()
-            Exit Do
+            last_check = 1  
         End If
 		FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
 	Loop While last_check = 0
@@ -1343,20 +1258,25 @@ End Function
 
 
 Function update_one(error_onemax)
-	Dim up1X, up1Y, error_one = 0
+	Dim up1X, up1Y,up2X, up2Y, error_one = 0
 	FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
     While up1X > -1
       TracePrint "升级识别:x="&up1X&"y="&up1Y
         Touch up1X-100,up1Y+50, RndEx(20,55)
         Delay RndEx(100,150)
         Call close_ad()
-        FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
+		FindColor 699, 238, 740, 1813, "001859", 0, 1, up2X, up2Y
+		If up2X > -1 Then 
+			Touch up2X, up2Y + 5, RndEx(20, 55)
+			Delay RndEx(100,150)
+		End If
         error_one = error_one + 1
 		If error_one > error_onemax Then 
             TracePrint"出错"
             Call close_ad()
             Exit While
         End If
+        FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
     Wend
 End Function
 
@@ -1693,7 +1613,7 @@ Function search(flat)
 	Delay 2000
 	KeyPress "Del"
 	//选择输入框中的数据
-	Dim intX,intY
+	Dim intX,intY,int2X, int2Y
 	FindColor 300,411,314,468, "FFFFFF", 0, 1, intX, intY
 	error_one=0
 	While intX > -1 And intY > -1
@@ -1717,10 +1637,14 @@ Function search(flat)
 	End If
 	Delay 2000
 	//新搜索
-	FindStr(63, 900, 976, 1480,"新","FFFFFF-111111",0.8,intX,intY)
-	If intX > -1 And intY > -1 Then 
+	FindStr 109, 939, 164, 1486, "新", "FFFFFF-111111", 0.8, intX, intY
+	FindStr 832, 943, 874, 1486, "新", "FFFFFF-111111", 0.8, int2X, int2Y
+	If intX > -1 Then 
 		TracePrint "新搜索-x:"&intX&"y:"&intY
 		Touch intX, intY, 10
+	ElseIf int2X > -1 Then
+		TracePrint "新搜索2-x:"&int2X&"y:"&int2Y
+		Touch int2X, int2Y, 10
 	End If
 	Delay 1000
 	//选择类型，float
@@ -2052,6 +1976,7 @@ Function OnScriptExit()
     TracePrint "脚本已经停止！"
     ShowMessage "脚本已经停止！"
     KeepScreen False
-    Log.Close
+    Log.Close 
+    Device.SetBacklightLevel(40)//设置亮度
 End Function
 
