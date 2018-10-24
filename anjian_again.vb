@@ -56,7 +56,6 @@ TracePrint iif(tapkill_bool, "仅点击:开启", "仅点击:关闭")
 //部落钻石选项
 Dim tribe_num = ReadUIConfig("tribe_num")
 TracePrint  "部落选择"&tribe_num
-
 /*=========================日常功能设置========================*/
 //竞赛
 Dim competition_bool = ReadUIConfig("competition")
@@ -100,7 +99,6 @@ prestige_maxtime = CInt(prestige_maxtime)
 //升级神器
 Dim artifact_bool = ReadUIConfig("artifact")
 TracePrint iif(artifact_bool, "升级神器:开启", "升级神器:关闭")
-
 /*=========================升级设置========================*/
 //优先升级的栏目
 Dim navbar_first = ReadUIConfig("navbar_first")
@@ -128,8 +126,6 @@ TracePrint iif(skill_5, "技能5:开启", "技能5:关闭")
 //技能6
 Dim skill_6 = ReadUIConfig("skill_6")
 TracePrint iif(skill_6, "技能6:开启", "技能6:关闭")
-
-
 /*===============杂项===================*/
 //等待开启时间
 Dim delay_time = ReadUIConfig("textedit_delay","0")
@@ -167,15 +163,7 @@ Delay 1000
 Touch 500, 500, 200
 Delay 1000
 Touch 500, 500, 200
-//欢迎回来收集
-If CmpColorEx("543|1416|0C81FB",1) = 1 Then
-	Touch 543,1416,100
-End If
 //关闭面板
-While CmpColorEx("864|30|303845", 1) = 1
-    Touch 1009, 32, 200
-    Delay 1000
-Wend
 Call close_ad()
 Call main()
 Function init()
@@ -217,7 +205,6 @@ Function init()
     update_main_num1 = 0
     update_main_num2 = 0
 	Call update_main(1)//升级.初始化模式
-	Call Navbar_main("hero",3)//成就
 	Call Navbar_main("artifact",0)//神器
 /*****************************************************/
 	send_flag = 1  //发送邮箱，必须在检测layer()后
@@ -654,15 +641,14 @@ Function Navbar_main(navbar_name,flat)
             	//升级英雄与技能
             	Call swipe_up(5)
             	Call update(1,180)
+                //顺带成就
+            	Delay 200
+            	Call achievement()
         	Case 2
             	//蜕变
             	Call swipe_down(10)
             	Delay 1000
             	Call prestige()
-        	Case 3
-            	//成就
-            	Delay 200
-            	Call achievement()
     		End Select
     	End If
     
@@ -690,7 +676,12 @@ Function Navbar_main(navbar_name,flat)
     		TracePrint	"佣兵已经点开"
 			Call artifact_update()
     	End If
-	End If	
+	End If
+	//关闭面板
+	If CmpColorEx("864|30|303845", 1) = 1 Then
+    	Touch 1009, 32, 200
+    End If
+    Delay 2000
 End Function
 
 Function Navbar_one_check(num)
@@ -871,6 +862,8 @@ Function close_ad()
     		If CmpColorEx("469|1456|0C81FB", 0.9) = 1 Then //欢迎回来的收集
     			Touch 469, 1456, 200//点击收集
     		End If
+    		Call close_navbar()//关闭面板
+    		Delay 1000
 			Call close_window()//普通弹窗
     	End If
     End If
@@ -1024,10 +1017,13 @@ End Function
 
 Function close_navbar()
 	//关闭面板
-    If CmpColorEx("1009|32|303845",1) = 1 Then
+	
+    If CmpColorEx("1009|32|303845", 1) = 1 Then 
+    	TracePrint "关闭高面板"
         Touch 1009,32, 50
        	Delay 500
-    ElseIf CmpColorEx("1009|1068|303845",1) = 1 Then
+    ElseIf CmpColorEx("1009|1068|303845", 1) = 1 Then
+    	TracePrint "关闭低面板"
         Touch 1009,1068, 50
        	Delay 500
     End If
@@ -1247,11 +1243,6 @@ Function update(flat,error_onemax)
         End If
 		FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
 	Loop While last_check = 0
-	//关闭面板
-	If CmpColorEx("864|30|303845", 1) = 1 Then
-    	Touch 1009, 32, 200
-    End If
-    Delay 2000
 End Function
 
 //升级单个选项
@@ -1261,8 +1252,10 @@ Function update_one(error_onemax)
     While up1X > -1
       TracePrint "升级识别:x="&up1X&"y="&up1Y
         Touch up1X-100,up1Y+50, RndEx(20,55)
-        Delay RndEx(100,150)
-        Call close_window()//普通弹窗
+        Delay RndEx(100, 150)
+        If CmpColorEx("842|80|4C4C54", 0.9) = 1 Then 
+        	Call close_window()//普通弹窗
+        End If
 		FindColor 699, 238, 740, 1813, "001859", 0, 1, up2X, up2Y
 		If up2X > -1 Then 
 			Touch up2X, up2Y + 5, RndEx(20, 55)
@@ -1276,7 +1269,9 @@ Function update_one(error_onemax)
         End If
         FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
     Wend
-    Call close_window()//普通弹窗
+    If CmpColorEx("842|80|4C4C54", 0.9) = 1 Then //边框颜色
+        Call close_window()//普通弹窗
+    End If
 End Function
 
 //升级神书
@@ -1324,16 +1319,7 @@ Function ocrchar_blue(accuracy)
 	Dim ocrchar
 	Dim error_one = 0
 	//降下物品栏
-	While CmpColorEx("1010|1070|303845",1) = 1
-        Touch 1010, 1070, 150
-       	Delay 550
-       	error_one = error_one + 1
-        If error_one > 5 Then 
-            TracePrint"出错&stop"
-            Call close_ad()
-            Exit While
-        End If
-    Wend
+	Call close_navbar()
  	Delay 500
  	error_one = 0
 	Do
@@ -1708,15 +1694,17 @@ Function daily_reward
 	If daily_reward_bool = False Then 
 		Exit Function
 	End If
+	Dim intX,intY
 	TracePrint "每日奖励"
-	If CmpColorEx("71|402|2525F1",1) = 1 Then
+	If CmpColorEx("74|428|CCCCCC",0.9) = 1 Then
     	TracePrint "发现每日奖励"
-        Touch 71,402, 200
+        Touch 74,422, 200
         Delay 2000
-		If CmpColorEx("116|553|2222EE",1) = 1 Then
-			Touch 555,1244, 200
-			Delay 2000
-    	End If
+        //收集
+		FindColor 446,1216,500,1287,"D7AB28-111111",0,0.9,intX,intY
+		If intX > -1 And intY > -1 Then
+			Touch RndEx(intX,intX+10),RndEx(intY,intY+10),100
+		End If
         For 4
         	Delay 1000
     		Touch 500, 500, 200
