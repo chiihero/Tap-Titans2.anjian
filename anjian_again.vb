@@ -16,6 +16,7 @@ Dim auto_prestige_time
 Dim skills_time 
 Dim auto_sendmessage_tribe_time //蜕变使用时间
 Dim mistake_reboot//出错重启
+Dim reboot_game = TickCount()//定时重启
 //初始化错误次数
 //Dim error_one
 //Dim error_two
@@ -135,10 +136,10 @@ Dim delay_time = ReadUIConfig("textedit_delay","0")
 delay_time = CInt(delay_time)*60*1000
 TracePrint  "等待时间"&delay_time
 //定时重启选项
-Dim reboot_time_temp = ReadUIConfig("textedit_reboot_delay","0")
-reboot_time_temp = CInt(reboot_time_temp)*60*1000
-TracePrint  reboot_time_temp
-reboot_time = reboot_time_temp//定时重启
+Dim reboot_time_ui = ReadUIConfig("textedit_reboot_delay","0")
+reboot_time_ui = CInt(reboot_time_ui)*60*1000
+TracePrint  reboot_time_ui
+reboot_time = reboot_time_ui//定时重启
 
 //邮箱
 //发送邮箱账号
@@ -160,6 +161,7 @@ If delay_time > 0 Then
 End If
 
 Call Screen()//屏幕适配 
+Call check_status()//检测状态
 Touch 500, 500, 200
 Delay 1000
 Touch 500, 500, 200
@@ -174,7 +176,6 @@ While CmpColorEx("864|30|303845", 1) = 1
     Touch 1009, 32, 200
     Delay 1000
 Wend
-Call check_status()
 Call close_ad()
 Call main()
 Function init()
@@ -198,8 +199,8 @@ Function init()
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 /*****************************************************/
     //显示信息
-    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_temp)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
-	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_temp)/60000) &"分钟\n！！！初始化成功！！！"
+    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
+	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((TickCount()Mod reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！"
 	Call close_ad()//广告
     Call layer()//层数
     Call prestige_check()//层数处理
@@ -272,7 +273,7 @@ Function main
         Call kill()//点杀
         TracePrint "kill()*************"&(TickCount()-t_time)/1000&"秒"
     	t_time = TickCount()
-		Call check_status()
+		Call check_status()//运行状态
 		TracePrint "check_status()******"&(TickCount()-t_time)/1000&"秒"
 		t_time = TickCount()
         Call layer()//层数 
@@ -284,7 +285,6 @@ Function main
         	TracePrint "prestige_check()******"&(TickCount()-t_time)/1000&"秒"
         	prestige_check_lasttime = TickCount()
 		End If
-
 		t_time = TickCount()
 		Call update_main(0)//定时升级
 		TracePrint "update_main(0)******"&(TickCount()-t_time)/1000&"秒"
@@ -300,12 +300,14 @@ Function main
         Call close_ad()
         //游戏挂机10分钟自动暗屏省电
         If TickCount() > 600000 Then 
-        	Device.SetBacklightLevel(0)//设置亮度
+        	Device.SetBacklightLevel(10)//设置亮度
         End If
     Loop
 End Function
 //退出游戏
 Function kill_app()
+	SetDictEx(0, "Attachment:修改器.txt")
+	UseDict(0)
 	TracePrint "关闭游戏"	
 	//等待识别退出
 	Dim intX,intY,error_one
@@ -336,15 +338,18 @@ Function kill_app()
             Exit While
         End If
 	Wend
-	Delay 1500
-	KillApp "com.gamehivecorp.taptitans2"
+	Delay 2000
+	If Sys.isRunning("com.gamehivecorp.taptitans2") = True Then 
+		KillApp "com.gamehivecorp.taptitans2"
+		Delay 5000
+	End If
 	//等待修改器的确认游戏退出
-    FindPic 91,736,992,1222, "Attachment:确定.png","000000",0, 0.8, intX, intY
+    FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
 	error_one = 0
 	Do
 		TracePrint"等待修改器的确认游戏退出"
 		Delay 500
-		FindPic 91,736,992,1222, "Attachment:确定.png","000000",0, 0.8, intX, intY
+		FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
 		error_one = error_one + 1
         If error_one > 10 Then 
             TracePrint"层数出错"
@@ -357,6 +362,15 @@ Function kill_app()
 End Function
 //判断应用存在
 Function check_status()
+	//断网自动关闭游戏等待
+	Dim count = 0
+	While GetNetworkTime() = ""
+		Delay 10000
+		count = count + 1
+		If count = 10 Then 
+			Call kill_app()
+		End If
+	Wend
 	//出错重启
 	If TickCount() - mistake_reboot > (30 * 60 * 1000) Then 
 		TracePrint "出错重启"
@@ -365,31 +379,31 @@ Function check_status()
 		mistake_reboot = TickCount()
 	End If
 	//定时重启
-    If TickCount() > reboot_time And reboot_time > 0 Then 
+    If  TickCount()- reboot_game >reboot_time  And reboot_time > 0 Then 
     	TracePrint "定时重启"
     	Call mail("定时重启")
 		Call kill_app()
 		GG_blue_bool = True
-		reboot_time = TickCount() + reboot_time	
-    	
+		reboot_game = TickCount()
     End If
     //检测界面是否被遮挡
 	If CmpColorEx("992|1886|414424", 1) = 1 Then 
 		TracePrint "检测界面没有被遮挡，跳出"
 		Exit Function
     End If
-    
+
+    FindPic 482,1227,548,1303,"Attachment:服务器维护.png","000000",0,0.9,intX,intY
+    If intX > -1 And intY > -1 Then 
+        Call mail("服务器维护")
+		TracePrint "stop"
+		EndScript
+    End If
+    SetDictEx(0, "Attachment:修改器.txt")
     UseDict (0)
-//	Dim ocrchar=Ocr(350,600,725,691,"FFFFFF",1)
-//	If ocrchar = "服务器维护"  Then 
-//		Call mail("服务器维护")
-//		TracePrint "stop"
-//		EndScript
-//	End If
 	//识别修改器的确认游戏退出
-	FindPic 91, 736, 992, 1222, "Attachment:确定.png", "000000", 0, 0.8, intX, intY
+	FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
 	If intX > -1 Then 
-		Touch intX, intY, 10
+		Touch intX, intY, 10 
 	End If
     If Sys.isRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2")  = False  Then 
     	TracePrint "开启游戏"
@@ -403,7 +417,7 @@ Function check_status()
 			End If
 			Delay 2000
 			//识别修改器的确认游戏退出
-			FindPic 91, 736, 992, 1222, "Attachment:确定.png", "000000", 0, 0.8, intX, intY
+			FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
 			If intX > -1 Then 
 				Touch intX, intY, 10
 			End If
@@ -457,7 +471,7 @@ Function kill()
 	dim kill_time,t_temp
     For 5
         t_temp=TickCount()
-        If CmpColorEx("280|810|FFFFD8", 1) = 1 Then 
+        If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
 			Call little_fairy()//小仙女
 		End If
         Call boss()//启动boss
@@ -513,14 +527,6 @@ Function prestige_check()
 	If ocrchar_layer >= layer_number_max Then 
     	//蜕变
     	TracePrint "固定层数蜕变"&ocrchar_layer
-    	//检查魔法值
-//        Call ocrchar_blue(9)
-//        TracePrint CInt(Myblue(0))
-//		If CInt(Myblue(0)) < 70 Then 
-//			TracePrint "魔法值出错"
-//			Call  GG()
-//			Exit Function
-//		End If
     	Call Navbar_main("hero",2)//蜕变
     	Exit Function
 	ElseIf Abs(ocrchar_layer - ocrchar_layer_temp) < 4 And auto_prestige = True Then
@@ -529,14 +535,7 @@ Function prestige_check()
 		    TracePrint "自动蜕变"&ocrchar_layer
     		layer_number_max = ocrchar_layer  //自动蜕变层数改变
     		TracePrint "最高层数设定"&layer_number_max
-    		//检查魔法值
-//            Call ocrchar_blue(9)
-//            TracePrint CInt(Myblue(0))
-//			If CInt(Myblue(0)) < 70 Then 
-//				TracePrint "魔法值出错"
-//				Call  GG()
-//				Exit Function
-//			End If
+
     		Call Navbar_main("hero",2)//蜕变
     		Exit Function
 		End If
@@ -866,7 +865,7 @@ Function close_ad()
 	If CmpColorEx("991|1881|414424",0.9) = 0 Then 
 		TracePrint "界面被遮挡"
     	//识别小仙女
-		If CmpColorEx("300|800|FFFFD8", 1) = 1 or  CmpColorEx("309|849|D7C575",1) = 1  Then 
+		If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
 			Call little_fairy()//小仙女
     	Else 
     		If CmpColorEx("469|1456|0C81FB", 0.9) = 1 Then //欢迎回来的收集
@@ -1002,7 +1001,7 @@ Function close_window()
 End Function
 
 //关闭窗口
-Function close_window_rec
+Function close_window_rec()
     TracePrint "关闭窗口"
     Dim closeX, closeY,error_one
     FindColor 879, 80, 1000, 650, "303843|303845", 1, 1, closeX, closeY
@@ -1021,6 +1020,17 @@ Function close_window_rec
             Exit do
         End If
     Loop While closeX > -1
+End Function
+
+Function close_navbar()
+	//关闭面板
+    If CmpColorEx("1009|32|303845",1) = 1 Then
+        Touch 1009,32, 50
+       	Delay 500
+    ElseIf CmpColorEx("1009|1068|303845",1) = 1 Then
+        Touch 1009,1068, 50
+       	Delay 500
+    End If
 End Function
 
 //主动进入boss模式
@@ -1042,35 +1052,23 @@ Function skills
     //降下选择栏
     Dim checkX,checkY
     //关闭面板
-    If CmpColorEx("1009|32|303845",1) = 1 Then
-        Touch 1009,32, 50
-       	Delay 500
-    ElseIf CmpColorEx("1009|1068|303845",1) = 1 Then
-        Touch 1009,1068, 50
-       	Delay 500
-    End If
-    
+    Call close_navbar()
 	//技能6
-	skillerror_6 = skill_one(975,1654, skill_6,skillerror_6)
-
+	skillerror_6 = skill_one(975,1654,100, skill_6,skillerror_6)
     //技能5
-    skillerror_5 = skill_one(795,1654, skill_5,skillerror_5)
-
+    skillerror_5 = skill_one(795,1654,100, skill_5,skillerror_5)
     //技能4
-    skillerror_4 = skill_one(619,1654, skill_4,skillerror_4)
-
+    skillerror_4 = skill_one(619,1654,100, skill_4,skillerror_4)
     //技能3
-    skillerror_3 = skill_one(440,1654, skill_3,skillerror_3)
-
+    skillerror_3 = skill_one(440,1654,100, skill_3,skillerror_3)
     //技能2
-    skillerror_2 = skill_one(263,1654, skill_2,skillerror_2)
-
+    skillerror_2 = skill_one(263,1654,100, skill_2,skillerror_2)
  	//技能1
-    skillerror_1 = skill_one(89,1651, skill_1,skillerror_1)
+    skillerror_1 = skill_one(84,1651,200, skill_1,skillerror_1)
  
 End Function
 //单一技能点击
-Function skill_one(intX, intY, num, error)
+Function skill_one(intX, intY,max_error, num, error)
 	Dim MyArray(3),cmpColors
 	//技能num
 	//融合字符串
@@ -1078,11 +1076,12 @@ Function skill_one(intX, intY, num, error)
 	MyArray(1) = intY
 	MyArray(2) = "00AEFF"
 	cmpColors = Join(MyArray, "|")
-	If CmpColorEx(cmpColors, 1) = 0 And num = True Then
-    	Touch RndEx(intX-30, intX+30), RndEx(intY+50, intY+100),RndEx(50, 55)
-    	Delay RndEx(20, 50)
+	If CmpColorEx(cmpColors, 1) = 0 And num = True Then 
+		TracePrint "x="&intX&"y="&intY
+    	Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
+    	Delay RndEx(40, 60)
     	error = error + 1
-		If error > 100 Then 
+		If error > max_error Then 
 			TracePrint "技能无法使用"
     		Call Navbar_main("hero",1)//升级本人与技能
     		error = 0
@@ -1255,7 +1254,7 @@ Function update(flat,error_onemax)
     Delay 2000
 End Function
 
-
+//升级单个选项
 Function update_one(error_onemax)
 	Dim up1X, up1Y,up2X, up2Y, error_one = 0
 	FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
@@ -1263,7 +1262,7 @@ Function update_one(error_onemax)
       TracePrint "升级识别:x="&up1X&"y="&up1Y
         Touch up1X-100,up1Y+50, RndEx(20,55)
         Delay RndEx(100,150)
-        Call close_ad()
+        Call close_window()//普通弹窗
 		FindColor 699, 238, 740, 1813, "001859", 0, 1, up2X, up2Y
 		If up2X > -1 Then 
 			Touch up2X, up2Y + 5, RndEx(20, 55)
@@ -1277,6 +1276,7 @@ Function update_one(error_onemax)
         End If
         FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
     Wend
+    Call close_window()//普通弹窗
 End Function
 
 //升级神书
@@ -1436,7 +1436,6 @@ Function GG()
     End If
     /******************第一次修改cd*************/
     If GG_cd_bool = True Then 
-		
         Call search(1)//搜索
         Delay 1500
         //	判断是否搜索到数据
@@ -1572,8 +1571,8 @@ End Function
 //单一数据修改
 Function change_database(intX, intY, str, flat)
 	SetRowsNumber(0)
-	TracePrint SetDictEx(0, "Attachment:修改器.txt")
-	TracePrint UseDict(0)
+	SetDictEx(0, "Attachment:修改器.txt")
+	UseDict(0)
 	Touch intX, intY, 10
 	Delay 1000
 	KeyPress "Del"
@@ -1854,7 +1853,8 @@ Function competition
         Touch 67, 171, 100
         error_numail_one = 0
         //等待加入按键
-        While CmpColorEx("536|1655|C29926", 1) = 0
+        FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
+        While intX = -1 And intY = -1
             Delay 1000
             error_numail_one = error_numail_one + 1
             //出现退赛按键则退出
@@ -1866,14 +1866,18 @@ Function competition
                 TracePrint"出错"
                 Exit While
             End If
+            FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
         Wend
         TracePrint "下方加入按键"
-        Touch 536, 1655, 200
-        Delay 3000
+		FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
+		If intX > -1 And intY > -1 Then
+			Touch intX,RndEx(intY,intY+5),100
+			Delay 3000
+		End If
 		If CmpColorEx("742|1302|C29926",1) = 1 Then
 			Touch 742, 1302, 200
 		End If
-        For 8
+        For 10
             Delay 1000
             Touch 500, 500, 200
         Next
