@@ -399,7 +399,7 @@ Function check_status()
     	//检测界面
     	Dim intX, intY
 		While CmpColorEx("991|1881|414424",1) = 0
-			If Sys.IsRunning("com.gamehivecorp.taptitans2") = False Then 
+			If Sys.IsRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2")  = False Then 
 				RunApp "com.gamehivecorp.taptitans2"
 			End If
 			Delay 2000
@@ -639,16 +639,19 @@ Function Navbar_main(navbar_name,flat)
         	Select Case flat
         	Case 1
             	//升级英雄与技能
-            	Call swipe_up(5)
+            	TracePrint flat
+            	Call swipe_up(2)
             	Call update(1,180)
                 //顺带成就
             	Delay 200
             	Call achievement()
         	Case 2
             	//蜕变
-            	Call swipe_down(10)
+				TracePrint flat
+            	Call swipe_down(5)
             	Delay 1000
             	Call prestige()
+            	Call close_ad()//广告
     		End Select
     	End If
     
@@ -658,7 +661,7 @@ Function Navbar_main(navbar_name,flat)
     		TracePrint	"佣兵已经点开"
 			Select Case flat
         	Case 1
-            	Call swipe_down(20)
+            	Call swipe_down(10)
             	Delay 300
            		Call update(1,60)
         	Case 2 
@@ -706,7 +709,6 @@ Function Navbar_one_check(num)
 			colour = "793045"
 			message_open = "神器已经点开"
 			message_unopen = "神器正在点开"
-
 	End Select
 	//融合字符串
 	MyArray(0) = intX
@@ -825,10 +827,10 @@ Function tribe()
         //点击部落boss
         //第一次打boss35秒
         TracePrint "循环点击35秒"
-        For 600
+        For 400
             //点击延迟
             Touch RndEx(250, 880), RndEx(342, 970), RndEx(15, 25)
-            Delay RndEx(40, 70)
+            Delay RndEx(70, 100)
         Next
         //离开部落boos界面
         Delay 1500
@@ -1092,10 +1094,7 @@ End Function
 //蜕变
 Function prestige
 	Call close_ad()//广告
-	For 2
-        Call swipe_down(6)
-        Delay 1000
-    Next
+
     TracePrint "蜕变"
     //发送邮件
     If send_flag = 1 Then 
@@ -1103,45 +1102,52 @@ Function prestige
     	send_flag = 0
     End If
     //本人等级提升|解锁技能|英雄等级提升
-	Dim pX,pY,intX,intY,error_one,error_two
-    FindColor 760,1707,1046,1826,"146EEE|08B1FC|CBA641",1,1,pX,pY
-    If pX > -1 And pY > -1 Then 
-    	error_one=0
-		While pX > -1
-        	Touch pX, pY, 100
-        	Delay 1000
-        	FindColor 760, 1707, 1046, 1826, "146EEE|08B1FC|CBA641", 1, 1, pX, pY
-        	error_one = error_one + 1
-        	If error_one > 5 Then 
-            	TracePrint"出错"
-            	Exit While
-        	End If
-        Wend
+	Dim pX,pY,intX,intY,error_one
+	FindColor 760,1707,1046,1826,"0428A2-111111|003C96-111111|8A6400-111111",1,1,pX,pY
+    If pX = -1 And pY = -1 Then 
+        Call swipe_down(2)
         Delay 1000
-		error_one=0
-		Do
-			TracePrint "点击第一层蜕变"
-			Touch 541, 1484, 100
-			Delay 1000
-        	error_one = error_one + 1
-        	If error_one > 5 Then 
-            	TracePrint"出错"
-            	Exit Do
-        	End If
-		Loop While CmpColorEx("536|1453|D7AA28-111111",0.9) = 1
-		Delay 3000
-		error_one=0
-		Do
-			TracePrint "点击第二层蜕变"
-			Touch 736, 1272, 100
-			Delay 1000
-        	error_one = error_one + 1
-        	If error_one > 5 Then 
-            	TracePrint"出错"
-            	Exit Do
-        	End If
-		Loop While CmpColorEx("740|1245|D7AA28-111111",0.9) = 1
+    	FindColor 760,1707,1046,1826,"0428A2-111111|003C96-111111|8A6400-111111",1,1,pX,pY
+		If pX = -1 Then 
+			TracePrint"找不到蜕变按键"
+    		Exit Function
+    	End If
     End If
+    error_one=0
+	While pX > -1
+        Touch pX+2, pY+2, 100
+        Delay 1000
+        FindColor 760, 1707, 1046, 1826, "0428A2-111111|003C96-111111|8A6400-111111", 1, 1, pX, pY
+        error_one = error_one + 1
+        If error_one > 5 Then 
+            TracePrint"出错"
+            Exit While
+        End If
+    Wend
+    Delay 1000
+	error_one=0
+	Do
+		TracePrint "点击第一层蜕变"
+		Touch 541, 1484, 100
+		Delay 1000
+        error_one = error_one + 1
+        If error_one > 5 Then 
+            TracePrint"出错"
+            Exit Do
+        End If
+	Loop While CmpColorEx("536|1453|D7AA28-111111",0.9) = 1
+	Delay 3000
+	error_one=0
+	Do
+		TracePrint "点击第二层蜕变"
+		Touch 736, 1272, 100
+		Delay 1000
+        error_one = error_one + 1
+        If error_one > 5 Then 
+            TracePrint"出错"
+            Exit Do
+        End If
+	Loop While CmpColorEx("740|1245|D7AA28-111111",0.9) = 1
 	//蜕变等待
 	TracePrint "蜕变等待10秒"
 	Delay 10000
@@ -1155,18 +1161,15 @@ Function prestige
         Delay 1000
         ocrchar_layer=layer()
         error_one = error_one + 1
-        If error_one > 10 And ocrchar_layer = layer_number_max*0.9  Then 
-            Exit Function
-        elseif ocrchar_layer<layer_number_max*0.7  Then 
+		if ocrchar_layer<layer_number_max*0.7  Then 
             TracePrint"蜕变成功跳出"
             Exit While
         ElseIf error_one > 50 Then
         	TracePrint"蜕变等待出错"
-            Exit While
+            Exit Function
         End If
     Wend
-	Call close_ad()//广告
-	Call kill()
+    Call kill()
     Call init()  //初始化
 End Function
 
@@ -1251,12 +1254,12 @@ Function update_one(error_onemax)
 	FindColor 990,238,1061,1813, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
     While up1X > -1
       TracePrint "升级识别:x="&up1X&"y="&up1Y
-        Touch up1X-100,up1Y+50, RndEx(20,55)
+        Touch up1X-50,up1Y+50, RndEx(20,55)
         Delay RndEx(100, 150)
         If CmpColorEx("842|80|4C4C54", 0.9) = 1 Then 
         	Call close_window()//普通弹窗
         End If
-		FindColor 699, 238, 740, 1813, "001859", 0, 1, up2X, up2Y
+		FindColor 699, 238, 740, 1813, "001859", 0, 1, up2X, up2Y//点击技能全部升级
 		If up2X > -1 Then 
 			Touch up2X, up2Y + 5, RndEx(20, 55)
 			Delay RndEx(100,150)
@@ -1878,8 +1881,8 @@ End Function
 Function swipe_up(num)
     TracePrint "上滑"
     For num
-    	Swipe 730, 1322, 730, 1715, 100
-    	Delay RndEx(200, 255)
+    	Swipe 730, 1000, 730, 1650, 200
+    	Delay RndEx(500, 1055)
 		Call close_ad()//广告
 	Next
 End Function
@@ -1887,8 +1890,8 @@ End Function
 Function swipe_down(num)
     TracePrint "下滑"
     For num
-    	Swipe 1000, 1650, 1000, 1300, 100
-    	Delay RndEx(200, 255)
+    	Swipe 1000, 1650, 1000, 1000, 100
+    	Delay RndEx(500, 1055)
 		Call close_ad()//广告
 	Next
 End Function
