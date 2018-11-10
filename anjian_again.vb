@@ -34,7 +34,7 @@ Dim s_layer_number
 Dim update_main_flat
 Dim update_main_init_time
 Dim updata_mistake
-Dim update_main_num, update_main_num1, update_main_num2//初始化升级次数
+Dim update_main_num, update_main_numAll, update_main_numLass//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
 //初始化技能
@@ -49,6 +49,9 @@ Dim GG_flat = False
 //定义如果蜕变超时时候的改变层数设定
 Dim auto_prestige_flat=0
 Dim auto_prestige_temp=0
+//boss计数器
+Dim boss_num = 0
+Dim layer_last = 0
 /*=========================挂机设置=============================*/
 //仅点击
 Dim tapkill_bool = ReadUIConfig("tapkill")
@@ -202,8 +205,8 @@ Function init()
     
     //减少高层数开始时的全面升级次数
     update_main_num = iif(ocrchar_layer > 6500, 2, 0)
-    update_main_num1 = 0
-    update_main_num2 = 0
+    update_main_numAll = 0
+    update_main_numLass = 0
 	Call update_main(1)//升级.初始化模式
 	Call Navbar_main("artifact",0)//神器
 /*****************************************************/
@@ -224,10 +227,10 @@ Function GG_init()
             Call check_status()
             Call GG()
             error_numail_one = error_numail_one + 1
-            If error_numail_one > 5 Then 
+            If error_numail_one > 3 Then 
                 GG_cd_bool = False
             End If
-            If error_numail_one > 15 Then 
+            If error_numail_one > 5 Then 
                 TracePrint"修改出错,关闭游戏"
                 EndScript
             End If
@@ -331,12 +334,12 @@ Function kill_app()
 		Delay 5000
 	End If
 	//等待修改器的确认游戏退出
-    FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
+    FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
 	error_one = 0
 	Do
 		TracePrint"等待修改器的确认游戏退出"
 		Delay 500
-		FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
+		FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
 		error_one = error_one + 1
         If error_one > 10 Then 
             TracePrint"层数出错"
@@ -388,9 +391,10 @@ Function check_status()
     SetDictEx(0, "Attachment:修改器.txt")
     UseDict (0)
 	//识别修改器的确认游戏退出
-	FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
+	FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
 	If intX > -1 Then 
-		Touch intX, intY, 10 
+		TracePrint "点击确认"
+		Touch intX+2, intY+2, 10
 	End If
     If Sys.isRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2")  = False  Then 
     	TracePrint "开启游戏"
@@ -404,9 +408,10 @@ Function check_status()
 			End If
 			Delay 2000
 			//识别修改器的确认游戏退出
-			FindStr(144,1157,196,1212,"确","FFFFFF-111111",0.9,intX,intY)
+			FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
 			If intX > -1 Then 
-				Touch intX, intY, 10
+				TracePrint "点击确认"
+				Touch intX+2, intY+2, 10
 			End If
 			Delay 4000
 			Call close_ad()//广告
@@ -415,7 +420,8 @@ Function check_status()
 			End If
     	Wend
     	Delay 2000
-        Call main()
+        Call GG_init()
+		Call init()  //初始化
     End If
 End Function
 
@@ -437,10 +443,10 @@ Function update_main(update_main_flat)
         		Call Navbar_main("mercenary",1)//升级佣兵
         		Call Navbar_main("hero",1)//升级本人与技能
         	End If
-        	update_main_num1 = update_main_num1 + 1//统计
+        	update_main_numAll = update_main_numAll + 1//统计
         Else 
 			Call Navbar_main("mercenary",2)//升级佣兵
-        	update_main_num2 = update_main_num2 + 1//统计
+        	update_main_numLass = update_main_numLass + 1//统计
         End If
         If ocrchar_layer > 8000 Then 
         	update_main_num =update_main_num+1//升级大于6000层
@@ -513,26 +519,22 @@ Function prestige_check()
 	TracePrint "层数处理—蜕变&升级"
 	If ocrchar_layer >= layer_number_max Then 
     	//蜕变
-    	TracePrint "固定层数蜕变"&ocrchar_layer
+    	TracePrint "层数蜕变"&ocrchar_layer
+    	If auto_prestige = True Then //自动更新最高层数
+    		layer_number_max = ocrchar_layer  //自动蜕变层数改变
+    		TracePrint "最高层数设定"&layer_number_max
+    	End If
     	Call Navbar_main("hero",2)//蜕变
     	Exit Function
 	ElseIf Abs(ocrchar_layer - ocrchar_layer_temp) < 4 And auto_prestige = True Then
-		//蜕变
-		If ocrchar_layer >= layer_number_max Then 
-		    TracePrint "自动蜕变"&ocrchar_layer
-    		layer_number_max = ocrchar_layer  //自动蜕变层数改变
-    		TracePrint "最高层数设定"&layer_number_max
-
-    		Call Navbar_main("hero",2)//蜕变
-    		Exit Function
-		End If
         TracePrint "层数相同: "&ocrchar_layer -ocrchar_layer_temp&"层"
         //防止卡关and自动蜕变
         auto_updata_flat = auto_updata_flat + 1
         TracePrint "自动蜕变出错标志"&auto_updata_flat
-        If TickCount() - auto_prestige_time > 300000 Then 
+        //卡层强制蜕变时间
+        If TickCount() - auto_prestige_time > prestige_maxtime*1000 Then 
             TracePrint "蜕变出错"&"层数等待超时"&(TickCount() - auto_prestige_time)/1000&"秒"
-            /**************蜕变出错部分***************/
+            /**************强制蜕变最高层数改变部分***************/
             auto_prestige_flat = auto_prestige_flat + 1
             //两次蜕变的层数判断大小，取最大的层数进行蜕变层数
             If auto_prestige_temp < ocrchar_layer Then 
@@ -566,69 +568,7 @@ Function prestige_check()
         mistake_reboot = TickCount()
     End If
 End Function
-//蜕变自动检测
-//Function prestige_check()
-//	TracePrint "层数处理—蜕变&升级"
-//	If ocrchar_layer >= layer_number_max Then 
-//		//蜕变
-//		TracePrint "固定层数蜕变"&ocrchar_layer
-//		Call Navbar_main("hero",2)//蜕变
-//    	Exit Function
-//    	
-//	ElseIf auto_prestige = True Then
-//		//防止卡关and自动蜕变
-//        auto_updata_flat = auto_updata_flat + 1
-//        TracePrint "自动蜕变出错标志"&auto_updata_flat
-//        //卡层强制蜕变时间
-//        If TickCount() - auto_prestige_time > prestige_maxtime*1000 Then 
-//            TracePrint "蜕变出错"&"层数等待超时"&(TickCount() - auto_prestige_time)/1000&"秒"
-//            /**************蜕变出错部分***************/
-//            auto_prestige_flat = auto_prestige_flat + 1
-//            //两次蜕变的层数判断大小，取最大的层数进行蜕变层数
-//            If auto_prestige_temp < ocrchar_layer Then 
-//            	auto_prestige_temp = ocrchar_layer
-//            End If
-//            If auto_prestige_flat>3 Then 
-//             	layer_number_max = auto_prestige_temp  //自动蜕变层数改变
-//             	TracePrint "最高层数设定"&layer_number_max
-//             	auto_prestige = True
-//             	auto_prestige_flat = 0
-//             	auto_prestige_temp = 0
-//            End If
-//            /***************************************/
-//            Call Navbar_main("hero",2)//蜕变
-//            auto_prestige_time = TickCount()
-//            Exit Function
-//        //自动升级
-//        ElseIf auto_updata_flat >= 2 or CmpColorEx("760|162|2663EF",0.9) = 1 Then
-//            TracePrint "自动升级"
-//            updata_mistake = updata_mistake + 1
-//			Call update_main(2)
-//			update_main_time = TickCount()
-//			ocrchar_layer_temp = ocrchar_layer
-//        End If
-//	
-//		If Abs(ocrchar_layer - ocrchar_layer_temp) < 4 Then 
-//			TracePrint "自动升级"
-//            updata_mistake = updata_mistake + 1
-//			Call update_main(2)
-//			update_main_time = TickCount()
-//			ocrchar_layer_temp = ocrchar_layer
-//		Else 
-//    		TracePrint "层数不同"
-//    		updata_mistake = 0
-//    		auto_updata_flat = 0//必须出现两次层数相同才触发升级
-//        	ocrchar_layer_temp = ocrchar_layer
-//        	auto_prestige_time = TickCount()
-//        	mistake_reboot = TickCount()
-//		End If
-//	
-//	End If
-//	
-//	
-//	
-//	
-//End Function
+
 //下面面板功能
 Function Navbar_main(navbar_name,flat)
     Dim intX,intY,error_one
@@ -900,6 +840,10 @@ Function little_fairy()
         Wend
         TracePrint"已点击观看"
         Delay 35000
+        For 3
+        	KeyPress "Back"
+        	Delay 1000
+        Next
         //判断收集字符出现
         error_one = 0
         While CmpColorEx("422|1413|FFFFFF",0.9) = 0
@@ -1042,6 +986,16 @@ Function boss
     	Delay 85
     	TouchUp 1
     	Delay 100
+    	//判断层数不变，boss进入次数过多进行蜕变
+    	If ocrchar_layer <= layer_last Then 
+    		boss_num = boss_num + 1
+    		If boss_num > boss_maxnum Then 
+    			Call Navbar_main("hero",2)//蜕变
+    		End If
+    	Else 
+    		boss_num = 0
+    		layer_last = ocrchar_layer
+    	End If
 	End If
 End Function
 //技能
@@ -1343,9 +1297,9 @@ Function ocrchar_blue(accuracy)
 			If CInt(Myblue(0)) > CInt(Myblue(1)) And CInt(Myblue(0))<>500 Then 
 				ocrchar = ""
 			ElseIf Myblue(0) = Myblue(1) Then 
-				blue_num = Myblue(0) & ";" & Myblue(1) & "::5" 
+				blue_num = Myblue(0) &"~" & CStr(CInt(Myblue(0)) + 1)& ";" & Myblue(1) &"~" & CStr(CInt(Myblue(1)) + 1)& "::5" 
 			Else 
-				blue_num = Myblue(0) & "~" & CStr(CInt(Myblue(0)) + 20) & ";" & Myblue(1) & "::5"
+				blue_num = Myblue(0) & "~" & CStr(CInt(Myblue(0)) + 20) & ";" & Myblue(1)  & "~" & CStr(CInt(Myblue(1)) + 1) & "::5"
 			End If
 			TracePrint blue_num
 		Else 
@@ -1425,7 +1379,7 @@ Function GG()
     End If
     /******************第一次修改cd*************/
     If GG_cd_bool = True Then 
-        Call search(1)//搜索
+        Call GG_search(1)//搜索
         Delay 1500
         //	判断是否搜索到数据
         FindColor 13,414,87,770, "C4CB80", 1, 1, intX, intY
@@ -1440,22 +1394,22 @@ Function GG()
 		/******************肾上腺素cd*************/
         //第一栏
         TracePrint "肾上腺素cd"
-        Call change_database(447, 449, "4320000", 1)//1为普通模式
+        Call GG_databaseOne(447, 449, "4320000", 1)//1为普通模式
         Delay 1000
         //第二栏	
-        Call change_database(447, 596, "4320000", 1)//1为普通模式
+        Call GG_databaseOne(447, 596, "4320000", 1)//1为普通模式
         Delay 1000
         //第三栏	
-        Call change_database(447, 740, "4320000", 1)//1为普通模式
+        Call GG_databaseOne(447, 740, "4320000", 1)//1为普通模式
         Delay 1000
 		/******************技能cd*************/
         TracePrint "技能cd"
         //取消数据
-        Call database(1)
-        Call database(2)
-        Call database(3)
-        Call database(5)
-        Call database(7)
+        Call GG_database(1)
+        Call GG_database(2)
+        Call GG_database(3)
+        Call GG_database(5)
+        Call GG_database(7)
         //滑动到最后
         Delay 700
         KeyPress "PageDown"
@@ -1463,92 +1417,43 @@ Function GG()
         Swipe 45,1179, 40,462
         Delay 700
         //取消数据
-        Call database(8)
-        Call database(9)
+        Call GG_database(8)
+        Call GG_database(9)
 		/******************天降cd*************/
         TracePrint "天降cd"
-        Call change_database(438, 1652, "1.15", 1)//1为普通模式
+        Call GG_databaseOne(438, 1652, "1.15", 1)//1为普通模式
         Delay 1000
 		/******************技能cd2*************/	
         TracePrint "技能cd2"
-        Call change_database(200, 303, "4", 1)//1为普通模式
+        Call GG_databaseOne(200, 303, "4", 1)//1为普通模式
         Delay 1000
     End If
     /******************第二次修改蓝量*************/
     If GG_blue_bool = True Then 	
-        Call search(2)//搜索
+        Call GG_search(2)//搜索
 		/***********搜索不到数据或者数据过多***********/
         FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
         FindColor 20, 715, 78, 767, "C4CB80", 1, 1, intX1, intY1
         error_one = 0
-        while intX = -1 or intY1 > -1
+        If intX = -1 or intY1 > -1 Then 
             TracePrint "出错"
-            error_two = 0
-            While CmpColorEx("65|34|6D6859,990|1887|414424", 1) = 0
-            	TracePrint "退出修改器"
-                KeyPress "Back"
-                Delay 1000
-                Call close_AD()
-                error_two = error_two + 1
-                If error_two > 5 Then 
-                    TracePrint"出错"
-                    Call close_AD()
-                    Exit While
-                End If
-            Wend
-            Call update_main(1)//升级.初始化模式
+           	Call GG_kill()
+           	Delay 2000
+            Call Navbar_main("hero",1)//升级本人与技能
             Delay 2000
-            Call ocrchar_blue(9)
-            If Myblue(0) = Myblue(1) Then 
-                blue_num = Myblue(0) & ";" & Myblue(1) & "::5" 
-            Else 
-                blue_num =  CStr(CInt(Myblue(0)) + 5) & "~" & CStr(CInt(Myblue(0)) + 35) & ";" & Myblue(1) & "::5"
-            End If
-            //打开GG
-            FindMultiColor 5,768,147,1685,"C5008B","6|-35|CCCCCC",1,1,intX,intY
-            If intX > -1 And intY > -1 Then
-                TracePrint "打开GG-x:"&intX&"y:"&intY
-                Touch intX, intY, 10
-            End If
-            Delay 2000
-            Call search(2)
-            FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
-            FindColor 20, 715, 78, 767, "C4CB80", 1, 1, intX1, intY1
-            error_one = error_one + 1
-            If error_one > 5 Then 
-                TracePrint "出错"
-                GG_flat = False
-                Delay 500
-                Touch 1008,72, 10
-                Delay 200
-                Exit Function
-            End If
-        Wend
+        End If
 		/******************魔法*******************/	
         TracePrint "魔法"
-        Call change_database(479, 449, "500", 2)//2为冻结模式
+        Call GG_databaseOne(479, 449, "500", 2)//2为冻结模式
         Delay 1000
     End If
 	/*****************退出修改器界面********************/
-    error_one = 0
-    While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
-        //		Touch 1008, 72, 10
-        KeyPress "Back"
-        Delay 1000
-        error_one = error_one + 1
-        If error_one > 5 Then 
-            TracePrint"出错"
-            Call close_AD()
-            Exit While
-        End If
-    Wend
+	Call GG_kill()
     //	KeyPress "Back"
     Delay 1000
     //检查是否修改成功
     Call skills()
     Delay 3000
-    Call skills()
-    Delay 1000
     Call ocrchar_blue(9)
     If CInt(Myblue(0)) < 70 Then 
         GG_flat = False
@@ -1558,7 +1463,7 @@ Function GG()
 End Function
 
 //单一数据修改
-Function change_database(intX, intY, str, flat)
+Function GG_databaseOne(intX, intY, str, flat)
 	SetRowsNumber(0)
 	SetDictEx(0, "Attachment:修改器.txt")
 	UseDict(0)
@@ -1581,7 +1486,7 @@ Function change_database(intX, intY, str, flat)
 	End If
 End Function
 //搜索
-Function search(flat)
+Function GG_search(flat)
 	SetRowsNumber(0)
 	TracePrint SetDictEx(0, "Attachment:修改器.txt")
 	TracePrint UseDict(0)
@@ -1665,7 +1570,7 @@ Function search(flat)
 	Delay 1500
 End Function
 //数据栏
-Function database(num)
+Function GG_database(num)
 	Dim intX,intY
 	If num = 1 Then 
 		FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
@@ -1691,6 +1596,22 @@ Function database(num)
 		Touch intX, intY, 10
 	End If
 	Delay 200
+End Function
+//关闭修改器
+Function GG_kill()
+	Dim error_one = 0
+    While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
+        TracePrint "退出修改器"
+        KeyPress "Back"
+        Delay 1000
+        Call close_AD()
+        error_one = error_one + 1
+        If error_one > 5 Then 
+            TracePrint"出错"
+            Call close_AD()
+            Exit While
+        End If
+    Wend
 End Function
 //每日奖励
 Function daily_reward
@@ -1926,7 +1847,7 @@ Function mail(subject)
 	If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
     	sendmessage_str ="最终层数:"& subject &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
 	End If 
-    sendmessage_str = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&update_main_num1&"\n升级次数(少):"&update_main_num2&"\n"& sendmessage_str 
+    sendmessage_str = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&update_main_numAll&"\n升级次数(少):"&update_main_numLass&"\n"& sendmessage_str 
     Dim mail_message = sendmessage_str
     
     Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_password,mail_subject,mail_message,mail_tomail) 
