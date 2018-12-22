@@ -1,4 +1,4 @@
-//2018年12月23日00:54:57
+//2018年12月23日01:15:08
 //========================================初始化开始=================================================//
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
@@ -17,10 +17,6 @@ Dim skills_time
 Dim auto_sendmessage_tribe_time //蜕变使用时间
 Dim mistake_reboot//出错重启
 Dim reboot_game = TickCount()//定时重启
-//初始化错误次数
-//Dim error_one
-//Dim error_two
-//Dim error_three
 //初始化发送邮件内容
 Dim sendmessage_str
 Dim send_flag = 0
@@ -34,7 +30,7 @@ Dim s_layer_number
 Dim update_main_flat
 Dim update_main_init_time
 Dim updata_mistake
-Dim update_main_num, update_main_numAll, update_main_numLass//初始化升级次数
+Dim  update_main_numAll, update_main_numLass//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
 //记录蜕变次数
@@ -211,8 +207,6 @@ Function init()
     Call tribe()
 	Call close_ad()//广告
     
-    //减少高层数开始时的全面升级次数
-    update_main_num = iif(ocrchar_layer > 6500, 2, 0)
     update_main_numAll = 0
     update_main_numLass = 0
     If prestige_tick > 0 Then 
@@ -447,8 +441,8 @@ Function update_main(update_main_flat)
     	ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
     	TracePrint "距离上次升级时间" & update_time_main & "秒"
     	Call close_ad()//广告   	
-		//update_main_num为超过6000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
-        If ocrchar_layer < 8000 or update_main_num < 3 or update_main_flat=1 or updata_mistake >2 Then
+		//update_main_num为超过10000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
+        If ocrchar_layer < 10000  or update_main_flat=1 or updata_mistake >2 Then
         	//升级栏目顺序
         	TracePrint"升级全部"
         	If navbar_first = False Then 
@@ -463,9 +457,6 @@ Function update_main(update_main_flat)
         	TracePrint"升级部分"
 			Call Navbar_main("mercenary",2)//升级佣兵
         	update_main_numLass = update_main_numLass + 1//统计
-        End If
-        If ocrchar_layer > 8000 Then 
-        	update_main_num =update_main_num+1//升级大于6000层
         End If
         update_main_time = TickCount()
         update_main_flat = 0
