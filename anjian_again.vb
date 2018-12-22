@@ -1,4 +1,4 @@
-//2018年10月13日18:25:04
+//2018年11月25日23:21:23
 //========================================初始化开始=================================================//
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
@@ -226,6 +226,7 @@ End Function
 Function GG_init()
 	//修改部分
     If GG_cd_bool = True or GG_blue_bool = True Then 
+    	Call Navbar_main("hero",1)//升级本人与技能
         Call GG()
         Dim error_numail_one = 0
         While GG_flat = False
@@ -442,6 +443,7 @@ Function update_main(update_main_flat)
 		//update_main_num为超过6000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
         If ocrchar_layer < 8000 or update_main_num < 3 or update_main_flat=1 or updata_mistake >2 Then
         	//升级栏目顺序
+        	TracePrint"升级全部"
         	If navbar_first = False Then 
         		Call Navbar_main("hero",1)//升级本人与技能
         		Call Navbar_main("mercenary",1)//升级佣兵
@@ -451,6 +453,7 @@ Function update_main(update_main_flat)
         	End If
         	update_main_numAll = update_main_numAll + 1//统计
         Else 
+        	TracePrint"升级部分"
 			Call Navbar_main("mercenary",2)//升级佣兵
         	update_main_numLass = update_main_numLass + 1//统计
         End If
@@ -809,13 +812,27 @@ Function little_fairy()
 	//小仙女
 	TracePrint "小仙女"
 	ShowMessage "小仙女", 1000, screenX / 2 - 150, screenY / 4 - 200
+	If CmpColorEx("516|1379|D7AB2A-111111", 0.9) = 1 Then 
+	    //点击收集字符
+    	Call little_fairy_rec()
+    	Exit Function
+	End If
 	If fairy_1_bool = True And CmpColorEx("827|721|712AD7",1) = 1 Then //消费狂潮
+		TracePrint"消费狂潮"
 		Call little_fairy_watch()
+		    //点击收集字符
+    	Call little_fairy_rec()
+		Call Navbar_main("mercenary",2)//升级佣兵
+        update_main_numLass = update_main_numLass + 1//统计
+        Exit Function
 	ElseIf fairy_2_bool = True And CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then //钻石
+		TracePrint"钻石"
 		Call little_fairy_watch()
 	ElseIf fairy_3_bool = True And CmpColorEx("161|1222|10B7E7",0.9) = 1 Then //金币
+		TracePrint"金币"
 		Call little_fairy_watch()
 	ElseIf fairy_4_bool = True And CmpColorEx("169|1230|EFD528",0.9) = 1 Then //法力
+		TracePrint"法力"
 		Call little_fairy_watch()
 	Else 
 		Touch 281, 1420, 200//点击不用了
@@ -823,59 +840,11 @@ Function little_fairy()
         ShowMessage "不用了", 1500, screenX/2-150,screenY/4-200
         TracePrint "出现小仙女广告"
 	End If
-
-
-//	//小仙女
-//	TracePrint "小仙女"
-//	ShowMessage "小仙女", 1000, screenX / 2 - 150, screenY / 4 - 200
-//	Dim diamondX,diamondY,intX,intY,error_one
-//	Call little_fairy_rec()
-//    If fairy_bool  = False or CmpColorEx("162|1174|FFFF6C",0.9) = 0 Then
-//		Touch 281, 1420, 200//点击不用了
-//        TracePrint "不用了"
-//        ShowMessage "不用了", 1500, screenX/2-150,screenY/4-200
-//        TracePrint "出现小仙女广告"
-//    Elseif CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then//看
-//        Touch 804,1420, 200//点击观看
-//        TracePrint "等待观看"
-//        ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
-//        Delay 1000
-//        //确认已点击观看
-//        error_one=0
-//        While CmpColorEx("162|1174|FFFF6C",0.9) = 1
-//            Touch 804, 1420, 200
-//            Delay 1000
-//            error_one = error_one + 1
-//            If error_one > 20 Then 
-//                TracePrint"出错"
-//                Exit While
-//            End If
-//        Wend
-//        TracePrint"已点击观看"
-//        Delay 35000
-//        For 3
-//        	KeyPress "Back"
-//        	Delay 1000
-//        Next
-//        //判断收集字符出现
-//        error_one = 0
-//        While CmpColorEx("422|1413|FFFFFF",0.9) = 0
-//            TracePrint "等待收集"
-//            Delay 1000
-//            Call close_window()
-//            error_one = error_one + 1
-//            If error_one > 60 Then 
-//                TracePrint"出错"
-//                Exit While
-//            End If
-//        Wend
-//        Delay 500
-//    End If
     //点击收集字符
     Call little_fairy_rec()
 End Function
 
-
+//观看小仙女视频
 Function little_fairy_watch()
 	Dim error_one
     Touch 804,1420, 200//点击观看
@@ -894,7 +863,7 @@ Function little_fairy_watch()
         End If
     Wend
     TracePrint"已点击观看"
-    Delay 35000
+    Delay 40000
     For 3
         KeyPress "Back"
         Delay 1000
@@ -1035,6 +1004,7 @@ Function boss
     	If ocrchar_layer <= layer_last Then 
     		boss_num = boss_num + 1
     		If boss_num > boss_maxnum Then 
+    			TracePrint "boss进入次数过多进行蜕变"
     			Call Navbar_main("hero",2)//蜕变
     		End If
     	Else 
