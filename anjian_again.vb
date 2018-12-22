@@ -1,4 +1,4 @@
-//2018年11月25日23:21:23
+//2018年12月23日00:54:57
 //========================================初始化开始=================================================//
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
@@ -37,6 +37,8 @@ Dim updata_mistake
 Dim update_main_num, update_main_numAll, update_main_numLass//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
+//记录蜕变次数
+Dim prestige_tick=0
 //初始化技能
 //技能未使用统计报错
 Dim skillerror_1=0,skillerror_2=0,skillerror_3=0,skillerror_4=0,skillerror_5=0,skillerror_6=0
@@ -213,7 +215,12 @@ Function init()
     update_main_num = iif(ocrchar_layer > 6500, 2, 0)
     update_main_numAll = 0
     update_main_numLass = 0
-	Call update_main(1)//升级.初始化模式
+    If prestige_tick > 0 Then 
+    	Call update_main(2)//升级.初始化模式
+    Else 
+    	Call update_main(1)//升级.初始化模式
+    End If
+
 	Call Navbar_main("artifact",0)//神器
 /*****************************************************/
 	send_flag = 1  //发送邮箱，必须在检测layer()后
@@ -1138,6 +1145,7 @@ Function prestige
             Exit Function
         End If
     Wend
+    prestige_tick = prestige_tick + 1
     Call kill()
     Call init()  //初始化
 End Function
