@@ -11,7 +11,6 @@ SetOffsetInterval (1)
 
 //初始化时间
 Dim update_main_time 
-Dim update_time_main
 Dim auto_prestige_time
 Dim skills_time 
 Dim auto_sendmessage_tribe_time //蜕变使用时间
@@ -110,9 +109,9 @@ TracePrint iif(artifact_bool, "升级神器:开启", "升级神器:关闭")
 Dim navbar_first = ReadUIConfig("navbar_first")
 TracePrint iif(navbar_first, "优先升级：英雄栏", "优先升级：佣兵栏")
 //升级时间
-Dim update_time = ReadUIConfig("update_time","360")
-update_time = CInt(update_time)
-TracePrint "升级时间"&update_time
+Dim update_main_maxtime = ReadUIConfig("update_time","360")
+update_main_maxtime = CInt(update_main_maxtime)
+TracePrint "升级时间"&update_main_maxtime
 /*=========================技能设置========================*/
 //技能1
 Dim skill_1 = ReadUIConfig("skill_1")
@@ -188,13 +187,12 @@ Function init()
 	layer_last = 0//boss出错
 	//定时自动升级.初始化时间
 	update_main_flat = 0
-	update_main_init_time = update_time
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 /*****************************************************/
     //显示信息
-    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
-	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_time&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！"
+    ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
+	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！"
 	Delay 3000
 	Call close_ad()//广告
     Call layer()//层数
@@ -210,7 +208,7 @@ Function init()
     update_main_numAll = 0
     update_main_numLass = 0
     If prestige_tick > 0 Then 
-    	Call update_main(2)//升级.初始化模式
+    	Call update_main(3)//升级.初始化模式
     Else 
     	Call update_main(1)//升级.初始化模式
     End If
@@ -264,41 +262,36 @@ Function main
 	Call init()  //初始化
 	Dim t_time
 	Dim prestige_check_lasttime = TickCount()
+	Dim update_time_main =TickCount()//定时升级
+
     Do
     	
     	TracePrint "程序运行："& (CInt(TickCount()/1000))/60&"分钟"
-       	t_time = TickCount()
         Call kill()//点杀
-        TracePrint "kill()*************"&(TickCount()-t_time)/1000&"秒"
-    	t_time = TickCount()
 		Call check_status()//运行状态
-		TracePrint "check_status()******"&(TickCount()-t_time)/1000&"秒"
-		t_time = TickCount()
         Call layer()//层数 
-        TracePrint "layer()************"&(TickCount()-t_time)/1000&"秒"
 		//定时20秒一次
 		If TickCount() - prestige_check_lasttime > 20000 Then 
-			t_time = TickCount()
 			Call prestige_check()//层数处理
-        	TracePrint "prestige_check()******"&(TickCount()-t_time)/1000&"秒"
         	prestige_check_lasttime = TickCount()
-        	t_time = TickCount()
-			Call update_main(0)//定时升级
-			TracePrint "update_main(0)******"&(TickCount()-t_time)/1000&"秒"
 		End If
-		t_time = TickCount()
+		//定时升级
+		If TickCount() - update_time_main > update_main_maxtime*1000 Then 
+		    ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
+    		TracePrint "距离上次升级时间" & update_time_main & "秒"
+			Call update_main(2)//定时升级
+			update_time_main = TickCount()
+		End If
         Call sendmessage(ocrchar_layer)//邮件内容记录
-        TracePrint "sendmessage(ocrchar_layer)"&(TickCount()-t_time)/1000&"秒"
-		t_time = TickCount()
-		
+		//判断界面部落boss
 		If CmpColorEx("201|56|A7B7E9", 1) = 1 Then 
         	Call tribe()//部落任务
         End If
-		TracePrint "tribe()"&(TickCount()-t_time)/1000&"秒"
         Call close_ad()
+        
         //游戏挂机20分钟自动暗屏省电
         If TickCount() > 1200000 Then 
-        	Device.SetBacklightLevel(10)//设置亮度
+        	Device.SetBacklightLevel(0)//设置亮度
         End If
     Loop
 End Function
@@ -436,10 +429,6 @@ End Function
 Function update_main(update_main_flat)
 	//定时升级
 	Dim intX,intY
-    update_time_main =Int((TickCount() - update_main_time) / 1000)//定时升级
-    If (update_time_main >= update_main_init_time) or update_main_flat <> 0 Then 
-    	ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
-    	TracePrint "距离上次升级时间" & update_time_main & "秒"
     	Call close_ad()//广告   	
 		//update_main_num为超过10000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
         If ocrchar_layer < 10000  or update_main_flat=1 or updata_mistake >2 Then
@@ -453,14 +442,15 @@ Function update_main(update_main_flat)
         		Call Navbar_main("hero",1)//升级本人与技能
         	End If
         	update_main_numAll = update_main_numAll + 1//统计
-        Else 
-        	TracePrint"升级部分"
+        ElseIf update_main_flat = 2 Then
+        	TracePrint"升级佣兵部分"
 			Call Navbar_main("mercenary",2)//升级佣兵
         	update_main_numLass = update_main_numLass + 1//统计
+        ElseIf update_main_flat = 3 Then//每次蜕变时候自需要升级技能
+        	TracePrint"升级技能部分"
+			Call Navbar_main("hero",1)//升级本人与技能
+        	update_main_numLass = update_main_numLass + 1//统计
         End If
-        update_main_time = TickCount()
-        update_main_flat = 0
-    End If
 End Function
 
 //杀怪
@@ -1858,9 +1848,6 @@ Function mail(subject)
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
-    //    Dim mail_username = "1171479579@qq.com"
-    //    Dim mail_password = "fetmmswhxapgggei"
-	//    Dim mail_tomail = "853879993@qq.com"
     Dim mail_subject = subject
 	If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
     	sendmessage_str ="最终层数:"& subject &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
