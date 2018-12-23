@@ -1,4 +1,4 @@
-//2018年12月23日01:15:08
+//2018年12月23日16:40:03
 //========================================初始化开始=================================================//
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
@@ -220,6 +220,10 @@ Function init()
 	skills_time = TickCount()//使用技能时间初始化
     auto_prestige_time = TickCount()//自动蜕变时间初始化
     mistake_reboot = TickCount()//出错重启初始化
+    //游戏挂机20分钟自动暗屏省电
+    If TickCount() > 1200000 Then 
+        Device.SetBacklightLevel(0)//设置亮度
+    End If
 End Function
 
 Function GG_init()
@@ -261,19 +265,24 @@ Function main
 	Call GG_init()
 	Call init()  //初始化
 	Dim t_time
-	Dim prestige_check_lasttime = TickCount()
+	Dim timing_task = TickCount()
 	Dim update_time_main =TickCount()//定时升级
 
     Do
     	
     	TracePrint "程序运行："& (CInt(TickCount()/1000))/60&"分钟"
         Call kill()//点杀
-		Call check_status()//运行状态
+
         Call layer()//层数 
 		//定时20秒一次
-		If TickCount() - prestige_check_lasttime > 20000 Then 
+		If TickCount() - timing_task > 20000 Then 
+			Call check_status()//运行状态
 			Call prestige_check()//层数处理
-        	prestige_check_lasttime = TickCount()
+			//判断界面部落boss
+			If CmpColorEx("201|56|A7B7E9", 1) = 1 Then 
+        		Call tribe()//部落任务
+        	End If
+        	timing_task = TickCount()
 		End If
 		//定时升级
 		If TickCount() - update_time_main > update_main_maxtime*1000 Then 
@@ -283,16 +292,8 @@ Function main
 			update_time_main = TickCount()
 		End If
         Call sendmessage(ocrchar_layer)//邮件内容记录
-		//判断界面部落boss
-		If CmpColorEx("201|56|A7B7E9", 1) = 1 Then 
-        	Call tribe()//部落任务
-        End If
+
         Call close_ad()
-        
-        //游戏挂机20分钟自动暗屏省电
-        If TickCount() > 1200000 Then 
-        	Device.SetBacklightLevel(0)//设置亮度
-        End If
     Loop
 End Function
 //退出游戏
