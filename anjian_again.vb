@@ -1573,25 +1573,7 @@ End Function
 //数据栏
 Function GG_database(num)
 	Dim intX,intY
-	If num = 1 Then 
-		FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 2 Then
-		FindColor 17, 557, 77, 625, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 3 Then
-		FindColor 20,715,78,767, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 4 Then
-		FindColor 20,853,80,913, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 5 Then
-		FindColor 16,1000,82,1071, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 6 Then
-		FindColor 16, 1150,77,1209, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 7 Then
-		FindColor 20,1296,75,1357, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 8 Then
-		FindColor 18,1441,75,1501, "C4CB80", 1, 1, intX, intY
-	ElseIf num = 9 Then
-		FindColor 23,1591,77,1646, "C4CB80", 1, 1, intX, intY
-	End If
+	FindColor 20, 270+146*num, 75, 325+146*num, "C4CB80", 1, 1, intX, intY//第num栏
 	If intX > -1 And intY > -1 Then
 		TracePrint "搜索栏-x:"&intX&"y:"&intY
 		Touch intX, intY, 10
@@ -1877,4 +1859,3 @@ Function OnScriptExit()
     Device.SetBacklightLevel(40)//设置亮度
 End Function
 
- 
