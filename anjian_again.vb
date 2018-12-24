@@ -29,7 +29,7 @@ Dim s_layer_number
 Dim update_main_flat
 Dim update_main_init_time
 Dim updata_mistake
-Dim  update_main_numAll, update_main_numLass//初始化升级次数
+Dim  stats_updateAll, stats_updateMercenary//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
 //记录蜕变次数
@@ -205,10 +205,10 @@ Function init()
     Call tribe()
 	Call close_ad()//广告
     
-    update_main_numAll = 0
-    update_main_numLass = 0
+    stats_updateAll = 0
+    stats_updateMercenary = 0
     If prestige_tick > 0 Then 
-    	Call update_main(3)//升级.初始化模式
+    	Call update_main(3)//升级.蜕变模式
     Else 
     	Call update_main(1)//升级.初始化模式
     End If
@@ -257,7 +257,7 @@ Function main
             	Touch RndEx(250,830), RndEx(320, 1000),RndEx(10, 15)
             	Delay RndEx(140, 160)
         	Next
-        	Delay 500
+        	Delay 800
     	Loop
     	Exit Function
  	End If
@@ -286,8 +286,8 @@ Function main
 		End If
 		//定时升级
 		If TickCount() - update_time_main > update_main_maxtime*1000 Then 
-		    ShowMessage "距离上次升级时间" & update_time_main & "秒", 1500, screenX/2-280,screenY/4-200
-    		TracePrint "距离上次升级时间" & update_time_main & "秒"
+		    ShowMessage "距离上次升级时间" & TickCount() - update_time_main  & "秒", 1500, screenX/2-280,screenY/4-200
+    		TracePrint "距离上次升级时间" & TickCount() - update_time_main  & "秒"
 			Call update_main(2)//定时升级
 			update_time_main = TickCount()
 		End If
@@ -432,7 +432,7 @@ Function update_main(update_main_flat)
 	Dim intX,intY
     	Call close_ad()//广告   	
 		//update_main_num为超过10000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
-        If ocrchar_layer < 10000  or update_main_flat=1 or updata_mistake >2 Then
+        If ocrchar_layer < 10000 or update_main_flat=1 or updata_mistake >2 Then
         	//升级栏目顺序
         	TracePrint"升级全部"
         	If navbar_first = False Then 
@@ -442,15 +442,15 @@ Function update_main(update_main_flat)
         		Call Navbar_main("mercenary",1)//升级佣兵
         		Call Navbar_main("hero",1)//升级本人与技能
         	End If
-        	update_main_numAll = update_main_numAll + 1//统计
+        	stats_updateAll = stats_updateAll + 1//统计
         ElseIf update_main_flat = 2 Then
         	TracePrint"升级佣兵部分"
 			Call Navbar_main("mercenary",2)//升级佣兵
-        	update_main_numLass = update_main_numLass + 1//统计
+        	stats_updateMercenary = stats_updateMercenary + 1//统计
         ElseIf update_main_flat = 3 Then//每次蜕变时候自需要升级技能
         	TracePrint"升级技能部分"
 			Call Navbar_main("hero",1)//升级本人与技能
-        	update_main_numLass = update_main_numLass + 1//统计
+        	stats_updateMercenary = stats_updateMercenary + 1//统计
         End If
 End Function
 
@@ -812,7 +812,7 @@ Function little_fairy()
 		    //点击收集字符
     	Call little_fairy_rec()
 		Call Navbar_main("mercenary",2)//升级佣兵
-        update_main_numLass = update_main_numLass + 1//统计
+        stats_updateMercenary = stats_updateMercenary + 1//统计
         Exit Function
 	ElseIf fairy_2_bool = True And CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then //钻石
 		TracePrint"钻石"
@@ -1276,7 +1276,6 @@ Function artifact_update()
     Delay 150 
 End Function
 
-
 Function ocrchar_blue(accuracy)
 	//识别魔法量
 	SetRowsNumber(0)
@@ -1290,14 +1289,7 @@ Function ocrchar_blue(accuracy)
  	error_one = 0
 	Do
 		//搜索精准性
-		Select Case accuracy
-		Case 8
-    		ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", 0.8)
-		Case 9
-    		ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", 0.9)
-		Case 10
-    		ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", 1)
-		End Select
+    	ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", accuracy*0.1)
 		If ocrchar <> "" Then  
 			TracePrint ocrchar
 			Myblue = Split(ocrchar, "/")
@@ -1592,7 +1584,7 @@ Function GG_database(num)
 	ElseIf num = 5 Then
 		FindColor 16,1000,82,1071, "C4CB80", 1, 1, intX, intY
 	ElseIf num = 6 Then
-		FindColor 16, 1150, 77, 1209, "C4CB80", 1, 1, intX, intY
+		FindColor 16, 1150,77,1209, "C4CB80", 1, 1, intX, intY
 	ElseIf num = 7 Then
 		FindColor 20,1296,75,1357, "C4CB80", 1, 1, intX, intY
 	ElseIf num = 8 Then
@@ -1651,8 +1643,7 @@ Function egg
 		Exit Function
 	End If
     TracePrint "区域找蛋"
-    Dim intX,intY
-	FindColor 38,625,99,697,"E0D2A7-111111",1,1,intX,intY
+
 	If CmpColorEx("64|650|FBEFC7",1) = 1 Then
 		TracePrint "发现蛋"
 		Touch 64, 650, 200
@@ -1670,19 +1661,6 @@ Function chest
 		Exit Function
 	End If
     TracePrint "区域宝箱"
-    Dim intX,intY
-    FindPic 2,401,128,907,"Attachment:宝箱.png","000000",1,0.8,intX,intY
-    If intX > -1 And intY > -1 Then 
-        TracePrint "发现宝箱"
-        TracePrint intX
-        TracePrint intY
-        Touch intX, intY, 200
-        For 4
-        	Call close_ad()//广告
-        	Delay 1000
-    		Touch 500, 500, 200
-        Next
-    End If
     Call close_ad()//广告
 End Function
 //成就
@@ -1710,7 +1688,6 @@ Function achievement
             If CmpColorEx("864|28|303845", 1) = 0 Then 
                 TracePrint "error.achievement"
                 Exit Function
-//                Call achievement()
             End If
         End If 
         //以防出错标记
@@ -1806,7 +1783,6 @@ Function competition
     End If
 End Function
 
-
 //上滑
 Function swipe_up(num)
     TracePrint "上滑"
@@ -1824,15 +1800,6 @@ Function swipe_down(num)
     	Delay RndEx(500, 1055)
 		Call close_ad()//广告
 	Next
-End Function
-//适配分辨率
-Function Screen
-    Dim scrX,scrY
-    //这里设置成开发的分辨率
-    scrX = 1080
-    scrY = 1920
-    SetScreenScale scrX, scrY,0
-    Dim src = scrX & scrY
 End Function
 
 //邮箱
@@ -1853,7 +1820,7 @@ Function mail(subject)
 	If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
     	sendmessage_str ="最终层数:"& subject &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
 	End If 
-    sendmessage_str = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&update_main_numAll&"\n升级次数(少):"&update_main_numLass&"\n"& sendmessage_str 
+    sendmessage_str = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&stats_updateAll&"\n升级次数(少):"&stats_updateMercenary&"\n"& sendmessage_str 
     Dim mail_message = sendmessage_str
     
     Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_password,mail_subject,mail_message,mail_tomail) 
@@ -1875,6 +1842,15 @@ Function sendmessage(s_layer_number)
 		s_layer_number_mix = Int(s_layer_number / 100)
 		sendmessage_str = "层数:"& s_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n"&sendmessage_str
 	End If
+End Function
+//适配分辨率
+Function Screen
+    Dim scrX,scrY
+    //这里设置成开发的分辨率
+    scrX = 1080
+    scrY = 1920
+    SetScreenScale scrX, scrY,0
+    Dim src = scrX & scrY
 End Function
 //封装时间格式化输出函数
 Function data_time(d_time)
@@ -1901,3 +1877,4 @@ Function OnScriptExit()
     Device.SetBacklightLevel(40)//设置亮度
 End Function
 
+ 
