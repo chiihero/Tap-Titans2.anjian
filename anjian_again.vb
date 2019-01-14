@@ -1,4 +1,4 @@
-//2018年12月23日16:40:03
+//2019年1月14日14:06:40
 //========================================初始化开始=================================================//
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
@@ -29,7 +29,7 @@ Dim s_layer_number
 Dim update_main_flat
 Dim update_main_init_time
 Dim updata_mistake
-Dim  stats_updateAll, stats_updateMercenary//初始化升级次数
+Dim stats_updateAll, stats_updateMercenary//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
 //记录蜕变次数
@@ -267,12 +267,9 @@ Function main
 	Dim t_time
 	Dim timing_task = TickCount()
 	Dim update_time_main =TickCount()//定时升级
-
     Do
-    	
     	TracePrint "程序运行："& (CInt(TickCount()/1000))/60&"分钟"
         Call kill()//点杀
-
         Call layer()//层数 
 		//定时20秒一次
 		If TickCount() - timing_task > 20000 Then 
@@ -526,19 +523,20 @@ Function prestige_check()
             /**************强制蜕变最高层数改变部分***************/
             auto_prestige_flat = auto_prestige_flat + 1
             //两次蜕变的层数判断大小，取最大的层数进行蜕变层数
-            If auto_prestige_temp < ocrchar_layer Then 
-            	auto_prestige_temp = ocrchar_layer
-            End If
-            If auto_prestige_flat>3 Then 
-             	layer_number_max = auto_prestige_temp  //自动蜕变层数改变
-             	TracePrint "最高层数设定"&layer_number_max
-             	auto_prestige = True
-             	auto_prestige_flat = 0
-             	auto_prestige_temp = 0
-            End If
+//            If auto_prestige_temp < ocrchar_layer Then 
+//            	auto_prestige_temp = ocrchar_layer
+//            End If
+//            If auto_prestige_flat>3 Then 
+//             	layer_number_max = auto_prestige_temp  //自动蜕变层数改变
+//             	TracePrint "最高层数设定"&layer_number_max
+//             	auto_prestige = True
+//             	auto_prestige_flat = 0
+//             	auto_prestige_temp = 0
+//            End If
             /***************************************/
-            Call Navbar_main("hero",2)//蜕变
             auto_prestige_time = TickCount()
+            Call Navbar_main("hero",2)//蜕变
+
             Exit Function
         //自动升级
         ElseIf auto_updata_flat >= 2 or (CmpColorEx("327|198|FFFFFF",1) = 1 And CmpColorEx("577|197|FFFFFF",1) = 0) Then//or后面判断如果时间过半还打不过boss
@@ -1052,7 +1050,6 @@ End Function
 //蜕变
 Function prestige
 	Call close_ad()//广告
-
     TracePrint "蜕变"
     //发送邮件
     If send_flag = 1 Then 
@@ -1341,7 +1338,7 @@ Function GG()
     End If
     Delay 1500
     //判断是否已经搜索过
-    FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
+    FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
     If intX > -1 And intY > -1 Then 
         TracePrint "已经搜索过"
         KeyPress "Back"
@@ -1371,7 +1368,7 @@ Function GG()
     Touch 436, 70, 10
     Delay 600
     //判断是否已经搜索过
-    FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
+    FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
     If intX > -1 And intY > -1 Then 
         TracePrint "已经搜索过"
         KeyPress "Back"
@@ -1383,7 +1380,7 @@ Function GG()
         Call GG_search(1)//搜索
         Delay 1500
         //	判断是否搜索到数据
-        FindColor 13,414,87,770, "C4CB80", 1, 1, intX, intY
+        FindColor 13,414,87,770, "C4CB80|807C16", 1, 1, intX, intY
         If intX = -1 And intY = -1 Then 
             TracePrint "没有搜到数据出错"
             GG_flat = False
@@ -1433,8 +1430,8 @@ Function GG()
     If GG_blue_bool = True Then 	
         Call GG_search(2)//搜索
 		/***********搜索不到数据或者数据过多***********/
-        FindColor 16, 410, 78, 477, "C4CB80", 1, 1, intX, intY
-        FindColor 20, 715, 78, 767, "C4CB80", 1, 1, intX1, intY1
+        FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
+        FindColor 20, 715, 78, 767, "C4CB80|807C16", 1, 1, intX1, intY1
         error_one = 0
         If intX = -1 or intY1 > -1 Then 
             TracePrint "出错"
@@ -1503,7 +1500,7 @@ Function GG_search(flat)
             Exit While
         End If
 	Wend
-	Delay 2000
+	Delay 1000
 	KeyPress "Del"
 	//选择输入框中的数据
 	Dim intX,intY,int2X, int2Y
@@ -1517,26 +1514,27 @@ Function GG_search(flat)
 		error_one = error_one + 1
         If error_one > 40 Then 
             TracePrint"出错"
-
             Exit While
         End If
 		FindColor 300,411,314,468, "FFFFFF", 0, 1, intX, intY
 	Wend
 	//输入
 	If flat = 1 Then 
+		TracePrint "输入cd时间"
 		InputText "43200;43200;20;30;15;45;10;3::"
 	ElseIf flat = 2 Then
+		TracePrint "输入蓝量"
 		InputText blue_num
 	End If
 	Delay 2000
 	//新搜索
-	FindStr 109, 939, 164, 1486, "新", "FFFFFF-111111", 0.8, intX, intY
-	FindStr 832, 943, 874, 1486, "新", "FFFFFF-111111", 0.8, int2X, int2Y
+	FindStr 109, 939, 164, 1486, "新", "FFFFFF-111111", 0.5, intX, intY//前
+	FindStr 831,929, 874, 1533, "新", "FFFFFF-111111", 0.5, int2X, int2Y//后
 	If intX > -1 Then 
-		TracePrint "新搜索-x:"&intX&"y:"&intY
+		TracePrint "新搜索前-x:"&intX&"y:"&intY
 		Touch intX, intY, 10
 	ElseIf int2X > -1 Then
-		TracePrint "新搜索2-x:"&int2X&"y:"&int2Y
+		TracePrint "新搜索后-x:"&int2X&"y:"&int2Y
 		Touch int2X, int2Y, 10
 	End If
 	Delay 1000
@@ -1548,7 +1546,7 @@ Function GG_search(flat)
 	End If
 	Delay 2000
 	//隐藏
-	FindStr(803,1096,947,1208,"隐","FFFFFF-111111",0.8,intX,intY)
+	FindStr(803,1096,947,1208,"隐","FFFFFF-111111",0.5,intX,intY)
 	error_one = 0
 	TracePrint "等待搜索-x:"&intX&"y:"&intY
 	While intX > -1
@@ -1559,27 +1557,29 @@ Function GG_search(flat)
             Call close_ad()
             Exit While
         End If
-		FindStr(803,1096,947,1208,"隐","FFFFFF-111111",0.8,intX,intY)
+		FindStr(803,1096,947,1208,"隐","FFFFFF-111111",0.5,intX,intY)
 	Wend
 	TracePrint "等待搜索结束"
 	Delay 1500
-	FindStr(643, 528, 759, 1274,"取","FFFFFF-111111",0.8,intX,intY)
+	FindStr(643, 528, 759, 1274,"取","FFFFFF-111111",0.5,intX,intY)
 	If intX > -1 Then 
 		TracePrint "点击取消"
 		Touch intX, intY, 10
 	End If
 	Delay 1500
 End Function
+
 //数据栏
 Function GG_database(num)
 	Dim intX,intY
-	FindColor 20, 270+146*num, 75, 325+146*num, "C4CB80", 1, 1, intX, intY//第num栏
+	FindColor 20, 270+146*num, 75, 325+146*num, "C4CB80|807C16", 1, 1, intX, intY//第num栏
 	If intX > -1 And intY > -1 Then
 		TracePrint "搜索栏-x:"&intX&"y:"&intY
 		Touch intX, intY, 10
 	End If
 	Delay 200
 End Function
+
 //关闭修改器
 Function GG_kill()
 	Dim error_one = 0
