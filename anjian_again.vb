@@ -1,5 +1,7 @@
 //2019年1月14日14:06:40
 //========================================初始化开始=================================================//
+Import "shanhai.lua"
+
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
 Randomize//随机数种子
@@ -49,43 +51,45 @@ Dim auto_prestige_temp=0
 //boss计数器
 Dim boss_num = 0
 Dim layer_last
+//初始化xml全局坐标
+Dim arrXY1,arrXY2
 /*=========================挂机设置=============================*/
 //仅点击
 Dim tapkill_bool = ReadUIConfig("tapkill")
-TracePrint iif(tapkill_bool, "仅点击:开启", "仅点击:关闭")
+TracePrint shanhai.iif(tapkill_bool, "仅点击:开启", "仅点击:关闭")
 //部落钻石选项
 Dim tribe_num = ReadUIConfig("tribe_num")
 TracePrint  "部落选择"&tribe_num
 /*=========================日常功能设置========================*/
 //竞赛
 Dim competition_bool = ReadUIConfig("competition")
-TracePrint iif(competition_bool, "竞赛:开启", "竞赛:关闭")
+TracePrint shanhai.iif(competition_bool, "竞赛:开启", "竞赛:关闭")
 //每日奖励
 Dim daily_reward_bool = ReadUIConfig("daily_reward")
-TracePrint iif(daily_reward_bool, "每日奖励:开启", "每日奖励:关闭")
+TracePrint shanhai.iif(daily_reward_bool, "每日奖励:开启", "每日奖励:关闭")
 //成就
 Dim achievement_bool = ReadUIConfig("achievement")
-TracePrint iif(achievement_bool, "成就:开启", "成就:关闭")
+TracePrint shanhai.iif(achievement_bool, "成就:开启", "成就:关闭")
 //宝箱
 Dim chest_bool = ReadUIConfig("chest")
-TracePrint iif(chest_bool, "宝箱:开启", "宝箱:关闭")
+TracePrint shanhai.iif(chest_bool, "宝箱:开启", "宝箱:关闭")
 //宠物蛋
 Dim egg_bool = ReadUIConfig("egg")
-TracePrint iif(egg_bool, "宠物蛋:开启", "宠物蛋:关闭")
+TracePrint shanhai.iif(egg_bool, "宠物蛋:开启", "宠物蛋:关闭")
 //仙女选项
 Dim fairy_1_bool = ReadUIConfig("fairy_1")
-TracePrint iif(fairy_1_bool, "仙女1:开启", "仙女1:关闭 ")
+TracePrint shanhai.iif(fairy_1_bool, "仙女1:开启", "仙女1:关闭 ")
 Dim fairy_2_bool = ReadUIConfig("fairy_2")
-TracePrint iif(fairy_2_bool, "仙女2:开启", "仙女2:关闭 ")
+TracePrint shanhai.iif(fairy_2_bool, "仙女2:开启", "仙女2:关闭 ")
 Dim fairy_3_bool = ReadUIConfig("fairy_3")
-TracePrint iif(fairy_3_bool, "仙女1:开启", "仙女1:关闭 ")
+TracePrint shanhai.iif(fairy_3_bool, "仙女1:开启", "仙女1:关闭 ")
 Dim fairy_4_bool = ReadUIConfig("fairy_4")
-TracePrint iif(fairy_4_bool, "仙女1:开启", "仙女1:关闭 ")
+TracePrint shanhai.iif(fairy_4_bool, "仙女1:开启", "仙女1:关闭 ")
 //修改选项
 Dim GG_cd_bool = ReadUIConfig("GG_cd")
-TracePrint iif(GG_cd_bool, "修改cd:开启", "修改cd:关闭 ")
+TracePrint shanhai.iif(GG_cd_bool, "修改cd:开启", "修改cd:关闭 ")
 Dim GG_blue_bool = ReadUIConfig("GG_blue")
-TracePrint iif(GG_blue_bool, "修改蓝:开启", "修改蓝:关闭 ")
+TracePrint shanhai.iif(GG_blue_bool, "修改蓝:开启", "修改蓝:关闭 ")
 /*=========================蜕变设置========================*/
 //层数选择
 Dim layer_number_max = ReadUIConfig("layer_number_max","99999")
@@ -93,7 +97,7 @@ layer_number_max = CInt(layer_number_max)
 TracePrint layer_number_max
 //自动蜕变
 Dim auto_prestige = ReadUIConfig("auto_prestige")
-TracePrint iif(auto_prestige, "自动蜕变:开启", "自动蜕变:关闭")
+TracePrint shanhai.iif(auto_prestige, "自动蜕变:开启", "自动蜕变:关闭")
 //挑战头目失败强制蜕变次数
 Dim boss_maxnum = ReadUIConfig("boss_maxnum","3")
 boss_maxnum = CInt(boss_maxnum)
@@ -103,11 +107,11 @@ prestige_maxtime = CInt(prestige_maxtime)
 /*=========================神器设置========================*/
 //升级神器
 Dim artifact_bool = ReadUIConfig("artifact")
-TracePrint iif(artifact_bool, "升级神器:开启", "升级神器:关闭")
+TracePrint shanhai.iif(artifact_bool, "升级神器:开启", "升级神器:关闭")
 /*=========================升级设置========================*/
 //优先升级的栏目
 Dim navbar_first = ReadUIConfig("navbar_first")
-TracePrint iif(navbar_first, "优先升级：英雄栏", "优先升级：佣兵栏")
+TracePrint shanhai.iif(navbar_first, "优先升级：英雄栏", "优先升级：佣兵栏")
 //升级时间
 Dim update_main_maxtime = ReadUIConfig("update_time","360")
 update_main_maxtime = CInt(update_main_maxtime)
@@ -115,22 +119,22 @@ TracePrint "升级时间"&update_main_maxtime
 /*=========================技能设置========================*/
 //技能1
 Dim skill_1 = ReadUIConfig("skill_1")
-TracePrint iif(skill_1, "技能1:开启", "技能1:关闭")
+TracePrint shanhai.iif(skill_1, "技能1:开启", "技能1:关闭")
 //技能2
 Dim skill_2 = ReadUIConfig("skill_2")
-TracePrint iif(skill_2, "技能2:开启", "技能2:关闭")
+TracePrint shanhai.iif(skill_2, "技能2:开启", "技能2:关闭")
 //技能3
 Dim skill_3 = ReadUIConfig("skill_3")
-TracePrint iif(skill_3, "技能3:开启", "技能3:关闭")
+TracePrint shanhai.iif(skill_3, "技能3:开启", "技能3:关闭")
 //技能4
 Dim skill_4 = ReadUIConfig("skill_4")
-TracePrint iif(skill_4, "技能4:开启", "技能4:关闭")
+TracePrint shanhai.iif(skill_4, "技能4:开启", "技能4:关闭")
 //技能5
 Dim skill_5 = ReadUIConfig("skill_5")
-TracePrint iif(skill_5, "技能5:开启", "技能5:关闭")
+TracePrint shanhai.iif(skill_5, "技能5:开启", "技能5:关闭")
 //技能6
 Dim skill_6 = ReadUIConfig("skill_6")
-TracePrint iif(skill_6, "技能6:开启", "技能6:关闭")
+TracePrint shanhai.iif(skill_6, "技能6:开启", "技能6:关闭")
 /*===============杂项===================*/
 //等待开启时间
 Dim delay_time = ReadUIConfig("textedit_delay","0")
@@ -254,8 +258,8 @@ Function main
  		Do
         	//延迟&点击
         	For 14
-            	Touch RndEx(250,830), RndEx(320, 1000),RndEx(10, 15)
-            	Delay RndEx(140, 160)
+            	Touch shanhai.RndEx(250,830), shanhai.RndEx(320, 1000),shanhai.RndEx(10, 15)
+            	Delay shanhai.RndEx(140, 160)
         	Next
         	Delay 800
     	Loop
@@ -295,8 +299,6 @@ Function main
 End Function
 //退出游戏
 Function kill_app()
-	SetDictEx(0, "Attachment:修改器.txt")
-	UseDict(0)
 	TracePrint "关闭游戏"	
 	//等待识别退出
 	Dim intX,intY,error_one
@@ -333,7 +335,6 @@ Function kill_app()
 		Delay 5000
 	End If
 	//等待修改器的确认游戏退出
-    FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
 	error_one = 0
 	Do
 		TracePrint"等待修改器的确认游戏退出"
@@ -344,7 +345,7 @@ Function kill_app()
             TracePrint"层数出错"
             Exit Do
         End If
-	Loop While intX = -1 
+	Loop While find_xml("确认","")
 	//点击修改器的确认游戏退出 
 	Touch intX, intY, 10
 	Delay 1000
@@ -387,14 +388,11 @@ Function check_status()
 		TracePrint "stop"
 		EndScript
     End If
-    SetDictEx(0, "Attachment:修改器.txt")
-    UseDict (0)
 	//识别修改器的确认游戏退出
-	FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
-	If intX > -1 Then 
+	If (find_xml("确认","")) Then 
 		TracePrint "点击确认"
-		Touch intX+2, intY+2, 10
-	End If
+    	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+    End If
     If Sys.isRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2")  = False  Then 
     	TracePrint "开启游戏"
       	RunApp "com.gamehivecorp.taptitans2"
@@ -463,8 +461,8 @@ Function kill()
         Call skills()//技能
         //技能延迟&点击
         For 18
-            Touch RndEx(250,830), RndEx(320, 1000),RndEx(30, 55)
-            Delay RndEx(50, 100)
+            Touch shanhai.RndEx(250,830), shanhai.RndEx(320, 1000),shanhai.RndEx(30, 55)
+            Delay shanhai.RndEx(50, 100)
             If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
                 Exit For
             End If
@@ -753,15 +751,15 @@ Function tribe()
         TracePrint "循环点击35秒"
         For 450
             //点击延迟
-            Touch RndEx(250, 880), RndEx(342, 970), RndEx(15, 25)
-            Delay RndEx(60, 80)
+            Touch shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), shanhai.RndEx(15, 25)
+            Delay shanhai.RndEx(60, 80)
         Next
         //离开部落boos界面
         Delay 1500
         FindPic 453,82,554,185,"Attachment:部落boss退出任务.png","000000",0,0.7,intX,intY
 		error_one = 0
 		While intX > -1
-			Touch RndEx(250, 880), RndEx(342, 970), RndEx(10, 30)
+			Touch shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), shanhai.RndEx(10, 30)
             Delay 2000
             FindPic 453,82,554,185,"Attachment:部落boss退出任务.png","000000",0,0.7,intX,intY
             error_one = error_one + 1
@@ -983,7 +981,7 @@ Function boss
 	If intX > -1 And intY > -1 Then 
 		TracePrint "主动进入boss模式"
     	Delay 50
-    	TouchDown RndEx(intX-5, intX + 5), RndEx(intY-5, intY + 5), 1
+    	TouchDown shanhai.RndEx(intX-5, intX + 5), shanhai.RndEx(intY-5, intY + 5), 1
     	Delay 85
     	TouchUp 1
     	Delay 100
@@ -1032,8 +1030,8 @@ Function skill_one(intX, intY,max_error, skill_true, error)
 	cmpColors = Join(MyArray, "|")
 	If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
 //		TracePrint "x="&intX&"y="&intY
-    	Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
-    	Delay RndEx(40, 60)
+    	Touch shanhai.RndEx(intX-30, intX+30), shanhai.RndEx(intY+30, intY+100),shanhai.RndEx(50, 55)
+    	Delay shanhai.RndEx(40, 60)
     	error = error + 1
 		If error > max_error Then 
 			TracePrint "技能无法使用"
@@ -1212,16 +1210,16 @@ Function update_one(update_type)
     While up1X > -1
       	TracePrint "升级识别:x="&up1X&"y="&up1Y
       	update_time = update_time+1
-        Touch up1X-50,up1Y+50, RndEx(20,55)
-        Delay RndEx(100, 150)
+        Touch up1X-50,up1Y+50, shanhai.RndEx(20,55)
+        Delay shanhai.RndEx(100, 150)
         If CmpColorEx("992|1881|414424", 0.9) = 0 Then 
         	Call close_window()//普通弹窗
         End If
 		FindColor 699, 238, 740, 1753, "001859", 0, 1, up2X, up2Y//点击技能全部升级
 		If up2X > -1 and update_type = 1 Then 
 			TracePrint "点击技能全部升级"
-			Touch up2X, up2Y + 5, RndEx(20, 55)
-			Delay RndEx(100,150)
+			Touch up2X, up2Y + 5, shanhai.RndEx(20, 55)
+			Delay shanhai.RndEx(100,150)
 		End If
         error_one = error_one + 1
 		If error_one > 30 Then 
@@ -1259,7 +1257,7 @@ Function artifact_update()
     FindColor 749,394,867,461, "0428A2-333333|003C96-333333|8A6400-333333", 0, 1, up1X, up1Y
     While up1X > -1
     	TracePrint "升级神书"
-    	Touch 910,479, RndEx(5,15)
+    	Touch 910,479, shanhai.RndEx(5,15)
         Delay 1000
         error_one = error_one + 1
         If error_one > 10 Then 
@@ -1462,32 +1460,24 @@ End Function
 
 //单一数据修改
 Function GG_databaseOne(intX, intY, str, flat)
-	SetRowsNumber(0)
-	SetDictEx(0, "Attachment:修改器.txt")
-	UseDict(0)
 	Touch intX, intY, 10
 	Delay 1000
 	KeyPress "Del"
 	InputText str
 	Delay 2000
 	If flat = 2 Then 
-		FindStr(158,453,248,877,"冻","FFFFFF-111111",0.8,intX,intY)
-		If intX > -1 And intY > -1 Then 
-			Touch intX, intY, 10
-		End If
+		If (find_xml("冻结","")) Then 
+    		Touch arrXY1(0) +50, arrXY1(1) + 50, 200
+    	End If
 		Delay 1000	
 	End If
 	
-	FindStr(854, 867, 943, 1323,"是","FFFFFF-111111",0.8,intX,intY)
-	If intX > -1 And intY > -1 Then 
-		Touch intX, intY, 10
-	End If
+		If (find_xml("是","")) Then 
+			Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+    	End If
 End Function
 //搜索
 Function GG_search(flat)
-	SetRowsNumber(0)
-	TracePrint SetDictEx(0, "Attachment:修改器.txt")
-	TracePrint UseDict(0)
 	//打开搜索
 	Dim error_one=0
 	While CmpColorEx("1008|72|FFFFFF",1) = 1
@@ -1528,15 +1518,10 @@ Function GG_search(flat)
 	End If
 	Delay 2000
 	//新搜索
-	FindStr 109, 939, 164, 1486, "新", "FFFFFF-111111", 0.5, intX, intY//前
-	FindStr 831,929, 874, 1533, "新", "FFFFFF-111111", 0.5, int2X, int2Y//后
-	If intX > -1 Then 
-		TracePrint "新搜索前-x:"&intX&"y:"&intY
-		Touch intX, intY, 10
-	ElseIf int2X > -1 Then
-		TracePrint "新搜索后-x:"&int2X&"y:"&int2Y
-		Touch int2X, int2Y, 10
-	End If
+	If (find_xml("新搜索","")) Then 
+    	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+    End If
+
 	Delay 1000
 	//选择类型，float
 	FindColor 446,623,600,680,"AAAAFF",0,0.9,intX,intY
@@ -1546,10 +1531,8 @@ Function GG_search(flat)
 	End If
 	Delay 2000
 	//隐藏
-	FindStr(803,1096,947,1208,"隐","FFFFFF-111111",0.5,intX,intY)
 	error_one = 0
-	TracePrint "等待搜索-x:"&intX&"y:"&intY
-	While intX > -1
+	While find_xml("隐","")
 		Delay 1000
 		error_one = error_one + 1
         If error_one > 300 Then 
@@ -1557,16 +1540,47 @@ Function GG_search(flat)
             Call close_ad()
             Exit While
         End If
-		FindStr(803,1096,947,1208,"隐","FFFFFF-111111",0.5,intX,intY)
 	Wend
 	TracePrint "等待搜索结束"
 	Delay 1500
-	FindStr(643, 528, 759, 1274,"取","FFFFFF-111111",0.5,intX,intY)
-	If intX > -1 Then 
+	If (find_xml("取消","")) Then 
 		TracePrint "点击取消"
-		Touch intX, intY, 10
-	End If
+    	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+    End If
 	Delay 1500
+End Function
+
+
+Function find_xml(str1,str2)
+    Dim XY1,XY2,sPos2,ePos2,sPos1, ePos1
+	// 获取当前界面的XML信息
+	Dim UI_XML = shanhai.GetUIXml()
+    // 查找“str”按钮的位置信息
+    sPos1 = InStr(1, UI_XML, str1)
+	If (sPos1 < 1) Then 
+    	find_xml = False
+    	Exit Function
+    End If
+    If (str2 <> "") Then 
+    	sPos1 = InStr(sPos1, UI_XML, str2)
+    End If
+    sPos1 = InStr(sPos1, UI_XML, "bounds=")
+    sPos1 = InStr(sPos1, UI_XML, "[")
+    ePos1 = InStr(sPos1, UI_XML, "]")
+    sPos2 = InStr(ePos1, UI_XML, "[")
+    ePos2 = InStr(sPos2, UI_XML, "]")
+
+    sPos1 = sPos1 + 1
+    sPos2 = sPos2 + 1
+    XY1 = Mid(UI_XML, sPos1, ePos1 - sPos1)
+    XY2 = Mid(UI_XML, sPos2, ePos2 - sPos2)
+    // 分割提取出坐标
+    arrXY1 = Split(XY1,",")
+    arrXY2 = Split(XY2,",")
+    TracePrint "开始坐标为：x=" & arrXY1(0) & ",y=" & arrXY1(1)
+    TracePrint "结束坐标为：x=" & arrXY2(0) & ",y=" & arrXY2(1)
+    //Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+
 End Function
 
 //数据栏
@@ -1610,7 +1624,7 @@ Function daily_reward
         //收集
 		FindColor 446,1216,500,1287,"D7AB28-111111",0,0.9,intX,intY
 		If intX > -1 And intY > -1 Then
-			Touch RndEx(intX,intX+10),RndEx(intY,intY+10),100
+			Touch shanhai.RndEx(intX,intX+10),shanhai.RndEx(intY,intY+10),100
 		End If
         For 4
         	Delay 1000
@@ -1708,7 +1722,7 @@ Function achievement
     	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX, intY
     	error_one = 0
     	While intX > -1 And intY > -1
-        	TouchDown RndEx(851,851+10),RndEx(465,465+10),1
+        	TouchDown shanhai.RndEx(851,851+10),shanhai.RndEx(465,465+10),1
         	TouchUp 1
         	Delay 1000
         	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX, intY
@@ -1751,7 +1765,7 @@ Function competition
         TracePrint "下方加入按键"
 		FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
 		If intX > -1 And intY > -1 Then
-			Touch intX,RndEx(intY,intY+5),100
+			Touch intX,shanhai.RndEx(intY,intY+5),100
 			Delay 3000
 		End If
 		If CmpColorEx("742|1302|C29926",1) = 1 Then
@@ -1770,7 +1784,7 @@ Function swipe_up(num)
     TracePrint "上滑"
     For num
     	Swipe 730, 1000, 730, 1650, 200
-    	Delay RndEx(500, 1055)
+    	Delay shanhai.RndEx(500, 1055)
 		Call close_ad()//广告
 	Next
 End Function
@@ -1779,7 +1793,7 @@ Function swipe_down(num)
     TracePrint "下滑"
     For num
     	Swipe 1000, 1650, 1000, 1000, 100
-    	Delay RndEx(500, 1055)
+    	Delay shanhai.RndEx(500, 1055)
 		Call close_ad()//广告
 	Next
 End Function
@@ -1837,19 +1851,6 @@ End Function
 //封装时间格式化输出函数
 Function data_time(d_time)
 	data_time =DateTime.Format("%H:%M:%S",d_time-28800)
-End Function
-//封装if函数
-Function iif(judge, rtrue, rfalse)
-	If judge = false or judge = 0 then
-		iif =  rfalse
-	else 
-		iif =  rtrue
-	End If
-End Function
-//封装随机数函数
-Function RndEx(min, max)
-	//Int((最大值 - 最小值 + 1) * Rnd() + 最小值)
-	RndEx = Int(((max-min) * Rnd()) + min)
 End Function
 Function OnScriptExit()
     TracePrint "脚本已经停止！"
