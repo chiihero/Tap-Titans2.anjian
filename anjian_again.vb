@@ -233,7 +233,7 @@ End Function
 Function GG_init()
 	//修改部分
     If GG_cd_bool = True or GG_blue_bool = True Then 
-    	Call Navbar_main("hero",1)//升级本人与技能
+//    	Call Navbar_main("hero",1)//升级本人与技能
         Call GG()
         Dim error_numail_one = 0
         While GG_flat = False
@@ -1518,7 +1518,8 @@ Function GG_search(flat)
 	End If
 	Delay 2000
 	//新搜索
-	If (find_xml("新搜索","")) Then 
+	If (find_xml("新搜索", "")) Then 
+	 	TracePrint "点击新搜索"
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
     End If
 
@@ -1580,7 +1581,7 @@ Function find_xml(str1,str2)
     TracePrint "开始坐标为：x=" & arrXY1(0) & ",y=" & arrXY1(1)
     TracePrint "结束坐标为：x=" & arrXY2(0) & ",y=" & arrXY2(1)
     //Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-
+	find_xml = True
 End Function
 
 //数据栏
