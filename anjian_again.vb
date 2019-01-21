@@ -1,10 +1,9 @@
-//2019年1月14日14:06:40
+//2019年1月20日15:17:27
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
 KeepScreen True//保持亮屏
 Device.SetBacklightLevel(40)//设置亮度
-Randomize//随机数种子
 Log.Open 
 TracePrint "当前设备的临时目录为：" &GetTempDir()
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
@@ -1518,12 +1517,20 @@ Function GG_search(flat)
 	End If
 	Delay 2000
 	//新搜索
-	If (find_xml("新搜索", "")) Then 
+	error_one = 0
+	While (find_xml("新搜索", "")) 
 	 	TracePrint "点击新搜索"
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-    End If
+    	Delay 2000
+    	error_one = error_one + 1
+        If error_one > 10 Then 
+            TracePrint"出错"
+            Call close_ad()
+            Exit While
+        End If
+    Wend
 
-	Delay 1000
+	
 	//选择类型，float
 	FindColor 446,623,600,680,"AAAAFF",0,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
@@ -1544,10 +1551,18 @@ Function GG_search(flat)
 	Wend
 	TracePrint "等待搜索结束"
 	Delay 1500
-	If (find_xml("取消","")) Then 
-		TracePrint "点击取消"
+    error_one = 0
+	While (find_xml("取消",""))
+	 	TracePrint "点击取消"
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-    End If
+    	Delay 2000
+    	error_one = error_one + 1
+        If error_one > 3 Then 
+            TracePrint"出错"
+            Call close_ad()
+            Exit While
+        End If
+    Wend
 	Delay 1500
 End Function
 
