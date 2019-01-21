@@ -1,4 +1,4 @@
-//2019年1月20日15:17:27
+//2019年1月21日16:08:48
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -135,6 +135,8 @@ TracePrint shanhai.iif(skill_5, "技能5:开启", "技能5:关闭")
 Dim skill_6 = ReadUIConfig("skill_6")
 TracePrint shanhai.iif(skill_6, "技能6:开启", "技能6:关闭")
 /*===============杂项===================*/
+//7点到7点半暂停运行
+Dim acenergy = ReadUIConfig("acenergy",false)
 //等待开启时间
 Dim delay_time = ReadUIConfig("textedit_delay","0")
 delay_time = CInt(delay_time)*60*1000
@@ -232,7 +234,7 @@ End Function
 Function GG_init()
 	//修改部分
     If GG_cd_bool = True or GG_blue_bool = True Then 
-//    	Call Navbar_main("hero",1)//升级本人与技能
+    	Call Navbar_main("hero",1)//升级本人与技能
         Call GG()
         Dim error_numail_one = 0
         While GG_flat = False
@@ -294,6 +296,14 @@ Function main
         Call sendmessage(ocrchar_layer)//邮件内容记录
 
         Call close_ad()
+        //7点到7点半暂停运行
+        If acenergy Then 
+			If DateTime.Hour() = 07 And DateTime.Minute() < 30 Then 
+			 	TracePrint "7点到7点半暂停运行"
+				Delay 1800000
+			End If
+        	
+        End If
     Loop
 End Function
 //退出游戏
@@ -338,15 +348,18 @@ Function kill_app()
 	Do
 		TracePrint"等待修改器的确认游戏退出"
 		Delay 500
-		FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
 		error_one = error_one + 1
         If error_one > 10 Then 
             TracePrint"层数出错"
             Exit Do
         End If
-	Loop While find_xml("确认","")
+	Loop While find_xml("确定", "") = False
 	//点击修改器的确认游戏退出 
-	Touch intX, intY, 10
+	If (find_xml("确定","")) Then 
+		TracePrint "点击确定"
+    	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+	End If
+	
 	Delay 1000
 End Function
 //判断应用存在
@@ -387,9 +400,9 @@ Function check_status()
 		TracePrint "stop"
 		EndScript
     End If
-	//识别修改器的确认游戏退出
-	If (find_xml("确认","")) Then 
-		TracePrint "点击确认"
+	//识别修改器的确定游戏退出
+	If (find_xml("确定","")) Then 
+		TracePrint "点击确定"
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
     End If
     If Sys.isRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2")  = False  Then 
@@ -403,11 +416,10 @@ Function check_status()
 				RunApp "com.gamehivecorp.taptitans2"
 			End If
 			Delay 2000
-			//识别修改器的确认游戏退出
-			FindStr(145,1127,195,1178,"确","FFFFFF",0.8,intX,intY)
-			If intX > -1 Then 
-				TracePrint "点击确认"
-				Touch intX+2, intY+2, 10
+			//识别修改器的确定游戏退出
+			If (find_xml("确定","")) Then 
+				TracePrint "点击确定"
+    			Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
 			End If
 			Delay 4000
 			Call close_ad()//广告
@@ -1343,22 +1355,30 @@ Function GG()
         Exit Function
     End If	
     //选择tap titans2//中间	
-    FindColor 112,199,259,609, "025BD0", 1, 1, intX, intY
-    If intX > -1 And intY > -1 Then 
-        TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-        Touch intX,intY, 30
-    End If
+//    FindColor 112,199,259,609, "025BD0", 1, 1, intX, intY
+//    If intX > -1 And intY > -1 Then 
+//        TracePrint "选择tap titans2-x:"&intX&"y:"&intY
+//        Touch intX,intY, 30
+//    End If
+
+    
+    
     //选择tap titans2//左上角
     If CmpColorEx("81|25|025BD0",1) = 0 Then
-        TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-        Touch 50, 50, 30
-        Delay 1500
-        //选择tap titans2//中间	
-        FindColor 112,199,259,609, "025BD0", 1, 1, intX, intY
-        If intX > -1 And intY > -1 Then 
-            TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-            Touch intX,intY, 30
-        End If
+    	If (find_xml("Tap Titans","")) Then 
+			TracePrint "点击Tap Titans"
+			Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+    	Else
+    		TracePrint "选择tap titans2-x:"&intX&"y:"&intY
+        	Touch 50, 50, 30
+        	Delay 1500
+        	//选择tap titans2//中间	
+        	FindColor 112,199,259,609, "025BD0", 1, 1, intX, intY
+        	If intX > -1 And intY > -1 Then 
+            	TracePrint "选择tap titans2-x:"&intX&"y:"&intY
+            	Touch intX,intY, 30
+        	End If
+    	End If
     End If
     //点击搜索栏
     Delay 600
