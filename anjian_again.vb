@@ -1,4 +1,4 @@
-//2019年6月9日18:30:03
+//2019年6月9日23:20:53
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -176,9 +176,11 @@ Touch 500, 500, 200
 //关闭面板
 Call close_ad()
 
-Call tribe()
-
-//Call main()
+//===================测试区=======================//
+//Call tribe()
+//Call GG()
+//===================测试区结束=======================//
+Call main()
 Function init()
 //	Sys.ClearMemory() //释放内存
 	//初始化错误次数
@@ -728,6 +730,11 @@ Function tribe()
         TracePrint"部落任务界面检测"
         Touch 204, 1749, 150
         Delay 1000
+        //判断没有任务
+        If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
+		Call close_ad()//广告
+			Exit Function
+		End If
         error_one = error_one + 1
         If error_one > 30  Then 
             TracePrint"出错"
@@ -763,7 +770,12 @@ Function tribe()
 //			tribe_flat=True
 //    	End If
 //	End Select
-
+	//判断没有任务
+	If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
+		Call close_ad()//广告
+		Exit Function
+	End If
+	//战队突袭—战斗
 	While CmpColorEx("354|1252|0C81FB",0.9) = 0
 		TracePrint"点击战斗"
 		Touch 772, 1712, 150
@@ -777,7 +789,8 @@ Function tribe()
 		Touch 245+i*114,810, 150
 		Delay 2000
 		
-	Wend	
+	Wend
+	//战队突袭—战斗2
 	Touch 724,1244, 150
 	Dim tribe_flat = True
     If  tribe_flat=True  Then
@@ -1392,9 +1405,13 @@ Function GG()
     
     //选择tap titans2//左上角
     If CmpColorEx("81|25|025BD0",1) = 0 Then
-    	If (find_xml("Tap Titans","")) Then 
-			TracePrint "点击Tap Titans"
-			Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+    	If (find_xml("Tap Titans", "")) Then 
+    		If ((arrXY1(1) + arrXY2(1)) / 2)>210 Then
+				TracePrint "点击Tap Titans"
+				Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+			Else 
+				TracePrint "已经选择Tap Titans"
+			End If
     	Else
     		TracePrint "选择tap titans2-x:"&intX&"y:"&intY
         	Touch 50, 50, 30
@@ -1409,7 +1426,7 @@ Function GG()
     End If
     //点击搜索栏
     Delay 600
-    Touch 436, 70, 10
+    Touch 436, 70, 100
     Delay 600
     //判断是否已经搜索过
     FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
@@ -1794,8 +1811,14 @@ Function achievement
             	TracePrint"出错"
             	Exit While
         	End If
-    	Wend  
+    	Wend
+    	Touch 500, 500, 200
+		Delay 1000
+		Touch 500, 500, 200
+		Delay 1000
+		Touch 500, 500, 200
 	End If
+	
 	Call close_ad()//广告
 End Function
 //比赛
