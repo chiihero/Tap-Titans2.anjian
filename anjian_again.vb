@@ -1,4 +1,4 @@
-//2019年1月21日16:08:48
+//2019年6月9日18:30:03
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -175,7 +175,10 @@ Delay 1000
 Touch 500, 500, 200
 //关闭面板
 Call close_ad()
-Call main()
+
+Call tribe()
+
+//Call main()
 Function init()
 //	Sys.ClearMemory() //释放内存
 	//初始化错误次数
@@ -690,9 +693,19 @@ Function tribe()
     Dim ocrchar_diamond,timeX,timeY,intX,intY,error_one
     Touch 188,79,150
     Delay 2000
+    //判断部落欢迎界面
+    If CmpColorEx("517|1611|C3AF00", 0.9) = 1 Then 
+    	Touch 517,1644, 150
+    	Delay 1000
+    End If
     //部落聊天界面检测
     error_one = 0
-    While CmpColorEx("899|228|EFD652",1) = 0//部落聊天
+    While CmpColorEx("889|305|EFD555",1) = 0//部落聊天
+    	//判断部落欢迎界面
+    	If CmpColorEx("517|1611|C3AF00", 0.9) = 1 Then 
+    		Touch 517,1644, 150
+    		Delay 1000
+    	End If
         TracePrint "部落聊天界面检测"
         Touch 188, 79, 150
         Delay 1000
@@ -706,54 +719,70 @@ Function tribe()
             Exit Function
         End If
     Wend
+    Delay 1000
     Touch 204, 1749, 150
     Delay 4000
     //部落任务界面检测
     error_one = 0
-    FindColor 116, 723, 289, 943, "8C6363", 0, 1, intX, intY
-    While intX = -1  //部落任务
+    While CmpColorEx("771|1664|C3AF00",0.9) = 0  //部落任务
         TracePrint"部落任务界面检测"
         Touch 204, 1749, 150
         Delay 1000
         error_one = error_one + 1
-        FindColor 116,723,289,943,"8C6363",0,1,intX,intY
         If error_one > 30  Then 
             TracePrint"出错"
             Exit Function
         End If
     Wend
-	SetDictEx(1, "Attachment:数字.txt")
-	UseDict (1)
-    ocrchar_diamond=Ocr(714,1699,759,1734,"FFFFFF-111111",0.9)//识别“钻石”
-    TracePrint ocrchar_diamond
-    If ocrchar_diamond = "" Then 
-    	ocrchar_diamond = "0"
-    End If
-	ocrchar_diamond = CInt(ocrchar_diamond)
-    Dim tribe_flat = False
-    Select Case tribe_num
-	Case 1
-		//识别旁边的时间
-    	If CmpColorEx("218|1783|30FFAC",1) = 0 And ocrchar_diamond = 0 Then 
-    		tribe_flat=True
-    	End If
-	Case 2
-    	If ocrchar_diamond <= 5 Then 
-			tribe_flat=True
-    	End If
-	Case 3
-    	If ocrchar_diamond <= 25 Then 
-			tribe_flat=True
-    	End If
-	Case 4
-    	If ocrchar_diamond <= 50 Then 
-			tribe_flat=True
-    	End If
-	End Select
+    Delay 2000
+//	SetDictEx(1, "Attachment:数字.txt")
+//	UseDict (1)
+//    ocrchar_diamond=Ocr(714,1699,759,1734,"FFFFFF-111111",0.9)//识别“钻石”
+//    TracePrint ocrchar_diamond
+//    If ocrchar_diamond = "" Then 
+//    	ocrchar_diamond = "0"
+//    End If
+//	ocrchar_diamond = CInt(ocrchar_diamond)
+//    Dim tribe_flat = False
+//    Select Case tribe_num
+//	Case 1
+//		//识别旁边的时间
+//    	If CmpColorEx("218|1783|30FFAC",1) = 0 And ocrchar_diamond = 0 Then 
+//    		tribe_flat=True
+//    	End If
+//	Case 2
+//    	If ocrchar_diamond <= 5 Then 
+//			tribe_flat=True
+//    	End If
+//	Case 3
+//    	If ocrchar_diamond <= 25 Then 
+//			tribe_flat=True
+//    	End If
+//	Case 4
+//    	If ocrchar_diamond <= 50 Then 
+//			tribe_flat=True
+//    	End If
+//	End Select
+
+	While CmpColorEx("354|1252|0C81FB",0.9) = 0
+		TracePrint"点击战斗"
+		Touch 772, 1712, 150
+		Delay 2000
+	Wend
+	//选择甲板
+	Dim i
+	While CmpColorEx("724|1244|C3AF00", 0.9) = 0
+		i=i+1	
+		TracePrint"选择甲板"
+		Touch 245+i*114,810, 150
+		Delay 2000
+		
+	Wend	
+	Touch 724,1244, 150
+	Dim tribe_flat = True
     If  tribe_flat=True  Then
         //点击“战斗”
-        TracePrint"点击战斗"
-		Touch 699,1767, 150
+        
         Delay 1500
         Touch 723,1058, 150
         Delay 1000
@@ -767,12 +796,10 @@ Function tribe()
         Next
         //离开部落boos界面
         Delay 1500
-        FindPic 453,82,554,185,"Attachment:部落boss退出任务.png","000000",0,0.7,intX,intY
 		error_one = 0
-		While intX > -1
-			Touch shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), shanhai.RndEx(10, 30)
+		While CmpColorEx("526|1413|D4A928",0.9) = 1
+			Touch 526,1413, shanhai.RndEx(10, 30)
             Delay 2000
-            FindPic 453,82,554,185,"Attachment:部落boss退出任务.png","000000",0,0.7,intX,intY
             error_one = error_one + 1
             If error_one > 10 Then 
                 TracePrint"出错"
