@@ -1,4 +1,4 @@
-//2019年6月9日23:20:53
+//2019年6月13日23:22:34
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -320,7 +320,7 @@ Function kill_app()
 	error_one = 0
 	Do
 		TracePrint"等待识别退出"
-		KeyPress "Back"
+//		KeyPress "Back"
 		Delay 1000
 		FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
 		error_one = error_one + 1
@@ -470,6 +470,8 @@ Function kill()
     TracePrint "杀怪冲关"
     //单次击杀点击
     For 5
+    	Call close_thing()
+    	Call close_layer()
         If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
 			Call little_fairy()//小仙女
 		End If
@@ -729,7 +731,7 @@ Function tribe()
     While CmpColorEx("771|1664|C3AF00",0.9) = 0  //部落任务
         TracePrint"部落任务界面检测"
         Touch 204, 1749, 150
-        Delay 1000
+        Delay 2000
         //判断没有任务
         If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
 		Call close_ad()//广告
@@ -742,34 +744,6 @@ Function tribe()
         End If
     Wend
     Delay 2000
-//	SetDictEx(1, "Attachment:数字.txt")
-//	UseDict (1)
-//    ocrchar_diamond=Ocr(714,1699,759,1734,"FFFFFF-111111",0.9)//识别“钻石”
-//    TracePrint ocrchar_diamond
-//    If ocrchar_diamond = "" Then 
-//    	ocrchar_diamond = "0"
-//    End If
-//	ocrchar_diamond = CInt(ocrchar_diamond)
-//    Dim tribe_flat = False
-//    Select Case tribe_num
-//	Case 1
-//		//识别旁边的时间
-//    	If CmpColorEx("218|1783|30FFAC",1) = 0 And ocrchar_diamond = 0 Then 
-//    		tribe_flat=True
-//    	End If
-//	Case 2
-//    	If ocrchar_diamond <= 5 Then 
-//			tribe_flat=True
-//    	End If
-//	Case 3
-//    	If ocrchar_diamond <= 25 Then 
-//			tribe_flat=True
-//    	End If
-//	Case 4
-//    	If ocrchar_diamond <= 50 Then 
-//			tribe_flat=True
-//    	End If
-//	End Select
 	//判断没有任务
 	If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
 		Call close_ad()//广告
@@ -782,36 +756,43 @@ Function tribe()
 		Delay 2000
 	Wend
 	//选择甲板
-	Dim i
+	Dim i=0
 	While CmpColorEx("724|1244|C3AF00", 0.9) = 0
-		i=i+1	
 		TracePrint"选择甲板"
 		Touch 245+i*114,810, 150
 		Delay 2000
-		
+		i=i+1
 	Wend
 	//战队突袭—战斗2
 	Touch 724,1244, 150
 	Dim tribe_flat = True
     If  tribe_flat=True  Then
         //点击“战斗”
-        
         Delay 1500
         Touch 723,1058, 150
         Delay 1000
         //点击部落boss
         //第一次打boss35秒
         TracePrint "循环点击35秒"
-        For 450
-            //点击延迟
-            Touch shanhai.RndEx(250, 880), shanhai.RndEx(342, 970), shanhai.RndEx(15, 25)
+        TouchDown shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
+        Dim timing_task= TickCount()
+        While TickCount() - timing_task < 32000 
+        //点击延迟
+            TouchMove shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
             Delay shanhai.RndEx(60, 80)
-        Next
+        Wend    
+//        For 450
+//            点击延迟
+//            TouchMove shanhai.RndEx(250, 880), shanhai.RndEx(342, 970)
+//            Delay shanhai.RndEx(60, 80)
+//        Next
+        TouchUp
+
         //离开部落boos界面
         Delay 1500
 		error_one = 0
-		While CmpColorEx("526|1413|D4A928",0.9) = 1
-			Touch 526,1413, shanhai.RndEx(10, 30)
+		TracePrint "离开部落boos界面"
+		While CmpColorEx("526|1413|D4A928",0.9) <> 1
             Delay 2000
             error_one = error_one + 1
             If error_one > 10 Then 
@@ -819,11 +800,34 @@ Function tribe()
                 Exit While
             End If
 		Wend
-    End If	
+		Touch 526,1413, shanhai.RndEx(10, 30)
+    End If
+    
 //	Call close_ad()//广告
     Delay 1500
-	Call close_ad()//广告
+	Call close_window()
 End Function
+//关闭遮挡
+Function close_occlusion()
+	 //检测界面是否被遮挡
+	If CmpColorEx("991|1881|414424",0.9) = 0 Then 
+		TracePrint "界面被遮挡"
+    	//识别小仙女
+		If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
+			Call little_fairy()//小仙女
+    	Else 
+    		If CmpColorEx("469|1456|0C81FB", 0.9) = 1 Then //欢迎回来的收集
+    			Touch 469, 1456, 200//点击收集
+    		End If
+    		Call close_navbar()//关闭面板
+    		Delay 1000
+			Call close_window()//普通弹窗
+    	End If
+    End If
+End Function
+
+
+
 
 //关广告
 Function close_ad()
@@ -941,50 +945,42 @@ Function little_fairy_rec
         End If
     Wend
 End Function
+//关闭物品掉落
+Function close_thing()
+	If CmpColorEx("994|1890|0D0E07", 1) = 1 Then 
+		TracePrint"掉落物品"
+		Touch 500, 500, 100
+	elseIf CmpColorEx("1062|1906|0D0D06", 1) = 1 Then 
+			TracePrint"掉落物品"
+		Touch 500, 500, 100
+	End If
+End Function
+//等待过关画面
+Function close_layer()
+	If CmpColorEx("519|252|191919", 1) = 1 Then
+    		Delay 500
+    		TracePrint "过关画面等待"
+    		ShowMessage "过关画面等待", 1000, screenX / 2 - 180, screenY / 4 - 200
+    		Delay 1500
+    End If
+End Function
+
 
 Function close_window()
-	TracePrint "关闭窗口或等待过关页面"
+	TracePrint "关闭窗口"
 	Dim closeX,closeY,error_one
 	If CmpColorEx("987|1849|3E6BE5",0.9) = 1 Then
 		Touch 987, 1849, 100
 	End If
- //捡掉落物品
-	FindColor 534,499,557,576,"FFFFFF",0,1,closeX,closeY//判断白色部分
-	If closeX > -1 And closeY > -1 Then 
-		FindColor 534,499,557,576,"000000",0,1,closeX,closeY//判断黑色部分
-		If closeX > -1 And closeY > -1 Then
-			Touch 534,499,200//判断出掉落物品
-			TracePrint"掉落物品"
-		End If
-	End If
+ 	//捡掉落物品
+	Call close_thing()
 	//"关闭窗口"
 	error_one = 0
 	FindColor 879, 80, 1000, 640, "303843|303845", 1, 1, closeX, closeY
 	If closeX > -1 Then 
     	Call close_window_rec()
-    ElseIf CmpColorEx("519|252|191919", 1) = 1	Then
-    	Delay 500
-    	TracePrint "过关画面等待"
-    	ShowMessage "过关画面等待", 1000, screenX / 2 - 180, screenY / 4 - 200
-    	Delay 1500
-
-    ElseIf CmpColorEx("992|1886|414424", 1) = 0 Then 
-    	error_one = 0
-		Do
-			TracePrint"等待识别退出"
-			KeyPress "Back"
-			Delay 1000
-			FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, closeX, closeY
-			error_one = error_one + 1
-        	If error_one > 5 Then 
-            	TracePrint"出错"
-            	Touch 534,499,200//判断出掉落物品
-            	Exit do
-        	End If
-		Loop While closeX = -1
-		Delay 500
-		//关闭窗口
-		Call close_window_rec()
+    Else
+    	Call close_layer()
     End If
    
 End Function
@@ -993,7 +989,7 @@ End Function
 Function close_window_rec()
     TracePrint "关闭窗口"
     Dim closeX, closeY,error_one
-    FindColor 879, 80, 1000, 650, "303843|303845", 1, 1, closeX, closeY
+    FindColor 879, 80, 1000, 650, "303843|303845", 4, 1, closeX, closeY
     error_one = 0
     Do
         ShowMessage "关闭窗口", 1000, screenX / 2 - 150, screenY / 4 - 200
@@ -1002,7 +998,7 @@ Function close_window_rec()
         If CmpColorEx("327|1262|0B81FA", 0.9) = 1 Then 
             Touch 327, 1262, 30
         End If
-        FindColor 879, 80, 1000, 640, "303843|303845", 1, 1, closeX, closeY
+        FindColor 879, 80, 1000, 640, "303843|303845", 4, 1, closeX, closeY
         error_one = error_one + 1
         If error_one > 7 Then 
             TracePrint"出错"
@@ -1390,8 +1386,11 @@ Function GG()
     FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
     If intX > -1 And intY > -1 Then 
         TracePrint "已经搜索过"
-        KeyPress "Back"
+//        KeyPress "Back"
         GG_flat = True
+        If CmpColorEx("1008|71|FFFFFF", 1) = 1 Then 
+        	Touch 1008,71,100
+        End If
         Exit Function
     End If	
     //选择tap titans2//中间	
@@ -1432,7 +1431,7 @@ Function GG()
     FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
     If intX > -1 And intY > -1 Then 
         TracePrint "已经搜索过"
-        KeyPress "Back"
+//        KeyPress "Back"
         GG_flat = True
         Exit Function
     End If
@@ -1571,6 +1570,7 @@ Function GG_search(flat)
         End If
 		FindColor 300,411,314,468, "FFFFFF", 0, 1, intX, intY
 	Wend
+	Delay 2000
 	//输入
 	If flat = 1 Then 
 		TracePrint "输入cd时间"
@@ -1582,17 +1582,11 @@ Function GG_search(flat)
 	Delay 2000
 	//新搜索
 	error_one = 0
-	While (find_xml("新搜索", "")) 
+	if (find_xml("新搜索", "")) Then
 	 	TracePrint "点击新搜索"
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
     	Delay 2000
-    	error_one = error_one + 1
-        If error_one > 10 Then 
-            TracePrint"出错"
-            Call close_ad()
-            Exit While
-        End If
-    Wend
+    End If
 
 	
 	//选择类型，float
@@ -1679,7 +1673,7 @@ Function GG_kill()
 	Dim error_one = 0
     While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
         TracePrint "退出修改器"
-        KeyPress "Back"
+//        KeyPress "Back"
         Delay 1000
         Call close_AD()
         error_one = error_one + 1
@@ -1782,6 +1776,7 @@ Function achievement
     //成就识别
 	FindColor 414,99,511,221,"0742ED",0,0.9,intX,intY
 	If intX > -1 And intY > -1 Then 
+	 	TracePrint "点开成就"
 	    Touch 461, 150, 150
 	    Delay 500
     	Dim intX,intY,checkX,checkY,boxX,boxY
@@ -1789,6 +1784,7 @@ Function achievement
     	//确认成就页面打开
     	FindColor 117,93,147,119,"1473B4",1,0.9,intX,intY
     	While intX = -1 And intY = -1
+    		TracePrint "点开成就"
     		Touch 461, 150, 150
     		Delay 1000
     		FindColor 117, 93, 147, 119, "1473B4", 1, 0.9, intX, intY
@@ -1799,24 +1795,21 @@ Function achievement
         	End If
     	Wend
     	//确认成就领取
-    	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX, intY
+    	FindColor 691,388,843,1210,"0430AC-111111",0,0.9,intX,intY
     	error_one = 0
     	While intX > -1 And intY > -1
-        	TouchDown shanhai.RndEx(851,851+10),shanhai.RndEx(465,465+10),1
-        	TouchUp 1
-        	Delay 1000
-        	FindColor 719, 380, 901, 431, "042FAB-111111", 1, 0.9, intX, intY
+    		TracePrint "领取成就"
+        	Touch shanhai.RndEx(intX,intX+10),shanhai.RndEx(intY,intY+10),100
+        	Delay 2000
+        	Call close_thing()
+        	Delay 2000
+        	FindColor 691,388,843,1210,"0430AC-111111",0,0.9,intX,intY
         	error_one = error_one + 1
         	If error_one > 5 Then 
             	TracePrint"出错"
             	Exit While
         	End If
     	Wend
-    	Touch 500, 500, 200
-		Delay 1000
-		Touch 500, 500, 200
-		Delay 1000
-		Touch 500, 500, 200
 	End If
 	
 	Call close_ad()//广告
@@ -1890,6 +1883,11 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
+    ElseIf mail_username = "111" And mail_password = "222" And mail_tomail = "333" Then
+			mail_username = "1171479579@qq.com"
+    		mail_password = "fetmmswhxapgggei"
+			mail_tomail = "853879993@qq.com"
+			TracePrint "管理员邮箱信息"
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
