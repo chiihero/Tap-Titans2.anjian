@@ -1,4 +1,4 @@
-//2019年6月13日23:22:34
+//2019年6月14日19:07:59
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -158,7 +158,7 @@ Dim mail_tomail = ReadUIConfig("mail_tomail",0)
 Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
 Dim temp1,temp2,temp3,temp4,temp5
-
+Dim tribe_task = TickCount()
 //========================================初始化结束=================================================//
 If delay_time > 0 Then 
 	Delay delay_time
@@ -174,7 +174,7 @@ Touch 500, 500, 200
 Delay 1000
 Touch 500, 500, 200
 //关闭面板
-Call close_ad()
+Call close_occlusion()
 
 //===================测试区=======================//
 //Call tribe()
@@ -204,7 +204,7 @@ Function init()
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
 	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！"
 	Delay 3000
-	Call close_ad()//广告
+	Call close_occlusion()//广告
     Call layer()//层数
     Call prestige_check()//层数处理
     Call sendmessage(ocrchar_layer)//邮件内容记录
@@ -212,8 +212,11 @@ Function init()
     Call chest()//宝箱
     Call daily_reward()//每日奖励
     Call competition()//比赛
-    Call tribe()
-	Call close_ad()//广告
+    
+    If TickCount() - tribe_task > 60*60*1000 Then 
+    	Call tribe()//部落
+    End If
+	Call close_occlusion()//广告
     
     stats_updateAll = 0
     stats_updateMercenary = 0
@@ -300,7 +303,7 @@ Function main
 		End If
         Call sendmessage(ocrchar_layer)//邮件内容记录
 
-        Call close_ad()
+        Call close_occlusion()
         //7点到7点半暂停运行
         If acenergy Then 
 			If DateTime.Hour() = 07 And DateTime.Minute() < 30 Then 
@@ -427,7 +430,7 @@ Function check_status()
     			Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
 			End If
 			Delay 4000
-			Call close_ad()//广告
+			Call close_occlusion()//广告
 			If TickCount() - start_time>120000 Then 
 				Exit While
 			End If
@@ -441,7 +444,7 @@ End Function
 Function update_main(update_main_flat)
 	//定时升级
 	Dim intX,intY
-    	Call close_ad()//广告   	
+    	Call close_occlusion()//广告   	
 		//update_main_num为超过10000层升级两次，update_main_flat为初始化升级，updata_mistake为防止卡层升级
         If ocrchar_layer < 10000 or update_main_flat=1 or updata_mistake >2 Then
         	//升级栏目顺序
@@ -499,7 +502,7 @@ Function layer()
 	While CInt(ocrchar)<ocrchar_layer 
 		ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
 		Delay 500
-		Call close_ad()
+		Call close_occlusion()
 		error_one = error_one + 1
         If error_one > 5 Then 
             TracePrint"层数跳出"
@@ -575,7 +578,7 @@ End Function
 //下面面板功能
 Function Navbar_main(navbar_name,flat)
     Dim intX,intY,error_one
-    Call close_ad()//广告
+    Call close_occlusion()//广告
 	If navbar_name = "hero" Then 
 		TracePrint "英雄" 
     	If Navbar_one_check(1) Then //识别英雄
@@ -594,7 +597,7 @@ Function Navbar_main(navbar_name,flat)
             	Call swipe_down(5)
             	Delay 1000
             	Call prestige()
-            	Call close_ad()//广告
+            	Call close_occlusion()//广告
     		End Select
     	End If
     
@@ -664,7 +667,7 @@ Function Navbar_one_check(num)
         TracePrint	message_unopen
         Touch intX,intY, 100
 		Delay 2000
-//		Call close_ad()//广告
+//		Call close_occlusion()//广告
         error_one = error_one + 1
         If error_one > 10 Then 
             TracePrint message_unopen&"出错"
@@ -693,7 +696,7 @@ Function tribe()
 		Exit Function
 	End If
     TracePrint "进入部落"
-    Call close_ad()
+    Call close_occlusion()
     Dim ocrchar_diamond,timeX,timeY,intX,intY,error_one
     Touch 188,79,150
     Delay 2000
@@ -734,7 +737,7 @@ Function tribe()
         Delay 2000
         //判断没有任务
         If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
-		Call close_ad()//广告
+		Call close_occlusion()//广告
 			Exit Function
 		End If
         error_one = error_one + 1
@@ -746,7 +749,7 @@ Function tribe()
     Delay 2000
 	//判断没有任务
 	If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
-		Call close_ad()//广告
+		Call close_occlusion()//广告
 		Exit Function
 	End If
 	//战队突袭—战斗
@@ -803,14 +806,15 @@ Function tribe()
 		Touch 526,1413, shanhai.RndEx(10, 30)
     End If
     
-//	Call close_ad()//广告
+//	Call close_occlusion()//广告
     Delay 1500
 	Call close_window()
 End Function
 //关闭遮挡
 Function close_occlusion()
+	
 	 //检测界面是否被遮挡
-	If CmpColorEx("991|1881|414424",0.9) = 0 Then 
+	While CmpColorEx("991|1881|414424",0.9) = 0 or CmpColorEx("65|79|6D6859",1) = 0
 		TracePrint "界面被遮挡"
     	//识别小仙女
 		If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
@@ -822,13 +826,18 @@ Function close_occlusion()
     		Call close_navbar()//关闭面板
     		Delay 1000
 			Call close_window()//普通弹窗
+			//捡掉落物品
+			Call close_thing()
+			//等待过关画面
+			Call close_layer()
     	End If
-    End If
+    	
+    Wend
 End Function
 
 
 
-
+//TODEL
 //关广告
 Function close_ad()
     //检测界面是否被遮挡
@@ -849,6 +858,11 @@ Function close_ad()
 End Function
 
 Function little_fairy()
+
+	If CmpColorEx("300|800|FFFFD8", 1) = 0 and CmpColorEx("309|849|D7C575",1) = 0 Then
+		Exit Function
+	End If
+		
 	//小仙女
 	TracePrint "小仙女"
 	ShowMessage "小仙女", 1000, screenX / 2 - 150, screenY / 4 - 200
@@ -904,13 +918,14 @@ Function little_fairy_watch()
     Wend
     TracePrint"已点击观看"
     Delay 40000
-    For 3
-        KeyPress "Back"
-        Delay 1000
-    Next
+//    For 3
+//        KeyPress "Back"
+//        Delay 1000
+//    Next
     //判断收集字符出现
     error_one = 0
-    While CmpColorEx("422|1413|FFFFFF",0.9) = 0
+    While CmpColorEx("422|1413|FFFFFF", 0.9) = 0
+    	KeyPress "Back"
         TracePrint "等待收集"
         Delay 1000
         Call close_window()
@@ -965,8 +980,8 @@ Function close_layer()
     End If
 End Function
 
-
-Function close_window()
+//TODEL
+Function close_window_old()
 	TracePrint "关闭窗口"
 	Dim closeX,closeY,error_one
 	If CmpColorEx("987|1849|3E6BE5",0.9) = 1 Then
@@ -978,20 +993,37 @@ Function close_window()
 	error_one = 0
 	FindColor 879, 80, 1000, 640, "303843|303845", 1, 1, closeX, closeY
 	If closeX > -1 Then 
-    	Call close_window_rec()
+    	Call close_window()
     Else
     	Call close_layer()
+//    ElseIf CmpColorEx("992|1886|414424", 1) = 0 Then 
+//    	error_one = 0
+//		Do
+//			TracePrint"等待识别退出"
+//			//KeyPress "Back"
+//			Delay 1000
+//			FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, closeX, closeY
+//			error_one = error_one + 1
+//        	If error_one > 5 Then 
+//            	TracePrint"出错"
+//            	Touch 534,499,200//判断出掉落物品
+//            	Exit do
+//        	End If
+//		Loop While closeX = -1
+//		Delay 500
+//		//关闭窗口
+//		Call close_window_rec()
     End If
    
 End Function
 
 //关闭窗口
-Function close_window_rec()
+Function close_window()
     TracePrint "关闭窗口"
     Dim closeX, closeY,error_one
     FindColor 879, 80, 1000, 650, "303843|303845", 4, 1, closeX, closeY
     error_one = 0
-    Do
+    While closeX > -1
         ShowMessage "关闭窗口", 1000, screenX / 2 - 150, screenY / 4 - 200
         Touch closeX+1, closeY+1, 200
         Delay 500
@@ -1002,14 +1034,13 @@ Function close_window_rec()
         error_one = error_one + 1
         If error_one > 7 Then 
             TracePrint"出错"
-            Exit do
+            Exit While
         End If
-    Loop While closeX > -1
+    Wend 
 End Function
 
+//关闭面板
 Function close_navbar()
-	//关闭面板
-	
     If CmpColorEx("1009|32|303845", 1) = 1 Then 
     	TracePrint "关闭高面板"
         Touch 1009,32, 50
@@ -1094,7 +1125,7 @@ End Function
 
 //蜕变
 Function prestige
-	Call close_ad()//广告
+//	Call close_occlusion()//广告
     TracePrint "蜕变"
     //发送邮件
     If send_flag = 1 Then 
@@ -1157,7 +1188,7 @@ Function prestige
 	error_one=0
     While ocrchar_layer >= old_ocrchar_layer
     	TracePrint "蜕变等待"
-        Call close_ad()//广告
+        Call close_occlusion()//广告
         Delay 1000
         ocrchar_layer=layer()
         error_one = error_one + 1
@@ -1178,7 +1209,7 @@ End Function
 Function update(flat,update_type)
 	Dim intX,intY,up1X,up1Y,checkX,checkY,last_check=0,box_flat=0,use_flat = 0,error_one,error_two
     Dim update_time = 0
-    Call close_ad()//广告
+    Call close_window()//窗口
     TracePrint "升级" &flat
     //购买框识别
     error_one = 0
@@ -1191,7 +1222,7 @@ Function update(flat,update_type)
 		 	If CmpColorEx("1009|1068|303845",1) = 1 Then 
             	Touch 1009,1068,200//升高物品栏
         	Else
-        		Call close_ad()//广告
+        		Call close_window()//广告
            		Delay 2000
         	End If
 			//物品栏下箭头高
@@ -1226,7 +1257,7 @@ Function update(flat,update_type)
                 error_two = error_two + 1
                 If error_two > 30 Then 
                     TracePrint"出错"
-                    Call close_ad()
+                    Call close_window()
                     Exit While
                 End If
                 FindColor 750,1265,889,1809,"1AE3FD-111111",0,1,intX,intY
@@ -1242,7 +1273,7 @@ Function update(flat,update_type)
         //使判断到最后时候在执行一次
         If error_one > 40 or checkX > -1 Then 
             TracePrint"出错"
-            Call close_ad()
+            Call close_window()
             last_check = 1  
         End If
 		FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
@@ -1271,7 +1302,7 @@ Function update_one(update_type)
         error_one = error_one + 1
 		If error_one > 30 Then 
             TracePrint"出错"
-            Call close_ad()
+            Call close_window()
             Exit While
         End If
         FindColor 990,238,1051,1753, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
@@ -1295,7 +1326,7 @@ Function artifact_update()
         error_one = error_one + 1
         If error_one > 40 Then 
             TracePrint"出错"
-            Call close_ad()
+            Call close_occlusion()
             Exit While
         End If
         FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
@@ -1309,12 +1340,12 @@ Function artifact_update()
         error_one = error_one + 1
         If error_one > 10 Then 
             TracePrint"出错"
-            Call close_ad()
+            Call close_occlusion()
             Exit While
         End If
    		FindColor 749,394,867,461, "0428A2-333333|003C96-333333|8A6400-333333", 0, 1, up1X, up1Y  
     Wend
-    Call close_ad()//广告
+    Call close_occlusion()//广告
     Delay 150 
 End Function
 
@@ -1346,14 +1377,14 @@ Function ocrchar_blue(accuracy)
 			End If
 			TracePrint blue_num
 		Else 
-			Call close_ad()//广告
+			Call close_occlusion()//广告
 		End If
 		Delay 1000
 		error_one = error_one + 1
         If error_one > 40 Then 
             TracePrint"出错&stop"
             Myblue(0) = 0
-            Call close_ad()
+            Call close_occlusion()
             EndScript
         End If
 	Loop While ocrchar = ""
@@ -1548,7 +1579,7 @@ Function GG_search(flat)
 		error_one = error_one + 1
         If error_one > 40 Then 
             TracePrint"出错"
-            Call close_ad()
+            Call close_occlusion()
             Exit While
         End If
 	Wend
@@ -1603,7 +1634,7 @@ Function GG_search(flat)
 		error_one = error_one + 1
         If error_one > 300 Then 
             TracePrint"出错"
-            Call close_ad()
+            Call close_occlusion()
             Exit While
         End If
 	Wend
@@ -1617,7 +1648,7 @@ Function GG_search(flat)
     	error_one = error_one + 1
         If error_one > 3 Then 
             TracePrint"出错"
-            Call close_ad()
+            Call close_occlusion()
             Exit While
         End If
     Wend
@@ -1675,11 +1706,11 @@ Function GG_kill()
         TracePrint "退出修改器"
 //        KeyPress "Back"
         Delay 1000
-        Call close_AD()
+        Call close_occlusion()
         error_one = error_one + 1
         If error_one > 5 Then 
             TracePrint"出错"
-            Call close_AD()
+            Call close_occlusion()
             Exit While
         End If
     Wend
@@ -1705,7 +1736,7 @@ Function daily_reward
     		Touch 500, 500, 200
         Next
     End If
-	Call close_ad()//广告
+	Call close_occlusion()//广告
 End Function
 //区域找蛋
 Function egg
@@ -1723,7 +1754,7 @@ Function egg
             Touch 500, 500, 200
         Next
 	End If
-	Call close_ad()//广告
+	Call close_occlusion()//广告
 End Function
 //区域找宝箱
 Function chest
@@ -1731,7 +1762,7 @@ Function chest
 		Exit Function
 	End If
     TracePrint "区域宝箱"
-    Call close_ad()//广告
+    Call close_occlusion()//广告
 End Function
 //成就
 Function achievement
@@ -1751,7 +1782,7 @@ Function achievement
 		 	If CmpColorEx("1009|1068|303845",1) = 1 Then 
             	Touch 1009,1068,200//升高物品栏
         	Else
-        		Call close_ad()//广告
+        		Call close_occlusion()//广告
         	End If
         	Delay 2000
         	//物品栏下箭头高
@@ -1765,7 +1796,7 @@ Function achievement
         Swipe 1000, 1300, 1000, 1600, 200
         TracePrint "上滑"
         Delay 1000
-		Call close_ad()//广告
+		Call close_occlusion()//广告
         FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
         error_one = error_one + 1
         If error_one > 5 Then 
@@ -1812,7 +1843,7 @@ Function achievement
     	Wend
 	End If
 	
-	Call close_ad()//广告
+	Call close_occlusion()//广告
 End Function
 //比赛
 Function competition
@@ -1832,7 +1863,7 @@ Function competition
             error_numail_one = error_numail_one + 1
             //出现退赛按键则退出
             If CmpColorEx("813|1685|2040EB", 1) = 1 Then 
-            	Call close_ad()
+            	Call close_occlusion()
             	Exit Function
             End If
             If error_numail_one > 10 Then 
@@ -1864,7 +1895,7 @@ Function swipe_up(num)
     For num
     	Swipe 730, 1000, 730, 1650, 200
     	Delay shanhai.RndEx(500, 1055)
-		Call close_ad()//广告
+		Call close_window()//普通弹窗
 	Next
 End Function
 //下滑
@@ -1873,7 +1904,7 @@ Function swipe_down(num)
     For num
     	Swipe 1000, 1650, 1000, 1000, 100
     	Delay shanhai.RndEx(500, 1055)
-		Call close_ad()//广告
+		Call close_window()//普通弹窗
 	Next
 End Function
 
