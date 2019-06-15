@@ -1,4 +1,4 @@
-//2019年6月14日19:07:59
+//2019年6月15日18:22:39
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -289,7 +289,7 @@ Function main
 			Call check_status()//运行状态
 			Call prestige_check()//层数处理
 			//判断界面部落boss
-			If CmpColorEx("201|56|A7B7E9", 1) = 1 Then 
+			If CmpColorEx("201|56|A5B6E9-111111", 1) = 1 Then 
         		Call tribe()//部落任务
         	End If
         	timing_task = TickCount()
@@ -755,8 +755,8 @@ Function tribe()
 	//战队突袭—战斗
 	While CmpColorEx("354|1252|0C81FB",0.9) = 0
 		TracePrint"点击战斗"
-		Touch 772, 1712, 150
-		Delay 2000
+		Touch 772, 1663, 100
+		Delay 4000
 	Wend
 	//选择甲板
 	Dim i=0
@@ -764,7 +764,11 @@ Function tribe()
 		TracePrint"选择甲板"
 		Touch 245+i*114,810, 150
 		Delay 2000
-		i=i+1
+		i = i + 1
+		If i > 10 Then 
+            TracePrint"出错"
+            Exit Function
+        End If
 	Wend
 	//战队突袭—战斗2
 	Touch 724,1244, 150
@@ -807,12 +811,12 @@ Function tribe()
     End If
     
 //	Call close_occlusion()//广告
-    Delay 1500
+    Delay 4000
 	Call close_window()
 End Function
 //关闭遮挡
 Function close_occlusion()
-	
+	Dim error_one =0
 	 //检测界面是否被遮挡
 	While CmpColorEx("991|1881|414424",0.9) = 0 or CmpColorEx("65|79|6D6859",1) = 0
 		TracePrint "界面被遮挡"
@@ -831,7 +835,11 @@ Function close_occlusion()
 			//等待过关画面
 			Call close_layer()
     	End If
-    	
+    	error_one = error_one + 1
+        If error_one > 60 Then 
+            TracePrint"出错"
+            Exit While
+        End If
     Wend
 End Function
 
@@ -917,17 +925,23 @@ Function little_fairy_watch()
         End If
     Wend
     TracePrint"已点击观看"
-    Delay 40000
-//    For 3
-//        KeyPress "Back"
-//        Delay 1000
-//    Next
+    Delay 30000
+    //判断时间内页面有误变化
+    While shanhai.IsDisplayChange(30,40,200,600,5,1)
+    	Delay 5000
+    Wend
     //判断收集字符出现
     error_one = 0
-    While CmpColorEx("422|1413|FFFFFF", 0.9) = 0
+    While CmpColorEx("536|1458|C29926",1) = 0
     	KeyPress "Back"
         TracePrint "等待收集"
-        Delay 1000
+        Delay 10000
+        If CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then
+			Touch 281, 1420, 200//点击不用了
+        	TracePrint "不用了"
+        	ShowMessage "不用了", 1500, screenX / 2 - 150, screenY / 4 - 200
+        	Exit Function
+    	End If 
         Call close_window()
         error_one = error_one + 1
         If error_one > 60 Then 
