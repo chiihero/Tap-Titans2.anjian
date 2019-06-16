@@ -202,6 +202,7 @@ Function init()
 	updata_mistake = 0
 	auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
 /*****************************************************/
+	Device.SetVolumeLevel(1)//设置设备中所有音量 
     //显示信息
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
 	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！"
@@ -312,7 +313,19 @@ Function main
 			 	TracePrint "7点到7点半暂停运行"
 				Delay delay_x(1800000)
 			End If
-        	
+        End If
+        //电量不足关屏充电
+        If Sys.GetBatteryLevel() < 30 Then 
+        	While Sys.GetBatteryLevel() < 80
+        		If Device.IsLock()=False Then
+        			Device.Lock()
+        		End If
+				Delay 5000
+        	Wend
+        	While Device.IsLock()
+        		Device.UnLock()
+				Delay 5000
+        	Wend
         End If
     Loop
 End Function
@@ -490,6 +503,8 @@ Function kill()
                 Exit For
             End If
         Next
+        //点击宠物
+        Touch shanhai.RndEx(635,650), shanhai.RndEx(920, 930),shanhai.RndEx(30, 55)
     Next
 End Function
 //判断层数
@@ -789,6 +804,7 @@ Function tribe()
         //点击延迟
             TouchMove shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
             Delay delay_x(shanhai.RndEx(60, 80))
+            TouchDown shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
         Wend    
 //        For 450
 //            点击延迟
@@ -797,7 +813,7 @@ Function tribe()
 //        Next
         TouchUp
 
-        //离开部落boos界面
+        //等待boss界面提交
         Delay delay_x(1500)
 		error_one = 0
 		TracePrint "离开部落boos界面"
@@ -809,7 +825,16 @@ Function tribe()
                 Exit While
             End If
 		Wend
-		Touch 526,1413, shanhai.RndEx(10, 30)
+		//离开部落boos界面
+		While CmpColorEx("526|1413|D4A928", 0.9) = 1
+			Touch 526,1413, shanhai.RndEx(10, 30)
+            Delay delay_x(2000)
+            error_one = error_one + 1
+            If error_one > 10 Then 
+                TracePrint"出错"
+                Exit While
+            End If
+		Wend
     End If
     
 //	Call close_occlusion()//广告
@@ -929,8 +954,15 @@ Function little_fairy_watch()
     TracePrint"已点击观看"
     Delay 30000
     //判断时间内页面有误变化
-    While shanhai.IsDisplayChange(30,40,200,600,5,1)
+    error_one=0
+    While shanhai.IsDisplayChange(227, 534, 729, 1024, 5, 1)
+    
     	Delay delay_x(5000)
+    	 error_one = error_one + 1
+        If error_one > 10 Then 
+            TracePrint"出错"
+            Exit While
+        End If
     Wend
     //判断收集字符出现
     error_one = 0
@@ -1930,7 +1962,7 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
-    End If
+
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
     Dim mail_subject = subject
@@ -1973,9 +2005,9 @@ End Function
 Function data_time(d_time)
 	data_time =DateTime.Format("%H:%M:%S",d_time-28800)
 End Function
-
+//延迟倍数
 Function delay_x(delay_t)
-	delay_x = delay_t*delay_multiple
+	delay_x = Int(delay_t*delay_multiple)
 End Function
 
 Function OnScriptExit()
