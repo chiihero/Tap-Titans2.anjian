@@ -377,7 +377,7 @@ Function check_status()
 	//断网自动关闭游戏等待
 	Dim count = 0
 	While GetNetworkTime() = ""
-		Delay 10000
+		Delay delay_x(10000)
 		count = count + 1
 		If count = 10 Then 
 			Call kill_app()
@@ -485,7 +485,7 @@ Function kill()
         //技能延迟&点击
         For 18
             Touch shanhai.RndEx(250,830), shanhai.RndEx(320, 1000),shanhai.RndEx(30, 55)
-            Delay shanhai.RndEx(50, 100)
+            Delay delay_x(shanhai.RndEx(50, 100))
             If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
                 Exit For
             End If
@@ -591,7 +591,7 @@ Function Navbar_main(navbar_name,flat)
             	Call swipe_up(2)
             	Call update(1,1)
                 //顺带成就
-            	Delay 200
+            	Delay delay_x(200)
             	Call achievement()
         	Case 2
             	//蜕变
@@ -610,10 +610,10 @@ Function Navbar_main(navbar_name,flat)
 			Select Case flat
         	Case 1
             	Call swipe_down(10)
-            	Delay 300
+            	Delay delay_x(300)
            		Call update(1,2)
         	Case 2 
-            	Delay 300
+            	Delay delay_x(300)
            		Call update(1,2)
            	End Select
     	End If
@@ -788,12 +788,12 @@ Function tribe()
         While TickCount() - timing_task < 32000 
         //点击延迟
             TouchMove shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
-            Delay shanhai.RndEx(60, 80)
+            Delay delay_x(shanhai.RndEx(60, 80))
         Wend    
 //        For 450
 //            点击延迟
 //            TouchMove shanhai.RndEx(250, 880), shanhai.RndEx(342, 970)
-//            Delay shanhai.RndEx(60, 80)
+//            Delay delay_x(shanhai.RndEx(60, 80))
 //        Next
         TouchUp
 
@@ -1074,11 +1074,11 @@ Function boss
 	FindColor 946,72,967,97,"125DED-111111",0,1,intX,intY
 	If intX > -1 And intY > -1 Then 
 		TracePrint "主动进入boss模式"
-    	Delay 50
+    	Delay delay_x(50)
     	TouchDown shanhai.RndEx(intX-5, intX + 5), shanhai.RndEx(intY-5, intY + 5), 1
     	Delay 85
     	TouchUp 1
-    	Delay 100
+    	Delay delay_x(100)
     	//判断层数不变，boss进入次数过多进行蜕变
     	If ocrchar_layer <= layer_last Then 
     		boss_num = boss_num + 1
@@ -1125,7 +1125,7 @@ Function skill_one(intX, intY,max_error, skill_true, error)
 	If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
 //		TracePrint "x="&intX&"y="&intY
     	Touch shanhai.RndEx(intX-30, intX+30), shanhai.RndEx(intY+30, intY+100),shanhai.RndEx(50, 55)
-    	Delay shanhai.RndEx(40, 60)
+    	Delay delay_x(shanhai.RndEx(40, 60))
     	error = error + 1
 		If error > max_error Then 
 			TracePrint "技能无法使用"
@@ -1281,7 +1281,7 @@ Function update(flat,update_type)
             use_flat = 1
             TracePrint "从上往下_升级结束"
         End If
-        Delay 100
+        Delay delay_x(100)
         Swipe 730, 1000, 730, 1650, 200
         TracePrint "上滑"
         Delay delay_x(1000)
@@ -1305,7 +1305,7 @@ Function update_one(update_type)
       	TracePrint "升级识别:x="&up1X&"y="&up1Y
       	update_time = update_time+1
         Touch up1X-50,up1Y+50, shanhai.RndEx(20,55)
-        Delay shanhai.RndEx(100, 150)
+        Delay delay_x(shanhai.RndEx(100, 150))
         If CmpColorEx("992|1881|414424", 0.9) = 0 Then 
         	Call close_window()//普通弹窗
         End If
@@ -1313,7 +1313,7 @@ Function update_one(update_type)
 		If up2X > -1 and update_type = 1 Then 
 			TracePrint "点击技能全部升级"
 			Touch up2X, up2Y + 5, shanhai.RndEx(20, 55)
-			Delay shanhai.RndEx(100,150)
+			Delay delay_x(shanhai.RndEx(100,150))
 		End If
         error_one = error_one + 1
 		If error_one > 30 Then 
@@ -1335,10 +1335,10 @@ Function artifact_update()
 	Dim  checkX, checkY,up1X,up1Y,error_one=0
 	FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
     While checkX = -1 And checkY = -1
-        Delay 100
+        Delay delay_x(100)
         Swipe 730, 1400, 730, 1650, 200
         TracePrint "上滑"
-        Delay 100
+        Delay delay_x(100)
         error_one = error_one + 1
         If error_one > 40 Then 
             TracePrint"出错"
@@ -1471,9 +1471,9 @@ Function GG()
     	End If
     End If
     //点击搜索栏
-    Delay 600
+    Delay delay_x(600)
     Touch 436, 70, 100
-    Delay 600
+    Delay delay_x(600)
     //判断是否已经搜索过
     FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
     If intX > -1 And intY > -1 Then 
@@ -1493,7 +1493,7 @@ Function GG()
             GG_flat = False
             Delay delay_x(500)
             Touch 1008,72, 10
-            Delay 200
+            Delay delay_x(200)
             Exit Function
         End If
 		/******************肾上腺素cd*************/
@@ -1516,11 +1516,11 @@ Function GG()
         Call GG_database(5)
         Call GG_database(7)
         //滑动到最后
-        Delay 700
+        Delay delay_x(700)
         KeyPress "PageDown"
-        Delay 700
+        Delay delay_x(700)
         Swipe 45,1179, 40,462
-        Delay 700
+        Delay delay_x(700)
         //取消数据
         Call GG_database(8)
         Call GG_database(9)
@@ -1591,7 +1591,7 @@ Function GG_search(flat)
 	Dim error_one=0
 	While CmpColorEx("1008|72|FFFFFF",1) = 1
 		Touch 872,298, 10
-		Delay 200
+		Delay delay_x(200)
 		error_one = error_one + 1
         If error_one > 40 Then 
             TracePrint"出错"
@@ -1608,7 +1608,7 @@ Function GG_search(flat)
 	While intX > -1 And intY > -1
 		KeyPress "Del"
 		Touch 742, 251, 10
-		Delay 300
+		Delay delay_x(300)
 		TracePrint "选择输入框中的数据-x:"&intX&"y:"&intY
 		error_one = error_one + 1
         If error_one > 40 Then 
@@ -1712,7 +1712,7 @@ Function GG_database(num)
 		TracePrint "搜索栏-x:"&intX&"y:"&intY
 		Touch intX, intY, 10
 	End If
-	Delay 200
+	Delay delay_x(200)
 End Function
 
 //关闭修改器
@@ -1808,7 +1808,7 @@ Function achievement
             End If
         End If 
         //以防出错标记
-        Delay 100
+        Delay delay_x(100)
         Swipe 1000, 1300, 1000, 1600, 200
         TracePrint "上滑"
         Delay delay_x(1000)
@@ -1910,7 +1910,7 @@ Function swipe_up(num)
     TracePrint "上滑"
     For num
     	Swipe 730, 1000, 730, 1650, 200
-    	Delay shanhai.RndEx(500, 1055)
+    	Delay delay_x(shanhai.RndEx(500, 1055))
 		Call close_window()//普通弹窗
 	Next
 End Function
@@ -1919,7 +1919,7 @@ Function swipe_down(num)
     TracePrint "下滑"
     For num
     	Swipe 1000, 1650, 1000, 1000, 100
-    	Delay shanhai.RndEx(500, 1055)
+    	Delay delay_x(shanhai.RndEx(500, 1055))
 		Call close_window()//普通弹窗
 	Next
 End Function
