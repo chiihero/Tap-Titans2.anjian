@@ -10,6 +10,8 @@ TracePrint "当前设备的临时目录为：" &GetTempDir()
 SetRowsNumber(33)
 SetOffsetInterval (1)
 
+//延迟倍数
+Dim delay_multiple = 1
 //初始化时间
 Dim update_main_time 
 Dim auto_prestige_time
@@ -161,7 +163,7 @@ Dim temp1,temp2,temp3,temp4,temp5
 Dim tribe_task = TickCount()
 //========================================初始化结束=================================================//
 If delay_time > 0 Then 
-	Delay delay_time
+	Delay delay_x(delay_time)
 //	RunApp "com.gamehivecorp.taptitans2"
 //	Delay 120000
 End If
@@ -169,9 +171,9 @@ End If
 Call Screen()//屏幕适配 
 Call check_status()//检测状态
 Touch 500, 500, 200
-Delay 1000
+Delay delay_x(1000)
 Touch 500, 500, 200
-Delay 1000
+Delay delay_x(1000)
 Touch 500, 500, 200
 //关闭面板
 Call close_occlusion()
@@ -203,7 +205,7 @@ Function init()
     //显示信息
     ShowMessage "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！", 5000,screenX/2-275,screenY/2-550
 	TracePrint "分辨率: "&screenX&"*" &screenY &"\n层数:"&layer_number_max &"\n升级时间:" & update_main_maxtime&"秒\n游戏重启时间:"&Cint((reboot_time_ui)/60000) &"分钟\n！！！初始化成功！！！"
-	Delay 3000
+	Delay delay_x(3000)
 	Call close_occlusion()//广告
     Call layer()//层数
     Call prestige_check()//层数处理
@@ -268,9 +270,9 @@ Function main
         	//延迟&点击
         	For 14
             	Touch shanhai.RndEx(250,830), shanhai.RndEx(320, 1000),shanhai.RndEx(10, 15)
-            	Delay shanhai.RndEx(140, 160)
+            	Delay delay_x(shanhai.RndEx(140, 160))
         	Next
-        	Delay 800
+        	Delay delay_x(800)
     	Loop
     	Exit Function
  	End If
@@ -308,7 +310,7 @@ Function main
         If acenergy Then 
 			If DateTime.Hour() = 07 And DateTime.Minute() < 30 Then 
 			 	TracePrint "7点到7点半暂停运行"
-				Delay 1800000
+				Delay delay_x(1800000)
 			End If
         	
         End If
@@ -324,7 +326,7 @@ Function kill_app()
 	Do
 		TracePrint"等待识别退出"
 //		KeyPress "Back"
-		Delay 1000
+		Delay delay_x(1000)
 		FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
 		error_one = error_one + 1
         If error_one > 10 Then 
@@ -338,7 +340,7 @@ Function kill_app()
 	While intX > -1 
 		TracePrint"等待退出"
 		Touch 758,1264, 10
-		Delay 500
+		Delay delay_x(500)
 		FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
 		error_one = error_one + 1
         If error_one > 10 Then 
@@ -346,16 +348,16 @@ Function kill_app()
             Exit While
         End If
 	Wend
-	Delay 2000
+	Delay delay_x(2000)
 	If Sys.isRunning("com.gamehivecorp.taptitans2") = True Then 
 		KillApp "com.gamehivecorp.taptitans2"
-		Delay 5000
+		Delay delay_x(5000)
 	End If
 	//等待修改器的确认游戏退出
 	error_one = 0
 	Do
 		TracePrint"等待修改器的确认游戏退出"
-		Delay 500
+		Delay delay_x(500)
 		error_one = error_one + 1
         If error_one > 10 Then 
             TracePrint"层数出错"
@@ -368,7 +370,7 @@ Function kill_app()
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
 	End If
 	
-	Delay 1000
+	Delay delay_x(1000)
 End Function
 //判断应用存在
 Function check_status()
@@ -423,19 +425,19 @@ Function check_status()
 			If Sys.IsRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2")  = False Then 
 				RunApp "com.gamehivecorp.taptitans2"
 			End If
-			Delay 2000
+			Delay delay_x(2000)
 			//识别修改器的确定游戏退出
 			If (find_xml("确定","")) Then 
 				TracePrint "点击确定"
     			Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
 			End If
-			Delay 4000
+			Delay delay_x(4000)
 			Call close_occlusion()//广告
 			If TickCount() - start_time>120000 Then 
 				Exit While
 			End If
     	Wend
-    	Delay 2000
+    	Delay delay_x(2000)
         Call GG_init()
 		Call init()  //初始化
     End If
@@ -501,7 +503,7 @@ Function layer()
 	ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
 	While CInt(ocrchar)<ocrchar_layer 
 		ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
-		Delay 500
+		Delay delay_x(500)
 		Call close_occlusion()
 		error_one = error_one + 1
         If error_one > 5 Then 
@@ -595,7 +597,7 @@ Function Navbar_main(navbar_name,flat)
             	//蜕变
 				TracePrint flat
             	Call swipe_down(5)
-            	Delay 1000
+            	Delay delay_x(1000)
             	Call prestige()
             	Call close_occlusion()//广告
     		End Select
@@ -630,7 +632,7 @@ Function Navbar_main(navbar_name,flat)
 	If CmpColorEx("864|30|303845", 1) = 1 Then
     	Touch 1009, 32, 200
     End If
-    Delay 2000
+    Delay delay_x(2000)
 End Function
 
 Function Navbar_one_check(num)
@@ -666,7 +668,7 @@ Function Navbar_one_check(num)
 	While CmpColorEx(cmpColors,1) = 1//识别未打开
         TracePrint	message_unopen
         Touch intX,intY, 100
-		Delay 2000
+		Delay delay_x(2000)
 //		Call close_occlusion()//广告
         error_one = error_one + 1
         If error_one > 10 Then 
@@ -681,7 +683,7 @@ Function Navbar_one_check(num)
     	If CmpColorEx("864|1061|303845", 0.9) = 1 Then 
     		TracePrint "展开人物栏"
 			Touch 864, 1061, 200
-			Delay 500
+			Delay delay_x(500)
 		End If
     	Navbar_one_check = True
     Else 
@@ -699,11 +701,11 @@ Function tribe()
     Call close_occlusion()
     Dim ocrchar_diamond,timeX,timeY,intX,intY,error_one
     Touch 188,79,150
-    Delay 2000
+    Delay delay_x(2000)
     //判断部落欢迎界面
     If CmpColorEx("517|1611|C3AF00", 0.9) = 1 Then 
     	Touch 517,1644, 150
-    	Delay 1000
+    	Delay delay_x(1000)
     End If
     //部落聊天界面检测
     error_one = 0
@@ -711,11 +713,11 @@ Function tribe()
     	//判断部落欢迎界面
     	If CmpColorEx("517|1611|C3AF00", 0.9) = 1 Then 
     		Touch 517,1644, 150
-    		Delay 1000
+    		Delay delay_x(1000)
     	End If
         TracePrint "部落聊天界面检测"
         Touch 188, 79, 150
-        Delay 1000
+        Delay delay_x(1000)
         //识别小仙女
 		If CmpColorEx("300|800|FFFFD8", 1) = 1 Then 
 			Call little_fairy()//小仙女
@@ -726,15 +728,15 @@ Function tribe()
             Exit Function
         End If
     Wend
-    Delay 1000
+    Delay delay_x(1000)
     Touch 204, 1749, 150
-    Delay 4000
+    Delay delay_x(4000)
     //部落任务界面检测
     error_one = 0
     While CmpColorEx("771|1664|C3AF00",0.9) = 0  //部落任务
         TracePrint"部落任务界面检测"
         Touch 204, 1749, 150
-        Delay 2000
+        Delay delay_x(2000)
         //判断没有任务
         If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
 		Call close_occlusion()//广告
@@ -746,7 +748,7 @@ Function tribe()
             Exit Function
         End If
     Wend
-    Delay 2000
+    Delay delay_x(2000)
 	//判断没有任务
 	If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
 		Call close_occlusion()//广告
@@ -756,14 +758,14 @@ Function tribe()
 	While CmpColorEx("354|1252|0C81FB",0.9) = 0
 		TracePrint"点击战斗"
 		Touch 772, 1663, 100
-		Delay 4000
+		Delay delay_x(4000)
 	Wend
 	//选择甲板
 	Dim i=0
 	While CmpColorEx("724|1244|C3AF00", 0.9) = 0
 		TracePrint"选择甲板"
 		Touch 245+i*114,810, 150
-		Delay 2000
+		Delay delay_x(2000)
 		i = i + 1
 		If i > 10 Then 
             TracePrint"出错"
@@ -775,9 +777,9 @@ Function tribe()
 	Dim tribe_flat = True
     If  tribe_flat=True  Then
         //点击“战斗”
-        Delay 1500
+        Delay delay_x(1500)
         Touch 723,1058, 150
-        Delay 1000
+        Delay delay_x(1000)
         //点击部落boss
         //第一次打boss35秒
         TracePrint "循环点击35秒"
@@ -796,11 +798,11 @@ Function tribe()
         TouchUp
 
         //离开部落boos界面
-        Delay 1500
+        Delay delay_x(1500)
 		error_one = 0
 		TracePrint "离开部落boos界面"
 		While CmpColorEx("526|1413|D4A928",0.9) <> 1
-            Delay 2000
+            Delay delay_x(2000)
             error_one = error_one + 1
             If error_one > 10 Then 
                 TracePrint"出错"
@@ -811,7 +813,7 @@ Function tribe()
     End If
     
 //	Call close_occlusion()//广告
-    Delay 4000
+    Delay delay_x(4000)
 	Call close_window()
 End Function
 //关闭遮挡
@@ -828,7 +830,7 @@ Function close_occlusion()
     			Touch 469, 1456, 200//点击收集
     		End If
     		Call close_navbar()//关闭面板
-    		Delay 1000
+    		Delay delay_x(1000)
 			Call close_window()//普通弹窗
 			//捡掉落物品
 			Call close_thing()
@@ -859,7 +861,7 @@ Function close_ad()
     			Touch 469, 1456, 200//点击收集
     		End If
     		Call close_navbar()//关闭面板
-    		Delay 1000
+    		Delay delay_x(1000)
 			Call close_window()//普通弹窗
     	End If
     End If
@@ -912,12 +914,12 @@ Function little_fairy_watch()
     Touch 804,1420, 200//点击观看
     TracePrint "等待观看"
     ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
-    Delay 1000
+    Delay delay_x(1000)
     //确认已点击观看
     error_one=0
     While CmpColorEx("162|1174|FFFF6C",0.9) = 1
         Touch 804, 1420, 200
-        Delay 1000
+        Delay delay_x(1000)
         error_one = error_one + 1
         If error_one > 20 Then 
             TracePrint"出错"
@@ -928,7 +930,7 @@ Function little_fairy_watch()
     Delay 30000
     //判断时间内页面有误变化
     While shanhai.IsDisplayChange(30,40,200,600,5,1)
-    	Delay 5000
+    	Delay delay_x(5000)
     Wend
     //判断收集字符出现
     error_one = 0
@@ -949,7 +951,7 @@ Function little_fairy_watch()
             Exit While
         End If
     Wend
-    Delay 500
+    Delay delay_x(500)
 End Function
 //点击收集字符 
 Function little_fairy_rec
@@ -959,12 +961,12 @@ Function little_fairy_rec
         Touch 452,1417,150
         TracePrint "收集"
         ShowMessage "收集", 1500,screenX/2-150,screenY/4-200
-        Delay 1000
+        Delay delay_x(1000)
         //判断如果断网了的情况
         dim color = CmpColor(972,639, 303843, 0.9)
         If color > -1 Then 
             Touch 972,639, 200
-            Delay 500
+            Delay delay_x(500)
         End If
         Call close_window()
         error_one = error_one + 1
@@ -987,10 +989,10 @@ End Function
 //等待过关画面
 Function close_layer()
 	If CmpColorEx("519|252|191919", 1) = 1 Then
-    		Delay 500
+    		Delay delay_x(500)
     		TracePrint "过关画面等待"
     		ShowMessage "过关画面等待", 1000, screenX / 2 - 180, screenY / 4 - 200
-    		Delay 1500
+    		Delay delay_x(1500)
     End If
 End Function
 
@@ -1015,7 +1017,7 @@ Function close_window_old()
 //		Do
 //			TracePrint"等待识别退出"
 //			//KeyPress "Back"
-//			Delay 1000
+//			Delay delay_x(1000)
 //			FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, closeX, closeY
 //			error_one = error_one + 1
 //        	If error_one > 5 Then 
@@ -1024,7 +1026,7 @@ Function close_window_old()
 //            	Exit do
 //        	End If
 //		Loop While closeX = -1
-//		Delay 500
+//		Delay delay_x(500)
 //		//关闭窗口
 //		Call close_window_rec()
     End If
@@ -1040,7 +1042,7 @@ Function close_window()
     While closeX > -1
         ShowMessage "关闭窗口", 1000, screenX / 2 - 150, screenY / 4 - 200
         Touch closeX+1, closeY+1, 200
-        Delay 500
+        Delay delay_x(1000)
         If CmpColorEx("327|1262|0B81FA", 0.9) = 1 Then 
             Touch 327, 1262, 30
         End If
@@ -1058,11 +1060,11 @@ Function close_navbar()
     If CmpColorEx("1009|32|303845", 1) = 1 Then 
     	TracePrint "关闭高面板"
         Touch 1009,32, 50
-       	Delay 500
+       	Delay delay_x(500)
     ElseIf CmpColorEx("1009|1068|303845", 1) = 1 Then
     	TracePrint "关闭低面板"
         Touch 1009,1068, 50
-       	Delay 500
+       	Delay delay_x(500)
     End If
 End Function
 
@@ -1151,7 +1153,7 @@ Function prestige
 	FindColor 760,1707,1046,1826,"0428A2-111111|003C96-111111|8A6400-111111",1,1,pX,pY
     If pX = -1 And pY = -1 Then 
         Call swipe_down(2)
-        Delay 1000
+        Delay delay_x(1000)
     	FindColor 760,1707,1046,1826,"0428A2-111111|003C96-111111|8A6400-111111",1,1,pX,pY
 		If pX = -1 Then 
 			TracePrint"找不到蜕变按键"
@@ -1161,7 +1163,7 @@ Function prestige
     error_one=0
 	While pX > -1
         Touch pX+2, pY+2, 100
-        Delay 1000
+        Delay delay_x(1000)
         FindColor 760, 1707, 1046, 1826, "0428A2-111111|003C96-111111|8A6400-111111", 1, 1, pX, pY
         error_one = error_one + 1
         If error_one > 5 Then 
@@ -1169,24 +1171,24 @@ Function prestige
             Exit While
         End If
     Wend
-    Delay 1000
+    Delay delay_x(1000)
 	error_one=0
 	Do
 		TracePrint "点击第一层蜕变"
 		Touch 541, 1484, 100
-		Delay 1000
+		Delay delay_x(1000)
         error_one = error_one + 1
         If error_one > 5 Then 
             TracePrint"出错"
             Exit Do
         End If
 	Loop While CmpColorEx("536|1453|D7AA28-111111",0.9) = 1
-	Delay 3000
+	Delay delay_x(3000)
 	error_one=0
 	Do
 		TracePrint "点击第二层蜕变"
 		Touch 736, 1272, 100
-		Delay 1000
+		Delay delay_x(1000)
         error_one = error_one + 1
         If error_one > 5 Then 
             TracePrint"出错"
@@ -1203,7 +1205,7 @@ Function prestige
     While ocrchar_layer >= old_ocrchar_layer
     	TracePrint "蜕变等待"
         Call close_occlusion()//广告
-        Delay 1000
+        Delay delay_x(1000)
         ocrchar_layer=layer()
         error_one = error_one + 1
 		if ocrchar_layer<layer_number_max*0.7  Then 
@@ -1237,7 +1239,7 @@ Function update(flat,update_type)
             	Touch 1009,1068,200//升高物品栏
         	Else
         		Call close_window()//广告
-           		Delay 2000
+           		Delay delay_x(2000)
         	End If
 			//物品栏下箭头高
             If CmpColorEx("864|28|303845",1) = 0 Then 
@@ -1282,7 +1284,7 @@ Function update(flat,update_type)
         Delay 100
         Swipe 730, 1000, 730, 1650, 200
         TracePrint "上滑"
-        Delay 1000
+        Delay delay_x(1000)
         error_one = error_one + 1
         //使判断到最后时候在执行一次
         If error_one > 40 or checkX > -1 Then 
@@ -1350,7 +1352,7 @@ Function artifact_update()
     While up1X > -1
     	TracePrint "升级神书"
     	Touch 910,479, shanhai.RndEx(5,15)
-        Delay 1000
+        Delay delay_x(1000)
         error_one = error_one + 1
         If error_one > 10 Then 
             TracePrint"出错"
@@ -1372,7 +1374,7 @@ Function ocrchar_blue(accuracy)
 	Dim error_one = 0
 	//降下物品栏
 	Call close_navbar()
- 	Delay 500
+ 	Delay delay_x(500)
  	error_one = 0
 	Do
 		//搜索精准性
@@ -1393,7 +1395,7 @@ Function ocrchar_blue(accuracy)
 		Else 
 			Call close_occlusion()//广告
 		End If
-		Delay 1000
+		Delay delay_x(1000)
 		error_one = error_one + 1
         If error_one > 40 Then 
             TracePrint"出错&stop"
@@ -1416,7 +1418,7 @@ Function GG()
         TracePrint "打开GG-x:"&intX&"y:"&intY
         Touch intX, intY, 30
     Else 
-        Delay 500
+        Delay delay_x(500)
         FindColor 0, 585, 134, 1150, "D1D1D1", 1, 1, intX, intY
         If intX = -1 Then 
             TracePrint"找不到GG,出错"
@@ -1426,7 +1428,7 @@ Function GG()
             Touch intX, intY, 30
         End If
     End If
-    Delay 1500
+    Delay delay_x(1500)
     //判断是否已经搜索过
     FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
     If intX > -1 And intY > -1 Then 
@@ -1459,7 +1461,7 @@ Function GG()
     	Else
     		TracePrint "选择tap titans2-x:"&intX&"y:"&intY
         	Touch 50, 50, 30
-        	Delay 1500
+        	Delay delay_x(1500)
         	//选择tap titans2//中间	
         	FindColor 112,199,259,609, "025BD0", 1, 1, intX, intY
         	If intX > -1 And intY > -1 Then 
@@ -1483,13 +1485,13 @@ Function GG()
     /******************第一次修改cd*************/
     If GG_cd_bool = True Then 
         Call GG_search(1)//搜索
-        Delay 1500
+        Delay delay_x(1500)
         //	判断是否搜索到数据
         FindColor 13,414,87,770, "C4CB80|807C16", 1, 1, intX, intY
         If intX = -1 And intY = -1 Then 
             TracePrint "没有搜到数据出错"
             GG_flat = False
-            Delay 500
+            Delay delay_x(500)
             Touch 1008,72, 10
             Delay 200
             Exit Function
@@ -1498,13 +1500,13 @@ Function GG()
         //第一栏
         TracePrint "肾上腺素cd"
         Call GG_databaseOne(447, 449, "4320000", 1)//1为普通模式
-        Delay 1000
+        Delay delay_x(1000)
         //第二栏	
         Call GG_databaseOne(447, 596, "4320000", 1)//1为普通模式
-        Delay 1000
+        Delay delay_x(1000)
         //第三栏	
         Call GG_databaseOne(447, 740, "4320000", 1)//1为普通模式
-        Delay 1000
+        Delay delay_x(1000)
 		/******************技能cd*************/
         TracePrint "技能cd"
         //取消数据
@@ -1525,11 +1527,11 @@ Function GG()
 		/******************天降cd*************/
         TracePrint "天降cd"
         Call GG_databaseOne(438, 1652, "1.15", 1)//1为普通模式
-        Delay 1000
+        Delay delay_x(1000)
 		/******************技能cd2*************/	
         TracePrint "技能cd2"
         Call GG_databaseOne(200, 303, "4", 1)//1为普通模式
-        Delay 1000
+        Delay delay_x(1000)
     End If
     /******************第二次修改蓝量*************/
     If GG_blue_bool = True Then 	
@@ -1541,22 +1543,22 @@ Function GG()
         If intX = -1 or intY1 > -1 Then 
             TracePrint "出错"
            	Call GG_kill()
-           	Delay 2000
+           	Delay delay_x(2000)
             Call Navbar_main("hero",1)//升级本人与技能
-            Delay 2000
+            Delay delay_x(2000)
         End If
 		/******************魔法*******************/	
         TracePrint "魔法"
         Call GG_databaseOne(479, 449, "500", 2)//2为冻结模式
-        Delay 1000
+        Delay delay_x(1000)
     End If
 	/*****************退出修改器界面********************/
 	Call GG_kill()
     //	KeyPress "Back"
-    Delay 1000
+    Delay delay_x(1000)
     //检查是否修改成功
     Call skills()
-    Delay 3000
+    Delay delay_x(3000)
     Call ocrchar_blue(9)
     If CInt(Myblue(0)) < 70 Then 
         GG_flat = False
@@ -1568,15 +1570,15 @@ End Function
 //单一数据修改
 Function GG_databaseOne(intX, intY, str, flat)
 	Touch intX, intY, 10
-	Delay 1000
+	Delay delay_x(1000)
 	KeyPress "Del"
 	InputText str
-	Delay 2000
+	Delay delay_x(2000)
 	If flat = 2 Then 
 		If (find_xml("冻结","")) Then 
     		Touch arrXY1(0) +50, arrXY1(1) + 50, 200
     	End If
-		Delay 1000	
+		Delay delay_x(1000)	
 	End If
 	
 		If (find_xml("是","")) Then 
@@ -1597,7 +1599,7 @@ Function GG_search(flat)
             Exit While
         End If
 	Wend
-	Delay 1000
+	Delay delay_x(1000)
 	KeyPress "Del"
 	//选择输入框中的数据
 	Dim intX,intY,int2X, int2Y
@@ -1615,7 +1617,7 @@ Function GG_search(flat)
         End If
 		FindColor 300,411,314,468, "FFFFFF", 0, 1, intX, intY
 	Wend
-	Delay 2000
+	Delay delay_x(2000)
 	//输入
 	If flat = 1 Then 
 		TracePrint "输入cd时间"
@@ -1624,13 +1626,13 @@ Function GG_search(flat)
 		TracePrint "输入蓝量"
 		InputText blue_num
 	End If
-	Delay 2000
+	Delay delay_x(2000)
 	//新搜索
 	error_one = 0
 	if (find_xml("新搜索", "")) Then
 	 	TracePrint "点击新搜索"
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-    	Delay 2000
+    	Delay delay_x(2000)
     End If
 
 	
@@ -1640,11 +1642,11 @@ Function GG_search(flat)
 		TracePrint "选择float类型-x:"&intX&"y:"&intY
 		Touch intX, intY, 10
 	End If
-	Delay 2000
+	Delay delay_x(2000)
 	//隐藏
 	error_one = 0
 	While find_xml("隐","")
-		Delay 1000
+		Delay delay_x(1000)
 		error_one = error_one + 1
         If error_one > 300 Then 
             TracePrint"出错"
@@ -1653,12 +1655,12 @@ Function GG_search(flat)
         End If
 	Wend
 	TracePrint "等待搜索结束"
-	Delay 1500
+	Delay delay_x(1500)
     error_one = 0
 	While (find_xml("取消",""))
 	 	TracePrint "点击取消"
     	Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-    	Delay 2000
+    	Delay delay_x(2000)
     	error_one = error_one + 1
         If error_one > 3 Then 
             TracePrint"出错"
@@ -1666,7 +1668,7 @@ Function GG_search(flat)
             Exit While
         End If
     Wend
-	Delay 1500
+	Delay delay_x(1500)
 End Function
 
 
@@ -1719,7 +1721,7 @@ Function GG_kill()
     While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
         TracePrint "退出修改器"
 //        KeyPress "Back"
-        Delay 1000
+        Delay delay_x(1000)
         Call close_occlusion()
         error_one = error_one + 1
         If error_one > 5 Then 
@@ -1739,14 +1741,14 @@ Function daily_reward
 	If CmpColorEx("74|428|CCCCCC",0.9) = 1 Then
     	TracePrint "发现每日奖励"
         Touch 74,422, 200
-        Delay 2000
+        Delay delay_x(2000)
         //收集
 		FindColor 446,1216,500,1287,"D7AB28-111111",0,0.9,intX,intY
 		If intX > -1 And intY > -1 Then
 			Touch shanhai.RndEx(intX,intX+10),shanhai.RndEx(intY,intY+10),100
 		End If
         For 4
-        	Delay 1000
+        	Delay delay_x(1000)
     		Touch 500, 500, 200
         Next
     End If
@@ -1762,9 +1764,9 @@ Function egg
 	If CmpColorEx("64|650|FBEFC7",1) = 1 Then
 		TracePrint "发现蛋"
 		Touch 64, 650, 200
-		Delay 3000
+		Delay delay_x(3000)
         For 4
-            Delay 1000
+            Delay delay_x(1000)
             Touch 500, 500, 200
         Next
 	End If
@@ -1798,7 +1800,7 @@ Function achievement
         	Else
         		Call close_occlusion()//广告
         	End If
-        	Delay 2000
+        	Delay delay_x(2000)
         	//物品栏下箭头高
             If CmpColorEx("864|28|303845", 1) = 0 Then 
                 TracePrint "error.achievement"
@@ -1809,7 +1811,7 @@ Function achievement
         Delay 100
         Swipe 1000, 1300, 1000, 1600, 200
         TracePrint "上滑"
-        Delay 1000
+        Delay delay_x(1000)
 		Call close_occlusion()//广告
         FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
         error_one = error_one + 1
@@ -1823,7 +1825,7 @@ Function achievement
 	If intX > -1 And intY > -1 Then 
 	 	TracePrint "点开成就"
 	    Touch 461, 150, 150
-	    Delay 500
+	    Delay delay_x(500)
     	Dim intX,intY,checkX,checkY,boxX,boxY
     	error_one = 0
     	//确认成就页面打开
@@ -1831,7 +1833,7 @@ Function achievement
     	While intX = -1 And intY = -1
     		TracePrint "点开成就"
     		Touch 461, 150, 150
-    		Delay 1000
+    		Delay delay_x(1000)
     		FindColor 117, 93, 147, 119, "1473B4", 1, 0.9, intX, intY
     		error_one = error_one + 1
         	If error_one > 5 Then 
@@ -1845,9 +1847,9 @@ Function achievement
     	While intX > -1 And intY > -1
     		TracePrint "领取成就"
         	Touch shanhai.RndEx(intX,intX+10),shanhai.RndEx(intY,intY+10),100
-        	Delay 2000
+        	Delay delay_x(2000)
         	Call close_thing()
-        	Delay 2000
+        	Delay delay_x(2000)
         	FindColor 691,388,843,1210,"0430AC-111111",0,0.9,intX,intY
         	error_one = error_one + 1
         	If error_one > 5 Then 
@@ -1873,7 +1875,7 @@ Function competition
         //等待加入按键
         FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
         While intX = -1 And intY = -1
-            Delay 1000
+            Delay delay_x(1000)
             error_numail_one = error_numail_one + 1
             //出现退赛按键则退出
             If CmpColorEx("813|1685|2040EB", 1) = 1 Then 
@@ -1890,16 +1892,16 @@ Function competition
 		FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
 		If intX > -1 And intY > -1 Then
 			Touch intX,shanhai.RndEx(intY,intY+5),100
-			Delay 3000
+			Delay delay_x(3000)
 		End If
 		If CmpColorEx("742|1302|C29926",1) = 1 Then
 			Touch 742, 1302, 200
 		End If
         For 10
-            Delay 1000
+            Delay delay_x(1000)
             Touch 500, 500, 200
         Next
-        Delay 5000
+        Delay delay_x(5000)
     End If
 End Function
 
@@ -1946,7 +1948,7 @@ Function mail(subject)
     Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_password,mail_subject,mail_message,mail_tomail) 
     TracePrint Ret
     While Ret = False
-    	Delay 500
+    	Delay delay_x(500)
     	Ret = SendSimpleEmail (mail_host, mail_username, mail_password, mail_subject, mail_message, mail_tomail)
     	error_one = error_one + 1
         If error_one > 5 Then 
@@ -1976,6 +1978,11 @@ End Function
 Function data_time(d_time)
 	data_time =DateTime.Format("%H:%M:%S",d_time-28800)
 End Function
+
+Function delay_x(delay_t)
+	delay_x = delay_t*delay_multiple
+End Function
+
 Function OnScriptExit()
     TracePrint "脚本已经停止！"
     ShowMessage "脚本已经停止！"
