@@ -62,8 +62,8 @@ Dim arrXY1,arrXY2
 Dim tapkill_bool = ReadUIConfig("tapkill")
 TracePrint shanhai.iif(tapkill_bool, "仅点击:开启", "仅点击:关闭")
 //部落钻石选项
-Dim tribe_num = ReadUIConfig("tribe_num")
-TracePrint  "部落选择"&tribe_num
+Dim tribe_bool = ReadUIConfig("tribe")
+TracePrint shanhai.iif(tribe_bool, "部落选择:开启", "部落选择:关闭")
 /*=========================日常功能设置========================*/
 //竞赛
 Dim competition_bool = ReadUIConfig("competition")
@@ -702,7 +702,7 @@ End Function
 
 //部落
 Function tribe()
-	If tribe_num = 0 Then 
+	If tribe_bool = False Then 
 		Exit Function
 	End If
     TracePrint "进入部落"
@@ -899,8 +899,8 @@ Function little_fairy()
 	ElseIf fairy_2_bool = True And CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then //钻石
 		TracePrint"钻石"
 		Call little_fairy_watch()
-	ElseIf fairy_3_bool = True And CmpColorEx("161|1222|10B7E7",0.9) = 1 Then //金币
-		TracePrint"金币"
+	ElseIf fairy_3_bool = True And CmpColorEx("744|662|000077",0.9) = 1 Then //技能
+		TracePrint"技能"
 		Call little_fairy_watch()
 	ElseIf fairy_4_bool = True And CmpColorEx("169|1230|EFD528",0.9) = 1 Then //法力
 		TracePrint"法力"
@@ -944,7 +944,7 @@ Function little_fairy_watch()
     	KeyPress "Back"
         TracePrint "等待收集"
         Delay 10000
-        If CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then
+        If CmpColorEx("163|1381|0C81FB-111111",0.9) = 1 Then
 			Touch 281, 1420, 200//点击不用了
         	TracePrint "不用了"
         	ShowMessage "不用了", 1500, screenX / 2 - 150, screenY / 4 - 200
