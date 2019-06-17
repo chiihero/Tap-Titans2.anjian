@@ -9,6 +9,8 @@ TracePrint "当前设备的临时目录为：" &GetTempDir()
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
 SetRowsNumber(33)
 SetOffsetInterval (1)
+SetDictEx(1, "Attachment:数字.txt")
+SetDictEx(2, "Attachment:层数.txt")
 //while超时跳出
 Dim error_time =0
 //延迟倍数
@@ -507,9 +509,6 @@ End Function
 //判断层数
 Function layer()
 	//数字0-9
-	SetRowsNumber(33)
-	SetOffsetInterval (1)
-	SetDictEx (2, "Attachment:层数.txt")
 	UseDict (2)
 	ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
 	While CInt(ocrchar)<ocrchar_layer 
@@ -740,22 +739,17 @@ Function tribe()
     Delay delay_x(4000)
     //部落任务界面检测
     error_one = 0
-    While CmpColorEx("771|1664|C3AF00",0.9) = 0  //部落任务
+    While CmpColorEx("916|1005|BEA318-111111",0.9) = 0  //部落任务
         TracePrint"部落任务界面检测"
         Touch 204, 1749, 150
         Delay delay_x(2000)
-        //判断没有任务
-        If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
-		Call close_occlusion()//广告
-			Exit Function
-		End If
         If while_over(30) Then 
         	Exit While
     	End If
     Wend
     Delay delay_x(2000)
 	//判断没有任务
-	If CmpColorEx("767|1663|594B20", 0.9) = 1 Then 
+	If CmpColorEx("777|1662|C3AF00", 0.9) = 0 Then 
 		Call close_occlusion()//广告
 		Exit Function
 	End If
@@ -1356,8 +1350,6 @@ End Function
 
 Function ocrchar_blue(accuracy)
 	//识别魔法量
-	SetRowsNumber(0)
-	SetDictEx(1, "Attachment:数字.txt")
 	UseDict(1)
 	Dim ocrchar
 	Dim error_one = 0
