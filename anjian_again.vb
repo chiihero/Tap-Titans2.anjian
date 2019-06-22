@@ -1,4 +1,4 @@
-//2019年6月15日18:22:39
+//2019年6月22日23:30:37
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -22,6 +22,7 @@ Dim skills_time
 Dim auto_sendmessage_tribe_time //蜕变使用时间
 Dim mistake_reboot//出错重启
 Dim reboot_game = TickCount()//定时重启
+Dim boss_task = TickCount()//防止进入boss模式过频繁导致蜕变
 //初始化发送邮件内容
 Dim sendmessage_str
 Dim send_flag = 0
@@ -140,8 +141,10 @@ TracePrint shanhai.iif(skill_5, "技能5:开启", "技能5:关闭")
 Dim skill_6 = ReadUIConfig("skill_6")
 TracePrint shanhai.iif(skill_6, "技能6:开启", "技能6:关闭")
 /*===============杂项===================*/
-//7点到7点半暂停运行
-Dim acenergy = ReadUIConfig("acenergy",false)
+//2点到7点暂停运行
+Dim rest_bool = ReadUIConfig("rest",false)
+//低电量关屏暂停运行
+Dim electricity_bool = ReadUIConfig("electricity",false)
 //等待开启时间
 Dim delay_time = ReadUIConfig("textedit_delay","0")
 delay_time = CInt(delay_time)*60*1000
@@ -184,6 +187,7 @@ Call close_occlusion()
 //===================测试区=======================//
 //Call tribe()
 //Call GG()
+Call ocrchar_blue(9)
 //===================测试区结束=======================//
 Call main()
 Function init()
@@ -310,26 +314,31 @@ Function main
         Call sendmessage(ocrchar_layer)//邮件内容记录
 
         Call close_occlusion()
-        //7点到7点半暂停运行
-        If acenergy Then 
-			If DateTime.Hour() = 07 And DateTime.Minute() < 30 Then 
-			 	TracePrint "7点到7点半暂停运行"
-				Delay delay_x(1800000)
-			End If
-        End If
+        //2点到7点暂停运行
+		If rest_bool And DateTime.Hour() > 02 And DateTime.Hour() < 07 Then 
+			TracePrint "2点到7点暂停运行"
+			Delay delay_x(18000000)
+		End If
         //电量不足关屏充电
-        If Sys.GetBatteryLevel() < 30 Then 
-        	While Sys.GetBatteryLevel() < 80
-        		If Device.IsLock()=False Then
-        			Device.Lock()
-        		End If
-				Delay 5000
-        	Wend
-        	While Device.IsLock()
+		If electricity_bool And Sys.GetBatteryLevel() < 30 Then 
+			KeyPress "Home"
+    		While Sys.GetBatteryLevel() < 80
+//        		If Device.IsLock()=False Then
+//            		Device.Lock()
+//        		End If
+        		Delay 10000
+    		Wend
+//    		For 5
+//    			Device.Lock()
+//    			Delay 2000
+//    			Device.UnLock()
+//    		Next
+    		While Device.IsLock()
         		Device.UnLock()
-				Delay 5000
-        	Wend
-        End If
+        		Delay 5000
+    		Wend
+    		RunApp "com.gamehivecorp.taptitans2"
+		End If
         error_time =0
     Loop
 End Function
@@ -492,11 +501,16 @@ Function kill()
         If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
 			Call little_fairy()//小仙女
 		End If
-        Call boss()//启动boss
+		//防止进入boss模式过频繁导致蜕变
+		If TickCount() - boss_task > 10000 Then 
+			Call boss()//启动boss
+			boss_task =TickCount()
+		End If
+        
         Call skills()//技能
         //技能延迟&点击
         For 18
-            Touch shanhai.RndEx(250,830), shanhai.RndEx(320, 1000),shanhai.RndEx(30, 55)
+            Touch shanhai.RndEx(260,90), shanhai.RndEx(320, 1000),shanhai.RndEx(30, 55)
             Delay delay_x(shanhai.RndEx(50, 100))
             If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
                 Exit For
@@ -522,7 +536,7 @@ Function layer()
 	Wend
 	TracePrint "层数"&ocrchar
     //层数判断错误
-    If ocrchar = "" or CInt(ocrchar)>50000 Then 
+    If ocrchar = "" or CInt(ocrchar)>80000 Then  // CInt(ocrchar)-ocrchar_layer>1000
         ocrchar_layer = layer_temp
         TracePrint "层数检测为空"
     ElseIf ocrchar <> "" Then
@@ -764,7 +778,7 @@ Function tribe()
 	Wend
 	//选择甲板
 	Dim i=0
-	While CmpColorEx("724|1244|C3AF00", 0.9) = 0
+	Do
 		TracePrint"选择甲板"
 		Touch 245+i*114,810, 150
 		Delay delay_x(2000)
@@ -773,54 +787,60 @@ Function tribe()
             TracePrint"出错"
             Exit Function
         End If
-	Wend
+	Loop While CmpColorEx("724|1244|C3AF00", 0.9) = 0
 	//战队突袭—战斗2
 	Touch 724,1244, 150
-	Dim tribe_flat = True
-    If  tribe_flat=True  Then
-        //点击“战斗”
-        Delay delay_x(1500)
-        Touch 723,1058, 150
-        Delay delay_x(1000)
-        //点击部落boss
-        //第一次打boss35秒
-        TracePrint "循环点击35秒"
-        TouchDown shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
-        Dim timing_task= TickCount()
-        While TickCount() - timing_task < 32000
-        	If TickCount() - timing_task > 10000 Then 
-        		TouchDown shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
-        	End If
-        //点击延迟
-            TouchMove shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
-            Delay delay_x(shanhai.RndEx(60, 80))
-        Wend    
-//        For 450
-//            点击延迟
-//            TouchMove shanhai.RndEx(250, 880), shanhai.RndEx(342, 970)
-//            Delay delay_x(shanhai.RndEx(60, 80))
-//        Next
-        TouchUp
+    //点击“战斗”
+    Delay delay_x(1500)
+    Touch 723,1058, 150
+    Delay delay_x(2000)
+    //点击部落boss
+    //第一次打boss35秒
+    TracePrint "循环点击35秒"
+    Select Case (i)
+    	Case 0
+    		boss_x = 535
+    		boss_y = 750
+    	Case 1
+    	    boss_x = 535
+    		boss_y = 961
+    End Select
+    Dim timing_task= TickCount()
+    Dim boss_x,boss_y
+    TouchDown shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
+    While TickCount() - timing_task < 32000
+    	TracePrint i
+    //点击延迟
+        Select Case (i)
+        Case 0,1
+            TouchMove shanhai.RndEx(boss_x-10, boss_x+10), shanhai.RndEx(boss_y-10, boss_y+10)
+        Case 2,3
+            TouchMove shanhai.RndEx(173, 942), shanhai.RndEx(667, 1365)	
+        End Select
+        
+        Delay delay_x(shanhai.RndEx(60, 80))
+    Wend    
+    TouchUp
 
-        //等待boss界面提交
-        Delay delay_x(1500)
-		TracePrint "等待boss界面提交"
-		While CmpColorEx("526|1413|D4A928",0.9) <> 1
-            Delay delay_x(2000)
-        	If while_over(10) Then 
-        		Exit While
-    		End If
-		Wend
-		//离开部落boos界面
-		TracePrint "离开部落boos界面"
-		While CmpColorEx("526|1413|D4A928", 0.9) = 1
-			Touch 526,1413, shanhai.RndEx(10, 30)
-            Delay delay_x(2000)
-            If while_over(10) Then 
-        		Exit While
-    		End If
-		Wend
-    End If
+    //等待boss界面提交
+    Delay delay_x(1500)
+	TracePrint "等待boss界面提交"
+	While CmpColorEx("526|1413|D4A928",0.9) <> 1
+        Delay delay_x(5000)
+        If while_over(10) Then 
+        	Exit While
+    	End If
+	Wend
+	//离开部落boos界面
+	TracePrint "离开部落boos界面"
+	While CmpColorEx("526|1413|D4A928", 0.9) = 1
+		Touch 526,1413, shanhai.RndEx(10, 30)
+        Delay delay_x(2000)
+        If while_over(10) Then 
+        	Exit While
+    	End If
+	Wend
+
     
 //	Call close_occlusion()//广告
     Delay delay_x(4000)
@@ -890,7 +910,7 @@ Function little_fairy()
 	End If
 	If fairy_1_bool = True And CmpColorEx("827|721|712AD7",1) = 1 Then //消费狂潮
 		TracePrint"消费狂潮"
-		Call little_fairy_watch()
+		Call little_fairy_watch(0)
 		    //点击收集字符
     	Call little_fairy_rec()
 		Call Navbar_main("mercenary",2)//升级佣兵
@@ -898,13 +918,13 @@ Function little_fairy()
         Exit Function
 	ElseIf fairy_2_bool = True And CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then //钻石
 		TracePrint"钻石"
-		Call little_fairy_watch()
+		Call little_fairy_watch(0)
 	ElseIf fairy_3_bool = True And CmpColorEx("744|662|000077",0.9) = 1 Then //技能
 		TracePrint"技能"
-		Call little_fairy_watch()
+		Call little_fairy_watch(0)
 	ElseIf fairy_4_bool = True And CmpColorEx("169|1230|EFD528",0.9) = 1 Then //法力
 		TracePrint"法力"
-		Call little_fairy_watch()
+		Call little_fairy_watch(0)
 	Else 
 		Touch 281, 1420, 200//点击不用了
         TracePrint "不用了"
@@ -916,7 +936,11 @@ Function little_fairy()
 End Function
 
 //观看小仙女视频
-Function little_fairy_watch()
+Function little_fairy_watch(t)
+	//最多观看4次
+	If t>4 Then 
+		Exit Function
+	End If
 	Dim error_one
     Touch 804,1420, 200//点击观看
     TracePrint "等待观看"
@@ -944,12 +968,17 @@ Function little_fairy_watch()
     	KeyPress "Back"
         TracePrint "等待收集"
         Delay 10000
-        If CmpColorEx("163|1381|0C81FB-111111",0.9) = 1 Then
-			Touch 281, 1420, 200//点击不用了
-        	TracePrint "不用了"
-        	ShowMessage "不用了", 1500, screenX / 2 - 150, screenY / 4 - 200
-        	Exit Function
-    	End If 
+//        If CmpColorEx("163|1381|0C81FB-111111",0.9) = 1 Then
+//			Touch 281, 1420, 200//点击不用了
+//        	TracePrint "不用了"
+//        	ShowMessage "不用了", 1500, screenX / 2 - 150, screenY / 4 - 200
+//        	Exit Function
+//    	End If
+		//观看失效重新看
+		If CmpColorEx("908|1399|CFA528-111111",0.9) = 1 Then 
+			Call little_fairy_watch(t+1)
+			Exit Function
+		End If
         Call close_window()
     	If while_over(60) Then 
         	Exit While
@@ -1123,7 +1152,7 @@ Function skill_one(intX, intY,max_error, skill_true, error)
 	If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
 //		TracePrint "x="&intX&"y="&intY
     	Touch shanhai.RndEx(intX-30, intX+30), shanhai.RndEx(intY+30, intY+100),shanhai.RndEx(50, 55)
-    	Delay delay_x(shanhai.RndEx(40, 60))
+    	Delay shanhai.RndEx(40, 60)
     	error = error + 1
 		If error > max_error Then 
 			TracePrint "技能无法使用"
@@ -1372,6 +1401,8 @@ Function ocrchar_blue(accuracy)
 				blue_num = Myblue(0) & "~" & CStr(CInt(Myblue(0)) + 20) & ";" & Myblue(1)  & "~" & CStr(CInt(Myblue(1)) + 1) & "::5"
 			End If
 			TracePrint blue_num
+			Sys.SetClipText blue_num
+
 		Else 
 			Call close_occlusion()//广告
 		End If
