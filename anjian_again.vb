@@ -635,7 +635,7 @@ Function Navbar_main(navbar_name,flat)
             TracePrint	"佣兵已经点开"
             Select Case flat
             Case 1
-                Call swipe_down(10)
+                Call swipe_down(7)
                 Delay delay_x(300)
                 Call update(1,2)
             Case 2 
