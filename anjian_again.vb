@@ -1,4 +1,4 @@
-//2019年6月22日23:30:37
+//2019年6月24日23:24:27
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -315,9 +315,15 @@ Function main
 
         Call close_occlusion()
         //2点到7点暂停运行
-        If rest_bool And DateTime.Hour() > 02 And DateTime.Hour() < 07 Then 
+        If rest_bool And DateTime.Hour() > 02 And DateTime.Hour() < 06 Then 
             TracePrint "2点到7点暂停运行"
-            Delay delay_x(18000000)
+            While DateTime.Hour() > 02 And DateTime.Hour() < 06
+                KeyPress "Home"
+                Delay 1800000
+            Wend
+            mistake_reboot = TickCount()
+            RunApp "com.gamehivecorp.taptitans2"
+            Delay 5000
         End If
         //电量不足关屏充电
         If electricity_bool And Sys.GetBatteryLevel() < 30 Then 
@@ -1922,7 +1928,7 @@ Function mail(subject)
     Dim mail_host ="smtp.qq.com"
     Dim mail_subject = subject
     If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
-        sendmessage_str ="最终层数:"& subject &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
+        sendmessage_str ="最终层数:"& subject &"  时间:"&DateTime.Format("%H:%M:%S") &" 使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
     End If 
     sendmessage_str = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&stats_updateAll&"\n升级次数(少):"&stats_updateMercenary&"\n"& sendmessage_str 
     Dim mail_message = sendmessage_str
