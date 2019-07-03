@@ -1,4 +1,4 @@
-//2019年6月24日23:24:27
+//2019年7月3日18:35:03
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -277,8 +277,8 @@ Function main
         Do
             //延迟&点击
             For 14
-                Touch shanhai.RndEx(250,830), shanhai.RndEx(320, 1000),shanhai.RndEx(10, 15)
-                Delay delay_x(shanhai.RndEx(140, 160))
+                Touch RndEx(250,830), RndEx(320, 1000),RndEx(10, 15)
+                Delay delay_x(RndEx(140, 160))
             Next
             Delay delay_x(800)
         Loop
@@ -327,7 +327,6 @@ Function main
         End If
         //电量不足关屏充电
         If electricity_bool And Sys.GetBatteryLevel() < 30 Then 
-            KeyPress "Home"
             While Sys.GetBatteryLevel() < 80
                 //        		If Device.IsLock()=False Then
                 //            		Device.Lock()
@@ -519,14 +518,14 @@ Function kill()
         Call skills()//技能
         //技能延迟&点击
         For 18
-            Touch shanhai.RndEx(260,90), shanhai.RndEx(320, 1000),shanhai.RndEx(30, 55)
-            Delay delay_x(shanhai.RndEx(50, 100))
+            Touch RndEx(260,90), RndEx(320, 1000),RndEx(30, 55)
+            Delay delay_x(RndEx(50, 100))
             If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
                 Exit For
             End If
         Next
         //点击宠物
-        Touch shanhai.RndEx(635,650), shanhai.RndEx(920, 930),shanhai.RndEx(30, 55)
+        Touch RndEx(635,650), RndEx(920, 930),RndEx(30, 55)
     Next
 End Function
 //判断层数
@@ -798,7 +797,14 @@ Function tribe()
         End If
     Loop While CmpColorEx("724|1244|C3AF00", 0.9) = 0
     //战队突袭—战斗2
-    Touch 724,1244, 150
+    Do
+        TracePrint"战队突袭—战斗2"
+        Touch 724, 1244, 150
+        Delay delay_x(2000)
+        If while_over(10) Then 
+            Exit While
+        End If
+    Loop While CmpColorEx("724|1244|C3AF00", 0.9) = 1
     //点击“战斗”
     Delay delay_x(1500)
     Touch 723,1058, 150
@@ -816,18 +822,18 @@ Function tribe()
     End Select
     Dim timing_task= TickCount()
     Dim boss_x,boss_y
-    TouchDown shanhai.RndEx(250, 750), shanhai.RndEx(600, 1200)
+    TouchDown RndEx(250, 750), RndEx(600, 1200)
     While TickCount() - timing_task < 32000
         TracePrint i
         //点击延迟
         Select Case (i)
         Case 0,1
-            TouchMove shanhai.RndEx(boss_x-10, boss_x+10), shanhai.RndEx(boss_y-10, boss_y+10)
+            TouchMove RndEx(boss_x-10, boss_x+10), RndEx(boss_y-10, boss_y+10)
         Case 2,3
-            TouchMove shanhai.RndEx(173, 942), shanhai.RndEx(667, 1365)	
+            TouchMove RndEx(173, 942), RndEx(667, 1365)	
         End Select
         
-        Delay delay_x(shanhai.RndEx(60, 80))
+        Delay delay_x(RndEx(60, 80))
     Wend    
     TouchUp
 
@@ -843,7 +849,7 @@ Function tribe()
     //离开部落boos界面
     TracePrint "离开部落boos界面"
     While CmpColorEx("526|1413|D4A928", 0.9) = 1
-        Touch 526,1413, shanhai.RndEx(10, 30)
+        Touch 526,1413, RndEx(10, 30)
         Delay delay_x(2000)
         If while_over(10) Then 
             Exit While
@@ -1109,7 +1115,7 @@ Function boss
     If intX > -1 And intY > -1 Then 
         TracePrint "主动进入boss模式"
         Delay delay_x(50)
-        TouchDown shanhai.RndEx(intX-5, intX + 5), shanhai.RndEx(intY-5, intY + 5), 1
+        TouchDown RndEx(intX-5, intX + 5), RndEx(intY-5, intY + 5), 1
         Delay 85
         TouchUp 1
         Delay delay_x(100)
@@ -1149,7 +1155,8 @@ Function skills
 End Function
 //单一技能点击
 Function skill_one(intX, intY,max_error, skill_true, error)
-    Dim MyArray(3),cmpColors
+    Dim MyArray(3)
+    Dim cmpColors
     //技能num
     //融合字符串
     MyArray(0) = intX
@@ -1158,8 +1165,8 @@ Function skill_one(intX, intY,max_error, skill_true, error)
     cmpColors = Join(MyArray, "|")
     If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
         //		TracePrint "x="&intX&"y="&intY
-        Touch shanhai.RndEx(intX-30, intX+30), shanhai.RndEx(intY+30, intY+100),shanhai.RndEx(50, 55)
-        Delay shanhai.RndEx(40, 60)
+        Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
+        Delay RndEx(40, 60)
         error = error + 1
         If error > max_error Then 
             TracePrint "技能无法使用"
@@ -1329,16 +1336,16 @@ Function update_one(update_type)
     While up1X > -1
         TracePrint "升级识别:x="&up1X&"y="&up1Y
         update_time = update_time+1
-        Touch up1X-50,up1Y+50, shanhai.RndEx(20,55)
-        Delay delay_x(shanhai.RndEx(100, 150))
+        Touch up1X-50,up1Y+50, RndEx(20,55)
+        Delay delay_x(RndEx(100, 150))
         If CmpColorEx("992|1881|414424", 0.9) = 0 Then 
             Call close_window()//普通弹窗
         End If
         FindColor 699, 238, 740, 1753, "001859", 0, 1, up2X, up2Y//点击技能全部升级
         If up2X > -1 and update_type = 1 Then 
             TracePrint "点击技能全部升级"
-            Touch up2X, up2Y + 5, shanhai.RndEx(20, 55)
-            Delay delay_x(shanhai.RndEx(100,150))
+            Touch up2X, up2Y + 5, RndEx(20, 55)
+            Delay delay_x(RndEx(100,150))
         End If
         If while_over(30) Then 
             Call close_window()
@@ -1372,7 +1379,7 @@ Function artifact_update()
     FindColor 749,394,867,461, "0428A2-333333|003C96-333333|8A6400-333333", 0, 1, up1X, up1Y
     While up1X > -1
         TracePrint "升级神书"
-        Touch 910,479, shanhai.RndEx(5,15)
+        Touch 910,479, RndEx(5,15)
         Delay delay_x(1000)
         If while_over(10) Then 
             Call close_occlusion()
@@ -1744,7 +1751,7 @@ Function daily_reward
         //收集
         FindColor 446,1216,500,1287,"D7AB28-111111",0,0.9,intX,intY
         If intX > -1 And intY > -1 Then
-            Touch shanhai.RndEx(intX,intX+10),shanhai.RndEx(intY,intY+10),100
+            Touch RndEx(intX,intX+10),RndEx(intY,intY+10),100
         End If
         For 4
             Delay delay_x(1000)
@@ -1838,7 +1845,7 @@ Function achievement
         FindColor 691,388,843,1210,"0430AC-111111",0,0.9,intX,intY
         While intX > -1 And intY > -1
             TracePrint "领取成就"
-            Touch shanhai.RndEx(intX,intX+10),shanhai.RndEx(intY,intY+10),100
+            Touch RndEx(intX,intX+10),RndEx(intY,intY+10),100
             Delay delay_x(2000)
             Call close_thing()
             Delay delay_x(2000)
@@ -1879,7 +1886,7 @@ Function competition
         TracePrint "下方加入按键"
         FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
         If intX > -1 And intY > -1 Then
-            Touch intX,shanhai.RndEx(intY,intY+5),100
+            Touch intX,RndEx(intY,intY+5),100
             Delay delay_x(3000)
         End If
         If CmpColorEx("742|1302|C29926",1) = 1 Then
@@ -1898,7 +1905,7 @@ Function swipe_up(num)
     TracePrint "上滑"
     For num
         Swipe 730, 1000, 730, 1650, 200
-        Delay delay_x(shanhai.RndEx(500, 1055))
+        Delay delay_x(RndEx(500, 1055))
         Call close_window()//普通弹窗
     Next
 End Function
@@ -1907,7 +1914,7 @@ Function swipe_down(num)
     TracePrint "下滑"
     For num
         Swipe 1000, 1650, 1000, 1000, 100
-        Delay delay_x(shanhai.RndEx(500, 1055))
+        Delay delay_x(RndEx(500, 1055))
         Call close_window()//普通弹窗
     Next
 End Function
@@ -1918,11 +1925,7 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
-    ElseIf mail_username = "111" And mail_password = "222" And mail_tomail = "333" Then
-        mail_username = "1171479579@qq.com"
-        mail_password = "fetmmswhxapgggei"
-        mail_tomail = "853879993@qq.com"
-        TracePrint "管理员邮箱信息"
+
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
@@ -1978,6 +1981,19 @@ Function while_over(error_max)
     Else 
         while_over() = False
     End If
+End Function
+//封装if函数
+//Function iif(judge, rtrue, rfalse)
+//	If judge = false or judge = 0 then
+//		iif =  rfalse
+//	else 
+//		iif =  rtrue
+//	End If
+//End Function
+//封装随机数函数
+Function RndEx(min, max)
+	//Int((最大值 - 最小值 + 1) * Rnd() + 最小值)
+	RndEx = Int(((max-min) * Rnd()) + min)
 End Function
 Function OnScriptExit()
     TracePrint "脚本已经停止！"
