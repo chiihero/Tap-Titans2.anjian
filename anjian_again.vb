@@ -802,7 +802,7 @@ Function tribe()
         Touch 724, 1244, 150
         Delay delay_x(2000)
         If while_over(10) Then 
-            Exit While
+            Exit Do
         End If
     Loop While CmpColorEx("724|1244|C3AF00", 0.9) = 1
     //点击“战斗”
@@ -1925,7 +1925,6 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
-
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
