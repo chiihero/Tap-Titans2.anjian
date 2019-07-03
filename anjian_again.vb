@@ -518,7 +518,7 @@ Function kill()
         Call skills()//技能
         //技能延迟&点击
         For 18
-            Touch RndEx(260,90), RndEx(320, 1000),RndEx(30, 55)
+            Touch RndEx(260,900), RndEx(320, 1000),RndEx(30, 55)
             Delay delay_x(RndEx(50, 100))
             If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
                 Exit For
