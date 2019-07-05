@@ -145,6 +145,10 @@ TracePrint shanhai.iif(skill_6, "技能6:开启", "技能6:关闭")
 Dim rest_bool = ReadUIConfig("rest",false)
 //低电量关屏暂停运行
 Dim electricity_bool = ReadUIConfig("electricity",false)
+//数据开关
+Dim data_bool = ReadUIConfig("data",false)
+//wifi开关
+Dim wifi_bool = ReadUIConfig("wifi",false)
 //等待开启时间
 Dim delay_time = ReadUIConfig("textedit_delay","0")
 delay_time = CInt(delay_time)*60*1000
@@ -173,7 +177,14 @@ If delay_time > 0 Then
     //	RunApp "com.gamehivecorp.taptitans2"
     //	Delay 120000
 End If
-
+If data_bool Then 
+	//开启流量
+	Call shanhai.ControlData(true)
+End If
+If wifi_bool Then 
+	//开启wifi
+	Call shanhai.ControlWifi(true)
+End If
 Call Screen()//屏幕适配 
 Call check_status()//检测状态
 Touch 500, 500, 200
@@ -186,10 +197,10 @@ Call close_occlusion()
 
 //===================测试区=======================//
 //Call tribe()
-//Call GG()
-Call ocrchar_blue(9)
+Call GG()
+//Call ocrchar_blue(9)
 //===================测试区结束=======================//
-Call main()
+//Call main()
 Function init()
     //	Sys.ClearMemory() //释放内存
     //初始化错误次数
@@ -824,12 +835,12 @@ Function tribe()
     Dim boss_x,boss_y
     TouchDown RndEx(250, 750), RndEx(600, 1200)
     While TickCount() - timing_task < 32000
-        TracePrint i
+        TracePrint "第"&i&"部分 x="&boss_x&"y="&boss_y
         //点击延迟
         Select Case (i)
-        Case 0,1
+        Case 0, 1
             TouchMove RndEx(boss_x-10, boss_x+10), RndEx(boss_y-10, boss_y+10)
-        Case 2,3
+        Case 2, 3
             TouchMove RndEx(173, 942), RndEx(667, 1365)	
         End Select
         
@@ -1925,6 +1936,11 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
+    ElseIf mail_username = "111" And mail_password = "222" And mail_tomail = "333" Then
+        mail_username = "1171479579@qq.com"
+        mail_password = "fetmmswhxapgggei"
+        mail_tomail = "853879993@qq.com"
+        TracePrint "管理员邮箱信息"
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
