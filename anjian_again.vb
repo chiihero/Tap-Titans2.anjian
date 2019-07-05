@@ -197,10 +197,10 @@ Call close_occlusion()
 
 //===================测试区=======================//
 //Call tribe()
-Call GG()
+//Call GG()
 //Call ocrchar_blue(9)
 //===================测试区结束=======================//
-//Call main()
+Call main()
 Function init()
     //	Sys.ClearMemory() //释放内存
     //初始化错误次数
@@ -1935,11 +1935,6 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
-    ElseIf mail_username = "111" And mail_password = "222" And mail_tomail = "333" Then
-        mail_username = "1171479579@qq.com"
-        mail_password = "fetmmswhxapgggei"
-        mail_tomail = "853879993@qq.com"
-        TracePrint "管理员邮箱信息"
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
