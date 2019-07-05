@@ -1,4 +1,4 @@
-//2019年7月3日18:35:03
+//2019年7月5日17:11:40
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -10,7 +10,7 @@ TracePrint "当前设备的临时目录为：" &GetTempDir()
 SetRowsNumber(33)
 SetOffsetInterval (1)
 SetDictEx(1, "Attachment:数字.txt")
-SetDictEx(2, "Attachment:层数.txt")
+//SetDictEx(2, "Attachment:层数.txt")
 //while超时跳出
 Dim error_time =0
 //延迟倍数
@@ -542,10 +542,12 @@ End Function
 //判断层数
 Function layer()
     //数字0-9
-    UseDict (2)
-    ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
+//    UseDict (2)
+//    ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
+	ocrchar = SmartOcr(482,86,599,124,"FFFFFF-000000")
     While CInt(ocrchar)<ocrchar_layer 
-        ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
+//        ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
+		ocrchar = SmartOcr(482,86,599,124,"FFFFFF-000000")
         Delay delay_x(500)
         Call close_occlusion()
         If while_over(5) Then 
@@ -1447,7 +1449,7 @@ Function GG()
     Call ocrchar_blue(9)
 	
     //打开GG
-    FindColor 0,585,134,1150,"D1D1D1",1,1,intX,intY
+    FindColor 0,700,134,1350,"BE0086",1,1,intX,intY
     If intX > -1 Then
         TracePrint "打开GG-x:"&intX&"y:"&intY
         Touch intX, intY, 30
@@ -1463,45 +1465,30 @@ Function GG()
         End If
     End If
     Delay delay_x(1500)
-    //判断是否已经搜索过
-    FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
-    If intX > -1 And intY > -1 Then 
-        TracePrint "已经搜索过"
-        //        KeyPress "Back"
-        GG_flat = True
-        If CmpColorEx("1008|71|FFFFFF", 1) = 1 Then 
-            Touch 1008,71,100
-        End If
-        Exit Function
-    End If	
-    //选择tap titans2//中间	
-    //    FindColor 112,199,259,609, "025BD0", 1, 1, intX, intY
-    //    If intX > -1 And intY > -1 Then 
-    //        TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-    //        Touch intX,intY, 30
-    //    End If
 
+    //设置按键精灵输入法
+	Call shanhai.SetIME(9)
     
+    //选择tap titans2//中间	
+    FindColor 116,197,265,787, "0C006C", 1, 1, intX, intY
+    If intX > -1 And intY > -1 Then 
+        TracePrint "选择tap titans2-x:"&intX&"y:"&intY
+        Touch intX,intY, 130
+    End If
     
     //选择tap titans2//左上角
-    If CmpColorEx("81|25|025BD0",1) = 0 Then
-        If (find_xml("Tap Titans", "")) Then 
-            If ((arrXY1(1) + arrXY2(1)) / 2)>210 Then
-                TracePrint "点击Tap Titans"
-                Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-            Else 
-                TracePrint "已经选择Tap Titans"
-            End If
-        Else
+	FindColor 2,3,142,148,"0C006C",0,1,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint "已经选择Tap Titans"
+    Else
+        TracePrint "选择tap titans2"
+        Touch 50, 50, 130
+        Delay delay_x(2000)
+        //选择tap titans2//中间	
+        FindColor 116,197,265,787, "0C006C", 1, 1, intX, intY
+        If intX > -1 And intY > -1 Then 
             TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-            Touch 50, 50, 30
-            Delay delay_x(1500)
-            //选择tap titans2//中间	
-            FindColor 112,199,259,609, "025BD0", 1, 1, intX, intY
-            If intX > -1 And intY > -1 Then 
-                TracePrint "选择tap titans2-x:"&intX&"y:"&intY
-                Touch intX,intY, 30
-            End If
+            Touch intX,intY, 130
         End If
     End If
     //点击搜索栏
@@ -1512,78 +1499,94 @@ Function GG()
     FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
     If intX > -1 And intY > -1 Then 
         TracePrint "已经搜索过"
-        //        KeyPress "Back"
+        //KeyPress "Back"
         GG_flat = True
-        Exit Function
-    End If
-    /******************第一次修改cd*************/
-    If GG_cd_bool = True Then 
-        Call GG_search(1)//搜索
-        Delay delay_x(1500)
-        //	判断是否搜索到数据
-        FindColor 13,414,87,770, "C4CB80|807C16", 1, 1, intX, intY
-        If intX = -1 And intY = -1 Then 
-            TracePrint "没有搜到数据出错"
-            GG_flat = False
-            Delay delay_x(500)
-            Touch 1008,72, 10
-            Delay delay_x(200)
-            Exit Function
+        If CmpColorEx("1008|71|FFFFFF", 1) = 1 Then 
+            Touch 1008,71,100
         End If
-		/******************肾上腺素cd*************/
-        //第一栏
-        TracePrint "肾上腺素cd"
-        Call GG_databaseOne(447, 449, "4320000", 1)//1为普通模式
-        Delay delay_x(1000)
-        //第二栏	
-        Call GG_databaseOne(447, 596, "4320000", 1)//1为普通模式
-        Delay delay_x(1000)
-        //第三栏	
-        Call GG_databaseOne(447, 740, "4320000", 1)//1为普通模式
-        Delay delay_x(1000)
-		/******************技能cd*************/
-        TracePrint "技能cd"
-        //取消数据
-        Call GG_database(1)
-        Call GG_database(2)
-        Call GG_database(3)
-        Call GG_database(5)
-        Call GG_database(7)
-        //滑动到最后
-        Delay delay_x(700)
-        KeyPress "PageDown"
-        Delay delay_x(700)
-        Swipe 45,1179, 40,462
-        Delay delay_x(700)
-        //取消数据
-        Call GG_database(8)
-        Call GG_database(9)
-		/******************天降cd*************/
-        TracePrint "天降cd"
-        Call GG_databaseOne(438, 1652, "1.15", 1)//1为普通模式
-        Delay delay_x(1000)
-		/******************技能cd2*************/	
-        TracePrint "技能cd2"
-        Call GG_databaseOne(200, 303, "4", 1)//1为普通模式
-        Delay delay_x(1000)
-    End If
+        Exit Function
+    End If	
+    /******************第一次修改cd*************/
+   
+//    If GG_cd_bool = True Then 
+//        Call GG_search(1)//搜索
+//        Delay delay_x(1500)
+//        //	判断是否搜索到数据
+//        FindColor 13,414,87,770, "C4CB80|807C16", 1, 1, intX, intY
+//        If intX = -1 And intY = -1 Then 
+//            TracePrint "没有搜到数据出错"
+//            GG_flat = False
+//            Delay delay_x(500)
+//            Touch 1008,72, 10
+//            Delay delay_x(200)
+//            Exit Function
+//        End If
+//		/******************肾上腺素cd*************/
+//        //第一栏
+//        TracePrint "肾上腺素cd"
+//        Call GG_databaseOne(447, 449, "4320000", 1)//1为普通模式
+//        Delay delay_x(1000)
+//        //第二栏	
+//        Call GG_databaseOne(447, 596, "4320000", 1)//1为普通模式
+//        Delay delay_x(1000)
+//        //第三栏	
+//        Call GG_databaseOne(447, 740, "4320000", 1)//1为普通模式
+//        Delay delay_x(1000)
+//		/******************技能cd*************/
+//        TracePrint "技能cd"
+//        //取消数据
+//        Call GG_database(1)
+//        Call GG_database(2)
+//        Call GG_database(3)
+//        Call GG_database(5)
+//        Call GG_database(7)
+//        //滑动到最后
+//        Delay delay_x(700)
+//        KeyPress "PageDown"
+//        Delay delay_x(700)
+//        Swipe 45,1179, 40,462
+//        Delay delay_x(700)
+//        //取消数据
+//        Call GG_database(8)
+//        Call GG_database(9)
+//		/******************天降cd*************/
+//        TracePrint "天降cd"
+//        Call GG_databaseOne(438, 1652, "1.15", 1)//1为普通模式
+//        Delay delay_x(1000)
+//		/******************技能cd2*************/	
+//        TracePrint "技能cd2"
+//        Call GG_databaseOne(200, 303, "4", 1)//1为普通模式
+//        Delay delay_x(1000)
+//    End If
     /******************第二次修改蓝量*************/
-    If GG_blue_bool = True Then 	
+    If GG_blue_bool Then 	
+        TracePrint "修改蓝量"
         Call GG_search(2)//搜索
 		/***********搜索不到数据或者数据过多***********/
         FindColor 16, 410, 78, 477, "C4CB80|807C16", 1, 1, intX, intY
         FindColor 20, 715, 78, 767, "C4CB80|807C16", 1, 1, intX1, intY1
         error_one = 0
-        If intX = -1 or intY1 > -1 Then 
-            TracePrint "出错"
-            Call GG_kill()
-            Delay delay_x(2000)
-            Call Navbar_main("hero",1)//升级本人与技能
-            Delay delay_x(2000)
+        If intY1 > -1 Then 
+            TracePrint "结果过多"
+            //点击地址蒙版
+            Touch 598, 295, 130
+            Delay 1500
+            //输入地址
+            InputText "FFF"
+            Delay 1500
+            //点击蒙版
+            Touch 350, 739, 214
+            Delay 1500
+            //输入蒙版
+            InputText "FFFFFDA0"
+            Delay 1500
+            Touch 897,1355,213
+            Delay delay_x(5000)
         End If
+        Delay 1000
 		/******************魔法*******************/	
         TracePrint "魔法"
-        Call GG_databaseOne(479, 449, "500", 2)//2为冻结模式
+        Call GG_databaseOne(479, 449, Myblue(1)-10, 2)//2为冻结模式
         Delay delay_x(1000)
     End If
 	/*****************退出修改器界面********************/
@@ -1609,21 +1612,22 @@ Function GG_databaseOne(intX, intY, str, flat)
     InputText str
     Delay delay_x(2000)
     If flat = 2 Then 
-        If (find_xml("冻结","")) Then 
-            Touch arrXY1(0) +50, arrXY1(1) + 50, 200
+    	TracePrint "冻结模式"
+        If CmpColorEx("114|947|424242",0.9) = 1 Then
+            Touch 114, 947, 200
         End If
         Delay delay_x(1000)	
     End If
-    If (find_xml("是","")) Then 
-        Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-    End If
+	//点击是
+    Touch 901, 1332, 200
+    Delay 1000
 End Function
 //搜索
 Function GG_search(flat)
     //打开搜索
     While CmpColorEx("1008|72|FFFFFF",1) = 1
         Touch 872,298, 10
-        Delay delay_x(200)
+        Delay delay_x(2000)
         If while_over(40) Then 
             Call close_occlusion()
             Exit While
@@ -1633,17 +1637,16 @@ Function GG_search(flat)
     KeyPress "Del"
     //选择输入框中的数据
     Dim intX,intY,int2X, int2Y
-    FindColor 300,411,314,468, "FFFFFF", 0, 1, intX, intY
+    FindColor 156,510,204,674, "FFFFFF", 0, 1, intX, intY
     While intX > -1 And intY > -1
         KeyPress "Del"
-        Touch 742, 251, 10
         Delay delay_x(300)
         TracePrint "选择输入框中的数据-x:"&intX&"y:"&intY
-        If while_over(40) Then 
-            Call close_occlusion()
+        If while_over(10) Then 
+            //Call close_occlusion()
             Exit While
         End If
-        FindColor 300,411,314,468, "FFFFFF", 0, 1, intX, intY
+        FindColor 156,510,204,674, "FFFFFF", 0, 1, intX, intY
     Wend
     Delay delay_x(2000)
     //输入
@@ -1655,10 +1658,16 @@ Function GG_search(flat)
         InputText blue_num
     End If
     Delay delay_x(2000)
+    //内存范围
+    If CmpColorEx("154|1127|C5008B", 1) = 0 Then 
+    	TracePrint "内存范围"
+		Touch 519, 1090, 158
+		Delay delay_x(2000)
+	End If
     //新搜索
-    if (find_xml("新搜索", "")) Then
-        TracePrint "点击新搜索"
-        Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
+    If CmpColorEx("846|1524|FFFFFF", 1) = 1 Then 
+    	TracePrint "点击新搜索"
+        Touch 846,1524, 200
         Delay delay_x(2000)
     End If
     //选择类型，float
@@ -1669,21 +1678,11 @@ Function GG_search(flat)
     End If
     Delay delay_x(2000)
     //隐藏
-    While find_xml("隐","")
-        Delay delay_x(1000)
+    While CmpColorEx("984|805|6A6A6A", 1) = 1
+    	TracePrint "等待搜索结束"
+        Delay delay_x(3000)
         If while_over(300) Then 
-            Call close_occlusion()
-            Exit While
-        End If
-    Wend
-    TracePrint "等待搜索结束"
-    Delay delay_x(1500)
-    While (find_xml("取消",""))
-        TracePrint "点击取消"
-        Touch (arrXY1(0) + arrXY2(0)) / 2, (arrXY1(1) + arrXY2(1)) / 2, 200
-        Delay delay_x(2000)
-        If while_over(3) Then 
-            Call close_occlusion()
+            //Call close_occlusion()
             Exit While
         End If
     Wend
