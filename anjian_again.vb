@@ -10,7 +10,7 @@ TracePrint "当前设备的临时目录为：" &GetTempDir()
 SetRowsNumber(33)
 SetOffsetInterval (1)
 SetDictEx(1, "Attachment:数字.txt")
-//SetDictEx(2, "Attachment:层数.txt")
+SetDictEx(2, "Attachment:层数.txt")
 //while超时跳出
 Dim error_time =0
 //延迟倍数
@@ -199,6 +199,7 @@ Call close_occlusion()
 //Call tribe()
 //Call GG()
 //Call ocrchar_blue(9)
+//Call tribe()
 //===================测试区结束=======================//
 Call main()
 Function init()
@@ -542,12 +543,13 @@ End Function
 //判断层数
 Function layer()
     //数字0-9
-//    UseDict (2)
-//    ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
-	ocrchar = SmartOcr(482,86,599,124,"FFFFFF-000000")
+    UseDict (2)
+    ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
+//	ocrchar = SmartOcr(482, 86, 599, 124, "FFFFFF-222222")
+	TracePrint ocrchar
     While CInt(ocrchar)<ocrchar_layer 
-//        ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
-		ocrchar = SmartOcr(482,86,599,124,"FFFFFF-000000")
+        ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
+//		ocrchar = SmartOcr(482,86,599,124,"FFFFFF-222222")
         Delay delay_x(500)
         Call close_occlusion()
         If while_over(5) Then 
@@ -809,6 +811,7 @@ Function tribe()
             Exit Function
         End If
     Loop While CmpColorEx("724|1244|C3AF00", 0.9) = 0
+    i = i - 1//使i为当前位置
     //战队突袭—战斗2
     Do
         TracePrint"战队突袭—战斗2"
@@ -825,6 +828,9 @@ Function tribe()
     //点击部落boss
     //第一次打boss35秒
     TracePrint "循环点击35秒"
+    Dim boss_x,boss_y
+    Dim timing_task= TickCount()
+    
     Select Case (i)
     Case 0
         boss_x = 535
@@ -833,22 +839,20 @@ Function tribe()
         boss_x = 535
         boss_y = 961
     End Select
-    Dim timing_task= TickCount()
-    Dim boss_x,boss_y
-    TouchDown RndEx(250, 750), RndEx(600, 1200)
+    TouchDown RndEx(250, 750), RndEx(600, 1200),1
     While TickCount() - timing_task < 32000
         TracePrint "第"&i&"部分 x="&boss_x&"y="&boss_y
         //点击延迟
         Select Case (i)
         Case 0, 1
-            TouchMove RndEx(boss_x-10, boss_x+10), RndEx(boss_y-10, boss_y+10)
+            TouchMove RndEx(boss_x-10, boss_x+10), RndEx(boss_y-10, boss_y+10),1,RndEx(100,200)
         Case 2, 3
-            TouchMove RndEx(173, 942), RndEx(667, 1365)	
+            TouchMove RndEx(173, 942), RndEx(667, 1365),1,RndEx(100,200)
         End Select
         
         Delay delay_x(RndEx(60, 80))
     Wend    
-    TouchUp
+    TouchUp 1
 
     //等待boss界面提交
     Delay delay_x(1500)
