@@ -1,4 +1,4 @@
-//2019年7月5日17:11:40
+//2019年7月24日21:27:43
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -857,7 +857,7 @@ Function tribe()
     //等待boss界面提交
     Delay delay_x(1500)
     TracePrint "等待boss界面提交"
-    While CmpColorEx("526|1413|D4A928",0.9) <> 1
+    While CmpColorEx("296|1467|D7A928",0.9) <> 1
         Delay delay_x(5000)
         If while_over(30) Then 
             Exit While
@@ -865,8 +865,8 @@ Function tribe()
     Wend
     //离开部落boos界面
     TracePrint "离开部落boos界面"
-    While CmpColorEx("526|1413|D4A928", 0.9) = 1
-        Touch 526,1413, RndEx(10, 30)
+    While CmpColorEx("296|1467|D7A928", 0.9) = 1
+        Touch 296,1467, RndEx(100, 300)
         Delay delay_x(2000)
         If while_over(10) Then 
             Exit While
@@ -1470,8 +1470,6 @@ Function GG()
     End If
     Delay delay_x(1500)
 
-    //设置按键精灵输入法
-	Call shanhai.SetIME(9)
     
     //选择tap titans2//中间	
     FindColor 116,197,265,787, "0C006C", 1, 1, intX, intY
@@ -1509,7 +1507,11 @@ Function GG()
             Touch 1008,71,100
         End If
         Exit Function
-    End If	
+    End If
+    
+    //设置按键精灵输入法
+//	Call shanhai.SetIME(9)
+//    Delay 1000
     /******************第一次修改cd*************/
    
 //    If GG_cd_bool = True Then 
@@ -1611,13 +1613,24 @@ End Function
 //单一数据修改
 Function GG_databaseOne(intX, intY, str, flat)
     Touch intX, intY, 10
-    Delay delay_x(1000)
+    Delay delay_x(3000)
+    //移除输入法栏
+	FindColor 950,1050,1058,1210,"7E7E7E",2,1,intX,intY
+	While intX > -1 And intY > -1
+		TracePrint "正在移除输入法栏 x="&intX&" y="&intY
+		Touch intX-5, intY+5, 210
+		Delay 2000
+		If while_over(5) Then 
+			Exit While
+		End If
+		FindColor 950,1050,1058,1210,"7E7E7E",2,1,intX,intY
+	Wend
     KeyPress "Del"
     InputText str
     Delay delay_x(2000)
     If flat = 2 Then 
     	TracePrint "冻结模式"
-        If CmpColorEx("114|947|424242",0.9) = 1 Then
+        If CmpColorEx("138|944|C7C7C7",1) = 1 Then
             Touch 114, 947, 200
         End If
         Delay delay_x(1000)	
@@ -1628,6 +1641,7 @@ Function GG_databaseOne(intX, intY, str, flat)
 End Function
 //搜索
 Function GG_search(flat)
+	Dim intX,intY,int2X, int2Y
     //打开搜索
     While CmpColorEx("1008|72|FFFFFF",1) = 1
         Touch 872,298, 10
@@ -1637,10 +1651,22 @@ Function GG_search(flat)
             Exit While
         End If
     Wend
+    Delay 3000
+    //移除输入法栏
+	FindColor 950,1050,1058,1210,"7E7E7E",2,1,intX,intY
+	While intX > -1 And intY > -1
+		TracePrint "正在移除输入法栏 x="&intX&" y="&intY
+		Touch intX-5, intY+5, 210
+		Delay 2000
+		If while_over(5) Then 
+			Exit While
+		End If
+		FindColor 950,1050,1058,1210,"7E7E7E",2,1,intX,intY
+	Wend
     Delay delay_x(1000)
     KeyPress "Del"
     //选择输入框中的数据
-    Dim intX,intY,int2X, int2Y
+    
     FindColor 156,510,204,674, "FFFFFF", 0, 1, intX, intY
     While intX > -1 And intY > -1
         KeyPress "Del"
@@ -1939,6 +1965,11 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
+    ElseIf mail_username = "111" And mail_password = "222" And mail_tomail = "333" Then
+        mail_username = "1171479579@qq.com"
+        mail_password = "fetmmswhxapgggei"
+        mail_tomail = "853879993@qq.com"
+        TracePrint "管理员邮箱信息"
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
