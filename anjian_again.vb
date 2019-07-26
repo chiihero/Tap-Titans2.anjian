@@ -1,9 +1,11 @@
-//2019年7月24日21:27:43
+//2019年7月25日18:57:32
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
 KeepScreen True//保持亮屏
-Device.SetBacklightLevel(40)//设置亮度
+//Device.SetBacklightLevel(10)//设置亮度
+Dim BacklightLevel = Device.GetBacklightLevel()
+
 Log.Open 
 TracePrint "当前设备的临时目录为：" &GetTempDir()
 //int(((TickCount() - update_main_time)/1000)*100)/100   小数点一位的时间
@@ -256,7 +258,7 @@ Function init()
     auto_prestige_time = TickCount()//自动蜕变时间初始化
     mistake_reboot = TickCount()//出错重启初始化
     //游戏挂机20分钟自动暗屏省电
-    If TickCount() > 1200000 Then 
+    If TickCount() > 300000 Then 
         Device.SetBacklightLevel(0)//设置亮度
     End If
 End Function
@@ -1019,7 +1021,7 @@ End Function
 //点击收集字符 
 Function little_fairy_rec
     Dim intX,intY,error_one
-    While CmpColorEx("422|1413|FFFFFF",0.9) = 1
+    While CmpColorEx("446|1396|796220",0.9) = 1
         Touch 452,1417,150
         TracePrint "收集"
         ShowMessage "收集", 1500,screenX/2-150,screenY/4-200
@@ -1358,7 +1360,7 @@ Function update_one(update_type)
         If CmpColorEx("992|1881|414424", 0.9) = 0 Then 
             Call close_window()//普通弹窗
         End If
-        FindColor 699, 238, 740, 1753, "001859", 0, 1, up2X, up2Y//点击技能全部升级
+        FindColor 699, 238, 740, 1753, "2B2BC8", 0, 1, up2X, up2Y//点击技能全部升级
         If up2X > -1 and update_type = 1 Then 
             TracePrint "点击技能全部升级"
             Touch up2X, up2Y + 5, RndEx(20, 55)
@@ -1965,11 +1967,6 @@ Function mail(subject)
     If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
-    ElseIf mail_username = "111" And mail_password = "222" And mail_tomail = "333" Then
-        mail_username = "1171479579@qq.com"
-        mail_password = "fetmmswhxapgggei"
-        mail_tomail = "853879993@qq.com"
-        TracePrint "管理员邮箱信息"
     End If
     Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
@@ -2044,6 +2041,6 @@ Function OnScriptExit()
     ShowMessage "脚本已经停止！"
     KeepScreen False
     Log.Close 
-    Device.SetBacklightLevel(40)//设置亮度
+    Device.SetBacklightLevel(BacklightLevel)//设置亮度
 End Function
 
