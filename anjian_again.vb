@@ -1,4 +1,5 @@
 //2019年7月25日18:57:32
+//2019年7月27日10:13:09
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -45,7 +46,7 @@ Dim reboot_time//定时重启
 Dim prestige_tick=0
 //初始化技能
 //技能未使用统计报错
-Dim skillerror_1=0,skillerror_2=0,skillerror_3=0,skillerror_4=0,skillerror_5=0,skillerror_6=0
+Dim skillerror=Array(0,0,0,0,0,0)
 //部落时间
 Dim tribe_time
 //蓝量
@@ -142,6 +143,8 @@ TracePrint shanhai.iif(skill_5, "技能5:开启", "技能5:关闭")
 //技能6
 Dim skill_6 = ReadUIConfig("skill_6")
 TracePrint shanhai.iif(skill_6, "技能6:开启", "技能6:关闭")
+
+Dim skill_bool =Array(skill_1,skill_2,skill_3,skill_4,skill_5,skill_6)
 /*===============杂项===================*/
 //2点到7点暂停运行
 Dim rest_bool = ReadUIConfig("rest",false)
@@ -202,6 +205,7 @@ Call close_occlusion()
 //Call GG()
 //Call ocrchar_blue(9)
 //Call tribe()
+//Call kill()
 //===================测试区结束=======================//
 Call main()
 Function init()
@@ -685,7 +689,7 @@ End Function
 
 Function Navbar_one_check(num)
     TracePrint"检测单一面板的启动"
-    Dim intX,intY,colour,message_open,message_unopen,error_one,cmpColors,MyArray(3)
+    Dim intX,intY,colour,message_open,message_unopen,error_one,cmpColors,MyArray
     Select Case num
     Case 1
         intX=87
@@ -697,7 +701,7 @@ Function Navbar_one_check(num)
         intX=270
         intY=1887
         colour = "615620"
-        message_open = "已经点开"
+        message_open = "佣兵已经点开"
         message_unopen = "佣兵正在点开"
     Case 5
         intX=810
@@ -707,9 +711,7 @@ Function Navbar_one_check(num)
         message_unopen = "神器正在点开"
     End Select
     //融合字符串
-    MyArray(0) = intX
-    MyArray(1) = intY
-    MyArray(2) = colour
+    MyArray = Array(intX,intY,colour)
     cmpColors=Join(MyArray, "|")
     TracePrint cmpColors
     While CmpColorEx(cmpColors,1) = 1//识别未打开
@@ -906,26 +908,6 @@ End Function
 
 
 
-//TODEL
-//关广告
-Function close_ad()
-    //检测界面是否被遮挡
-    If CmpColorEx("991|1881|414424",0.9) = 0 Then 
-        TracePrint "界面被遮挡"
-        //识别小仙女
-        If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
-            Call little_fairy()//小仙女
-        Else 
-            If CmpColorEx("469|1456|0C81FB", 0.9) = 1 Then //欢迎回来的收集
-                Touch 469, 1456, 200//点击收集
-            End If
-            Call close_navbar()//关闭面板
-            Delay delay_x(1000)
-            Call close_window()//普通弹窗
-        End If
-    End If
-End Function
-
 Function little_fairy()
 
     If CmpColorEx("300|800|FFFFD8", 1) = 0 and CmpColorEx("309|849|D7C575",1) = 0 Then
@@ -1000,12 +982,6 @@ Function little_fairy_watch(t)
         KeyPress "Back"
         TracePrint "等待收集"
         Delay 10000
-        //        If CmpColorEx("163|1381|0C81FB-111111",0.9) = 1 Then
-        //			Touch 281, 1420, 200//点击不用了
-        //        	TracePrint "不用了"
-        //        	ShowMessage "不用了", 1500, screenX / 2 - 150, screenY / 4 - 200
-        //        	Exit Function
-        //    	End If
         //观看失效重新看
         If CmpColorEx("908|1399|CFA528-111111",0.9) = 1 Then 
             Call little_fairy_watch(t+1)
@@ -1056,43 +1032,6 @@ Function close_layer()
         ShowMessage "过关画面等待", 1000, screenX / 2 - 180, screenY / 4 - 200
         Delay delay_x(1500)
     End If
-End Function
-
-//TODEL
-Function close_window_old()
-    TracePrint "关闭窗口"
-    Dim closeX,closeY,error_one
-    If CmpColorEx("987|1849|3E6BE5",0.9) = 1 Then
-        Touch 987, 1849, 100
-    End If
-    //捡掉落物品
-    Call close_thing()
-    //"关闭窗口"
-    error_one = 0
-    FindColor 879, 80, 1000, 640, "303843|303845", 1, 1, closeX, closeY
-    If closeX > -1 Then 
-        Call close_window()
-    Else
-        Call close_layer()
-        //    ElseIf CmpColorEx("992|1886|414424", 1) = 0 Then 
-        //    	error_one = 0
-        //		Do
-        //			TracePrint"等待识别退出"
-        //			//KeyPress "Back"
-        //			Delay delay_x(1000)
-        //			FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, closeX, closeY
-        //			error_one = error_one + 1
-        //        	If error_one > 5 Then 
-        //            	TracePrint"出错"
-        //            	Touch 534,499,200//判断出掉落物品
-        //            	Exit do
-        //        	End If
-        //		Loop While closeX = -1
-        //		Delay delay_x(500)
-        //		//关闭窗口
-        //		Call close_window_rec()
-    End If
-   
 End Function
 
 //关闭窗口
@@ -1154,33 +1093,28 @@ End Function
 //技能
 Function skills
     TracePrint "技能"
-    //降下选择栏
-    Dim checkX,checkY
+    返回值 = Url.Post(请求地址, Post数据)
+
+    Dim i
     //关闭面板
     Call close_navbar()
-    //技能6
-    skillerror_6 = skill_one(975,1654,100, skill_6,skillerror_6)
-    //技能5
-    skillerror_5 = skill_one(795,1654,100, skill_5,skillerror_5)
-    //技能4
-    skillerror_4 = skill_one(619,1654,100, skill_4,skillerror_4)
-    //技能3
-    skillerror_3 = skill_one(440,1654,100, skill_3,skillerror_3)
-    //技能2
-    skillerror_2 = skill_one(263,1654,100, skill_2,skillerror_2)
-    //技能1
-    skillerror_1 = skill_one(84,1651,200, skill_1,skillerror_1)
+	//技能1-6
+    For i = 0 To 5
+    	skillerror(i) = skill_one(84+179*i, 1654, 200, skill_bool(i), skillerror(i))
+    Next
+    
  
 End Function
 //单一技能点击
 Function skill_one(intX, intY,max_error, skill_true, error)
-    Dim MyArray(3)
+    Dim MyArray
     Dim cmpColors
     //技能num
     //融合字符串
-    MyArray(0) = intX
-    MyArray(1) = intY
-    MyArray(2) = "00AEFF"
+//    MyArray(0) = intX
+//    MyArray(1) = intY
+//    MyArray(2) = "00AEFF"
+    MyArray = Array(intX,intY,"00AEFF")
     cmpColors = Join(MyArray, "|")
     If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
         //		TracePrint "x="&intX&"y="&intY
