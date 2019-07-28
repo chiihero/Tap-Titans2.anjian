@@ -20,11 +20,13 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
     <typeAliases>
-        <package name="sample.mybatis.domain"/>
+        <package name="com.chii.server.tt2anjian.pojo"/>
     </typeAliases>
     <mappers>
-        <mapper resource="sample/mybatis/mapper/CityMapper.xml"/>
-        <mapper resource="sample/mybatis/mapper/HotelMapper.xml"/>
+        <mapper resource="mybatis/mapper/UserMapper.xml"/>
     </mappers>
 </configuration>
