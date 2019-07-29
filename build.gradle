@@ -39,5 +39,5 @@ configurations {
 
 mybatisGenerator {
     verbose = true
-    configFile = 'src/main/resources/tools/generatorConfig.xml'
+    configFile = 'src/main/resources/mybatis/generator/generatorConfig.xml'
 }

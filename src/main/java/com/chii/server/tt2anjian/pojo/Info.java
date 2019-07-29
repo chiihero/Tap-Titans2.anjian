@@ -9,13 +9,13 @@ public class Info {
 
     private Date time;
 
-    private Integer uid;
+    private String username;
 
-    public Info(Integer mid, String title, Date time, Integer uid) {
+    public Info(Integer mid, String title, Date time, String username) {
         this.mid = mid;
         this.title = title;
         this.time = time;
-        this.uid = uid;
+        this.username = username;
     }
 
     public Info() {
@@ -46,11 +46,11 @@ public class Info {
         this.time = time;
     }
 
-    public Integer getUid() {
-        return uid;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUid(Integer uid) {
-        this.uid = uid;
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
     }
 }

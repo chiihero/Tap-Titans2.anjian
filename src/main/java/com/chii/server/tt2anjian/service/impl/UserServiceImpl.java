@@ -1,7 +1,5 @@
 package com.chii.server.tt2anjian.service.impl;
 
-import com.chii.server.tt2anjian.mapper.UserMapper;
-import com.chii.server.tt2anjian.pojo.User;
 import com.chii.server.tt2anjian.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

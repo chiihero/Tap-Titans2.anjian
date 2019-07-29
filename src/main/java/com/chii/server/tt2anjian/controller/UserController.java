@@ -1,7 +1,6 @@
 package com.chii.server.tt2anjian.controller;
 
 
-import com.chii.server.tt2anjian.pojo.User;
 import com.chii.server.tt2anjian.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,19 +19,19 @@ public class UserController {
         System.out.println("hello");
         return "hello moto";
     }
-    @GetMapping("/user")
-    public User userinfo(@ModelAttribute("username") String username){
-        User user =userService.getUserInfoByUsername(username);
-//        if (user != null) {
-//            logger.info(JSONArray.toJSON(user));
-//        }
-//        return new DefaultResultInfo<>(user);
-        return user;
-    }
-    @GetMapping("/signout")
-    public User signout(@ModelAttribute("username") String username,@ModelAttribute("passwd") String passwd){
-        User user =userService.getUserInfoByUsername(username);
-        System.out.println(user.getUsername());
-        return user;
-    }
+//    @GetMapping("/user")
+//    public User userinfo(@ModelAttribute("username") String username){
+//        User user =userService.getUserInfoByUsername(username);
+////        if (user != null) {
+////            logger.info(JSONArray.toJSON(user));
+////        }
+////        return new DefaultResultInfo<>(user);
+//        return user;
+//    }
+//    @GetMapping("/signout")
+//    public User signout(@ModelAttribute("username") String username,@ModelAttribute("passwd") String passwd){
+//        User user =userService.getUserInfoByUsername(username);
+//        System.out.println(user.getUsername());
+//        return user;
+//    }
 }
