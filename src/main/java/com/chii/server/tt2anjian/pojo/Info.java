@@ -1,7 +1,8 @@
 package com.chii.server.tt2anjian.pojo;
 
-import java.util.Date;
+import org.springframework.stereotype.Component;
 
+import java.util.Date;
 public class Info {
     private Integer mid;
 

@@ -1,7 +1,10 @@
 package com.chii.server.tt2anjian.mapper;
 
 import com.chii.server.tt2anjian.pojo.User;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserMapper {
     int deleteByPrimaryKey(String username);
 
