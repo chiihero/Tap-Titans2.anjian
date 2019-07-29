@@ -27,8 +27,8 @@
         <package name="com.chii.server.tt2anjian.pojo"/>
     </typeAliases>
     <mappers>
-        <mapper resource="mapper/UserMapper.xml"/>
-        <mapper resource="mapper/InfoMapper.xml"/>
-        <mapper resource="mapper/InfosMapper.xml"/>
+        <mapper resource="mybatis/mapper/UserMapper.xml"/>
+        <mapper resource="mybatis/mapper/InfoMapper.xml"/>
+        <mapper resource="mybatis/mapper/InfosMapper.xml"/>
     </mappers>
 </configuration>

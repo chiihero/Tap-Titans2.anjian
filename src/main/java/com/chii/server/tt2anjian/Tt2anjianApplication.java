@@ -1,4 +1,5 @@
 package com.chii.server.tt2anjian;
+import com.chii.server.tt2anjian.pojo.User;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
