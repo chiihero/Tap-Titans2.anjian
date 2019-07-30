@@ -4,13 +4,15 @@
     <resultMap id="BaseResultMap" type="com.chii.server.tt2anjian.pojo.Info">
         <constructor>
             <idArg column="mid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
-            <arg column="title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="layer_set" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="update_all" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="update_mini" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
             <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        mid, title, time, username
+        mid, layer_set, update_all, update_mini, time, username
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -37,17 +39,25 @@
         from info
         where mid = #{mid,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" useGeneratedKeys="true" keyProperty="mid" parameterType="com.chii.server.tt2anjian.pojo.Info" >
-        insert into info (title, time, username)
-        values (#{title,jdbcType=VARCHAR},
+    <insert id="insert" useGeneratedKeys="true" keyProperty="mid" parameterType="com.chii.server.tt2anjian.pojo.Info">
+        insert into info (layer_set, update_all, update_mini, time, username)
+        values (#{layerSet,jdbcType=INTEGER},
+                #{updateAll,jdbcType=INTEGER},
+                #{updateMini,jdbcType=INTEGER},
                 #{time,jdbcType=TIMESTAMP},
-                #{username,jdbcType=VARCHAR});
+                #{username,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.chii.server.tt2anjian.pojo.Info">
         insert into info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="title != null">
-                title,
+            <if test="layerSet != null">
+                layer_set,
+            </if>
+            <if test="updateAll != null">
+                update_all,
+            </if>
+            <if test="updateMini != null">
+                update_mini,
             </if>
             <if test="time != null">
                 time,
@@ -57,8 +67,14 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="title != null">
-                #{title,jdbcType=VARCHAR},
+            <if test="layerSet != null">
+                #{layerSet,jdbcType=INTEGER},
+            </if>
+            <if test="updateAll != null">
+                #{updateAll,jdbcType=INTEGER},
+            </if>
+            <if test="updateMini != null">
+                #{updateMini,jdbcType=INTEGER},
             </if>
             <if test="time != null">
                 #{time,jdbcType=TIMESTAMP},
@@ -71,8 +87,14 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.chii.server.tt2anjian.pojo.Info">
         update info
         <set>
-            <if test="title != null">
-                title = #{title,jdbcType=VARCHAR},
+            <if test="layerSet != null">
+                layer_set = #{layerSet,jdbcType=INTEGER},
+            </if>
+            <if test="updateAll != null">
+                update_all = #{updateAll,jdbcType=INTEGER},
+            </if>
+            <if test="updateMini != null">
+                update_mini = #{updateMini,jdbcType=INTEGER},
             </if>
             <if test="time != null">
                 time = #{time,jdbcType=TIMESTAMP},
@@ -85,8 +107,10 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.chii.server.tt2anjian.pojo.Info">
         update info
-        set title    = #{title,jdbcType=VARCHAR},
-            time     = #{time,jdbcType=TIMESTAMP},
+        set layer_set = #{layerSet,jdbcType=INTEGER},
+            update_all = #{updateAll,jdbcType=INTEGER},
+            update_mini = #{updateMini,jdbcType=INTEGER},
+            time = #{time,jdbcType=TIMESTAMP},
             username = #{username,jdbcType=VARCHAR}
         where mid = #{mid,jdbcType=INTEGER}
     </update>

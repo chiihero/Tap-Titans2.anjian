@@ -3,26 +3,35 @@ package com.chii.server.tt2anjian.pojo;
 import java.util.Date;
 import java.util.List;
 
-public class Infoslist {
+public class postlist {
     private Integer mid;
 
-    private String title;
+    private Integer layerSet;
+
+    private Integer updateAll;
+
+    private Integer updateMini;
 
     private Date time;
 
     private String username;
 
+    private String passwd;
+
     private List<Infos> infos;
 
-    public Infoslist(Integer mid, String title, Date time, String username,List<Infos> infos) {
+    public postlist(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Date time, String username,String passwd, List<Infos> infos) {
         this.mid = mid;
-        this.title = title;
+        this.layerSet = layerSet;
+        this.updateAll = updateAll;
+        this.updateMini = updateMini;
         this.time = time;
         this.username = username;
+        this.passwd =passwd;
         this.infos = infos;
     }
 
-    public Infoslist() {
+    public postlist() {
         super();
     }
 
@@ -34,12 +43,28 @@ public class Infoslist {
         this.mid = mid;
     }
 
-    public String getTitle() {
-        return title;
+    public Integer getLayerSet() {
+        return layerSet;
     }
 
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+    public void setLayerSet(Integer layerSet) {
+        this.layerSet = layerSet;
+    }
+
+    public Integer getUpdateAll() {
+        return updateAll;
+    }
+
+    public void setUpdateAll(Integer updateAll) {
+        this.updateAll = updateAll;
+    }
+
+    public Integer getUpdateMini() {
+        return updateMini;
+    }
+
+    public void setUpdateMini(Integer updateMini) {
+        this.updateMini = updateMini;
     }
 
     public Date getTime() {
@@ -58,9 +83,19 @@ public class Infoslist {
         this.username = username == null ? null : username.trim();
     }
 
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd == null ? null : passwd.trim();
+    }
+
+
     public void setInfos(List<Infos> infos) {
         this.infos = infos;
     }
+
     public List<Infos> getInfos() {
         return infos;
     }

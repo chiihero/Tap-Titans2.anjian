@@ -4,10 +4,12 @@ package com.chii.server.tt2anjian.controller;
 import com.chii.server.tt2anjian.Tt2anjianApplication;
 import com.chii.server.tt2anjian.pojo.Info;
 import com.chii.server.tt2anjian.pojo.Infos;
-import com.chii.server.tt2anjian.pojo.Infoslist;
+import com.chii.server.tt2anjian.pojo.User;
+import com.chii.server.tt2anjian.pojo.postlist;
 
 import com.chii.server.tt2anjian.service.InfoService;
 import com.chii.server.tt2anjian.service.InfosService;
+import com.chii.server.tt2anjian.service.UserService;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,8 @@ public class InfoController {
     private InfoService infoService;
     @Autowired
     private InfosService infosService;
+    @Autowired
+    private UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(Tt2anjianApplication.class);
 
@@ -40,30 +44,39 @@ public class InfoController {
         logger.info(new Gson().toJson(infos));
         return infos;
     }
-    @PostMapping("/insert")
-    public void insert(@ModelAttribute("username") String username,@ModelAttribute("title") String title){
-        Info info =new Info();
-        info.setUsername(username);
-        info.setTitle(title);
-        info.setTime(new Date());
-        infoService.insertInfo(info);
-    }
+//    @PostMapping("/insert")
+//    public void insert(@ModelAttribute("username") String username,@ModelAttribute("layerset") int layerset){
+//        Info info =new Info();
+//        info.setUsername(username);
+//        info.setLayerSet(layerset);
+//        info.setTime(new Date());
+//        infoService.insertInfo(info);
+//    }
     @PostMapping("/insertinfo")
     public void insertinfo(@RequestBody String json){
-        logger.info(json);
-
+//        logger.info(json);
         Gson gson = new Gson();
-        Infoslist infoslist = gson.fromJson(json,Infoslist.class);
-
-        logger.info(new Gson().toJson(infoslist));
         Info info =new Info();
-        info.setUsername(infoslist.getUsername());
-        info.setTitle(infoslist.getTitle());
-        info.setTime(new Date());
-        int mid = infoService.insertInfo(info);
+        Infos infos = new Infos();
 
-        for (Infoslist.Infos infosone: infoslist.getInfos()) {
-            Infos infos = new Infos();
+        postlist postlist = gson.fromJson(json, postlist.class);
+        logger.info(new Gson().toJson(postlist));
+
+        //验证身份
+        User user = userService.getUserInfoByUsername(postlist.getUsername());
+        if (user != null && user.getPasswd().equals(postlist.getPasswd())) {
+            logger.info("login success");
+        } else {
+            return ;
+        }
+
+        info.setUsername(postlist.getUsername());
+        info.setLayerSet(postlist.getLayerSet());
+        info.setUpdateAll(postlist.getUpdateAll());
+        info.setUpdateMini(postlist.getUpdateMini());
+        info.setTime(new Date());
+        infoService.insertInfo(info);
+        for (postlist.Infos infosone: postlist.getInfos()) {
             infos.setMid(info.getMid());
             infos.setLayer(infosone.getLayer());
             infos.setUsetime(infosone.getUsetime());

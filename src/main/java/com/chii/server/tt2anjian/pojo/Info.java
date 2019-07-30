@@ -1,20 +1,25 @@
 package com.chii.server.tt2anjian.pojo;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Date;
+
 public class Info {
     private Integer mid;
 
-    private String title;
+    private Integer layerSet;
+
+    private Integer updateAll;
+
+    private Integer updateMini;
 
     private Date time;
 
     private String username;
 
-    public Info(Integer mid, String title, Date time, String username) {
+    public Info(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Date time, String username) {
         this.mid = mid;
-        this.title = title;
+        this.layerSet = layerSet;
+        this.updateAll = updateAll;
+        this.updateMini = updateMini;
         this.time = time;
         this.username = username;
     }
@@ -31,12 +36,28 @@ public class Info {
         this.mid = mid;
     }
 
-    public String getTitle() {
-        return title;
+    public Integer getLayerSet() {
+        return layerSet;
     }
 
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+    public void setLayerSet(Integer layerSet) {
+        this.layerSet = layerSet;
+    }
+
+    public Integer getUpdateAll() {
+        return updateAll;
+    }
+
+    public void setUpdateAll(Integer updateAll) {
+        this.updateAll = updateAll;
+    }
+
+    public Integer getUpdateMini() {
+        return updateMini;
+    }
+
+    public void setUpdateMini(Integer updateMini) {
+        this.updateMini = updateMini;
     }
 
     public Date getTime() {
