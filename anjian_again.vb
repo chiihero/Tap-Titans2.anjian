@@ -1,5 +1,4 @@
-//2019年7月25日18:57:32
-//2019年7月27日10:13:09
+//2019年7月30日19:19:20
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -22,14 +21,16 @@ Dim delay_multiple = 1
 Dim update_main_time 
 Dim auto_prestige_time
 Dim skills_time 
-Dim auto_sendmessage_tribe_time //蜕变使用时间
+Dim tribe_usetime //蜕变使用时间
 Dim mistake_reboot//出错重启
 Dim reboot_game = TickCount()//定时重启
 Dim boss_task = TickCount()//防止进入boss模式过频繁导致蜕变
 //初始化发送邮件内容
-Dim sendmessage_str
+Dim mail_info
 Dim send_flag = 0
 Dim s_layer_number_mix
+//初始化发送内容
+Dim post_info
 //初始化识别层数
 Dim ocrchar,ocrchar_layer
 Dim layer_temp
@@ -39,7 +40,7 @@ Dim s_layer_number
 Dim update_main_flat
 Dim update_main_init_time
 Dim updata_mistake
-Dim stats_updateAll, stats_updateMercenary//初始化升级次数
+Dim updateAll, updateMini//初始化升级次数
 Dim auto_updata_flat//初始化自动升级次数
 Dim reboot_time//定时重启
 //记录蜕变次数
@@ -163,12 +164,17 @@ Dim reboot_time_ui = ReadUIConfig("textedit_reboot_delay","0")
 reboot_time_ui = CInt(reboot_time_ui)*60*1000
 TracePrint  reboot_time_ui
 reboot_time = reboot_time_ui//定时重启
+//服务器
+//账号
+Dim username = ReadUIConfig("username",0)
+//密码
+Dim passwd = ReadUIConfig("passwd",0)
 
 //邮箱
 //发送邮箱账号
 Dim mail_username = ReadUIConfig("mail_username",0)
 //发送邮箱密码
-Dim mail_password = ReadUIConfig("mail_password",0)
+Dim mail_passwd = ReadUIConfig("mail_passwd",0)
 //接收邮箱账号
 Dim mail_tomail = ReadUIConfig("mail_tomail",0)
 //屏幕分辨率检测
@@ -212,8 +218,9 @@ Function init()
     //	Sys.ClearMemory() //释放内存
     //初始化错误次数
     auto_updata_flat = 0
-    //初始化发送邮件内容
-    sendmessage_str = ""
+    //初始化发送内容
+    mail_info = ""
+    post_info=""
     s_layer_number_mix = 1
     s_layer_number = 1
     //初始化识别层数
@@ -225,7 +232,7 @@ Function init()
     //定时自动升级.初始化时间
     update_main_flat = 0
     updata_mistake = 0
-    auto_sendmessage_tribe_time = TickCount()//蜕变使用时间初始化
+    tribe_usetime = TickCount()//蜕变使用时间初始化
 /*****************************************************/
     Device.SetVolumeLevel(1)//设置设备中所有音量 
     //显示信息
@@ -246,8 +253,8 @@ Function init()
     End If
     Call close_occlusion()//广告
     
-    stats_updateAll = 0
-    stats_updateMercenary = 0
+    updateAll = 0
+    updateMini = 0
     If prestige_tick > 0 Then 
         Call update_main(3)//升级.蜕变模式
     Else 
@@ -440,7 +447,7 @@ Function check_status()
     //定时重启
     If  TickCount()- reboot_game >reboot_time  And reboot_time > 0 Then 
         TracePrint "定时重启"
-        Call mail("定时重启")
+        Call postmail("定时重启")
         Call kill_app()
         GG_blue_bool = True
         reboot_game = TickCount()
@@ -453,7 +460,7 @@ Function check_status()
 
     FindPic 482,1227,548,1303,"Attachment:服务器维护.png","000000",0,0.9,intX,intY
     If intX > -1 And intY > -1 Then 
-        Call mail("服务器维护")
+        Call postmail("服务器维护")
         TracePrint "stop"
         EndScript
     End If
@@ -505,15 +512,15 @@ Function update_main(update_main_flat)
             Call Navbar_main("mercenary",1)//升级佣兵
             Call Navbar_main("hero",1)//升级本人与技能
         End If
-        stats_updateAll = stats_updateAll + 1//统计
+        updateAll = updateAll + 1//统计
     ElseIf update_main_flat = 2 Then
         TracePrint"升级佣兵部分"
         Call Navbar_main("mercenary",2)//升级佣兵
-        stats_updateMercenary = stats_updateMercenary + 1//统计
+        updateMini = updateMini + 1//统计
     ElseIf update_main_flat = 3 Then//每次蜕变时候自需要升级技能
         TracePrint"升级技能部分"
         Call Navbar_main("hero",1)//升级本人与技能
-        stats_updateMercenary = stats_updateMercenary + 1//统计
+        updateMini = updateMini + 1//统计
     End If
 End Function
 
@@ -928,7 +935,7 @@ Function little_fairy()
         //点击收集字符
         Call little_fairy_rec()
         Call Navbar_main("mercenary",2)//升级佣兵
-        stats_updateMercenary = stats_updateMercenary + 1//统计
+        updateMini = updateMini + 1//统计
         Exit Function
     ElseIf fairy_2_bool = True And CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then //钻石
         TracePrint"钻石"
@@ -1093,8 +1100,6 @@ End Function
 //技能
 Function skills
     TracePrint "技能"
-    返回值 = Url.Post(请求地址, Post数据)
-
     Dim i
     //关闭面板
     Call close_navbar()
@@ -1137,9 +1142,10 @@ End Function
 Function prestige
     //	Call close_occlusion()//广告
     TracePrint "蜕变"
-    //发送邮件
+    //发送日志
     If send_flag = 1 Then 
-        Call mail(ocrchar_layer)
+        Call postmail(ocrchar_layer)
+        Call postserver(ocrchar_layer)
         send_flag = 0
     End If
     //本人等级提升|解锁技能|英雄等级提升
@@ -1896,9 +1902,9 @@ Function swipe_down(num)
 End Function
 
 //邮箱
-Function mail(subject)
+Function postmail(subject)
     TracePrint "邮箱"
-    If mail_username = 0 or mail_password = 0 or mail_tomail = 0 Then 
+    If mail_username = 0 or mail_passwd = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
     End If
@@ -1906,28 +1912,46 @@ Function mail(subject)
     Dim mail_host ="smtp.qq.com"
     Dim mail_subject = subject
     If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
-        sendmessage_str ="最终层数:"& subject &"  时间:"&DateTime.Format("%H:%M:%S") &" 使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n" & sendmessage_str 
+        mail_info ="最终层数:"& subject &"  时间:"&DateTime.Format("%H:%M:%S") &" 使用时间:"& data_time((TickCount()-tribe_usetime)/1000) &"\n" & mail_info 
     End If 
-    sendmessage_str = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&stats_updateAll&"\n升级次数(少):"&stats_updateMercenary&"\n"& sendmessage_str 
-    Dim mail_message = sendmessage_str
-    
-    Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_password,mail_subject,mail_message,mail_tomail) 
+    mail_info = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&updateAll&"\n升级次数(少):"&updateMini&"\n"& mail_info 
+    Dim mail_message = mail_info
+    Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_passwd,mail_subject,mail_message,mail_tomail) 
     TracePrint Ret
     While Ret = False
         Delay delay_x(500)
-        Ret = SendSimpleEmail (mail_host, mail_username, mail_password, mail_subject, mail_message, mail_tomail)
+        Ret = SendSimpleEmail (mail_host, mail_username, mail_passwd, mail_subject, mail_message, mail_tomail)
         If while_over(5) Then 
             Exit While
         End If
     Wend
 End Function
-//邮箱内容
+//日志服务器
+Function postserver(subject)
+    TracePrint "服务器"
+    If username = 0 or passwd = 0  Then 
+        TracePrint "账号密码错误"
+        Exit Function
+    End If
+    Dim server_url ="http://192.168.2.162:8088/info/insertinfo"
+    //    Dim server_url ="http://192.168.2.117:8088/info/insertinfo"
+    Dim header = "Content-Type: application/json"
+    If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
+        post_info = "[{""layer"":"""& s_layer_number &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info&"]"
+    End If
+    post_info = "{""username"":""" & username & """,""passwd"":""" & passwd & """,""layerSet"":""" & layer_number_max & """,""updateAll"":""" & updateAll & """,""updateMini"":""" & updateMini & """,""infos"":" & post_info&"}"
+    TracePrint post_info
+    ShanHai.PostHttp(server_url,post_info,10,header)
+End Function
+
+//发送内容
 Function sendmessage(s_layer_number)
-    TracePrint"邮箱内容"
+    TracePrint"发送内容"
     If Int(s_layer_number / 100) > s_layer_number_mix Then 
         s_layer_number_mix = Int(s_layer_number / 100)
-        sendmessage_str = "层数:"& s_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-auto_sendmessage_tribe_time)/1000) &"\n"&sendmessage_str
-    End If
+        mail_info = "层数:"& s_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-tribe_usetime)/1000) &"\n"&mail_info
+   		post_info = ",{""layer"":"""& s_layer_number &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info
+   End If
 End Function
 //适配分辨率
 Function Screen
