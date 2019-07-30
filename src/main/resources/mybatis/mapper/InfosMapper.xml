@@ -29,17 +29,14 @@
     where iid = #{iid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.chii.server.tt2anjian.pojo.Infos">
-    insert into infos (iid, mid, layer, 
+    insert into infos ( mid, layer,
       usetime)
-    values (#{iid,jdbcType=INTEGER}, #{mid,jdbcType=INTEGER}, #{layer,jdbcType=VARCHAR}, 
+    values (#{mid,jdbcType=INTEGER}, #{layer,jdbcType=VARCHAR},
       #{usetime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.chii.server.tt2anjian.pojo.Infos">
     insert into infos
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="iid != null">
-        iid,
-      </if>
       <if test="mid != null">
         mid,
       </if>
@@ -51,9 +48,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="iid != null">
-        #{iid,jdbcType=INTEGER},
-      </if>
       <if test="mid != null">
         #{mid,jdbcType=INTEGER},
       </if>

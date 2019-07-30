@@ -24,24 +24,28 @@
         from info
         where username = #{username,jdbcType=VARCHAR}
     </select>
+    <select id="selectLastByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from info
+        where username = #{username,jdbcType=VARCHAR}
+        ORDER BY mid DESC
+        LIMIT 1
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from info
         where mid = #{mid,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" parameterType="com.chii.server.tt2anjian.pojo.Info">
-        insert into info (mid, title, time, username)
-        values (#{mid,jdbcType=INTEGER},
-                #{title,jdbcType=VARCHAR},
+    <insert id="insert" useGeneratedKeys="true" keyProperty="mid" parameterType="com.chii.server.tt2anjian.pojo.Info" >
+        insert into info (title, time, username)
+        values (#{title,jdbcType=VARCHAR},
                 #{time,jdbcType=TIMESTAMP},
-                #{username,jdbcType=VARCHAR})
+                #{username,jdbcType=VARCHAR});
     </insert>
     <insert id="insertSelective" parameterType="com.chii.server.tt2anjian.pojo.Info">
         insert into info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="mid != null">
-                mid,
-            </if>
             <if test="title != null">
                 title,
             </if>
@@ -53,9 +57,6 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="mid != null">
-                #{mid,jdbcType=INTEGER},
-            </if>
             <if test="title != null">
                 #{title,jdbcType=VARCHAR},
             </if>

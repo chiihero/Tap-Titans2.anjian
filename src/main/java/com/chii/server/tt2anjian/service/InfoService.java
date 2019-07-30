@@ -8,8 +8,11 @@ public interface InfoService {
 
     List<Info> getInfoInfoByUsername(String username);
 
-    void insertInfo(Info info);
+//    List<Info> getInfoLastByUsername(String username);
 
-    void deleteInfo(Info info);
+
+    int insertInfo(Info info);
+
+    void deleteInfo(int mid);
 
 }

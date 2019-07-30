@@ -18,6 +18,8 @@ public interface InfoMapper {
 
     List<Info> selectByUserName(String username);
 
+//    Info selectLastByUserName(String username);
+
     int updateByPrimaryKeySelective(Info record);
 
     int updateByPrimaryKey(Info record);

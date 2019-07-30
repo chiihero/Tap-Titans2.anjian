@@ -26,12 +26,12 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    public void insertInfo(Info info) {
-        infoMapper.insert(info);
+    public int insertInfo(Info info) {
+        return infoMapper.insert(info);
     }
 
     @Override
-    public void deleteInfo(Info info) {
-        infoMapper.deleteByPrimaryKey(info.getMid());
+    public void deleteInfo(int mid) {
+        infoMapper.deleteByPrimaryKey(mid);
     }
 }
