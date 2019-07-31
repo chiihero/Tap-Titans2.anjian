@@ -74,8 +74,9 @@ public class InfoController {
         info.setLayerSet(postlist.getLayerSet());
         info.setUpdateAll(postlist.getUpdateAll());
         info.setUpdateMini(postlist.getUpdateMini());
-        info.setTime(new Date());
+//        info.setTime(new Date());
         infoService.insertInfo(info);
+        if(info.getMid()==0) return ;
         for (postlist.Infos infosone: postlist.getInfos()) {
             infos.setMid(info.getMid());
             infos.setLayer(infosone.getLayer());

@@ -27,7 +27,7 @@ public class InfoServiceImpl implements InfoService {
 
     @Override
     public int insertInfo(Info info) {
-        return infoMapper.insert(info);
+        return infoMapper.insertSelective(info);
     }
 
     @Override

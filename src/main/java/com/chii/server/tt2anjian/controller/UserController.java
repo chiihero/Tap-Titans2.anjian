@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 
 @RestController
 //@RequestMapping("/test")
@@ -22,7 +24,7 @@ public class UserController {
 
     @GetMapping("/hello")
     public String hello() {
-        logger.info("hello chii");
+        logger.info("hello chii"+new Date());
         return "hello chii";
     }
 
