@@ -47,7 +47,7 @@
                 #{time,jdbcType=TIMESTAMP},
                 #{username,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.chii.server.tt2anjian.pojo.Info">
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="mid" parameterType="com.chii.server.tt2anjian.pojo.Info">
         insert into info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="layerSet != null">
