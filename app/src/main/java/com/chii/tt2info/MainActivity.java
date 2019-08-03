@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.textclassifier.TextLinks;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,10 +62,12 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
-
-
     @BindView(R.id.listview)
     ListView listView;
+    @BindView(R.id.testbutton)
+    Button testbutton;
+    @BindView(R.id.testtext)
+    TextView testtext;
 
     private ListViewAdapter mAdapter;
     private Context context = this; 
@@ -99,6 +102,19 @@ public class MainActivity extends AppCompatActivity
         });
         initDate();
         initList();
+        initUI();
+    }
+
+    private void initUI() {
+        testbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testtext.setText(infolist.get(1).getMid().toString());
+                mAdapter.notifyDatasetChanged();
+            }
+        });
+
+
     }
 
 
@@ -116,7 +132,6 @@ public class MainActivity extends AppCompatActivity
                 infolist =  gson.fromJson(jsonObject,type);
 
                 Log.d(TAG, "ResponseResult: "+infolist.get(0).getUsername());
-                mAdapter.notifyDataSetInvalidated();
 
             }
 
