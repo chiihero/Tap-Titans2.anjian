@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     ListView listView;
 
     private ListViewAdapter mAdapter;
-    private Context context = this;
+    private Context context = this; 
     private Gson gson = new Gson();
     String infolist_url = "http://www.chiinas.club:8088/info/getinfolist";
     String infos_url = "http://www.chiinas.club:8088/info/getinfos";
