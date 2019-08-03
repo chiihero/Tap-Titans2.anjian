@@ -16,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.textclassifier.TextLinks;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,13 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
@@ -38,15 +31,10 @@ import com.chii.tt2info.swipe.util.Attributes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.testtext)
     TextView testtext;
 
-    private ListViewAdapter mAdapter;
+    private myListViewAdapter mAdapter;
     private Context context = this; 
     private Gson gson = new Gson();
     String infolist_url = "http://www.chiinas.club:8088/info/getinfolist";
@@ -146,7 +134,7 @@ public class MainActivity extends AppCompatActivity
 
     public void initList() {
         Log.d(TAG, "initList: test");
-        mAdapter = new ListViewAdapter(this,infolist);
+        mAdapter = new myListViewAdapter(this,infolist);
         listView.setAdapter(mAdapter);
         mAdapter.setMode(Attributes.Mode.Single);
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
