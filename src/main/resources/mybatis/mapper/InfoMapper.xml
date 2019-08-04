@@ -4,6 +4,8 @@
     <resultMap id="BaseResultMap" type="com.chii.server.tt2anjian.pojo.Info">
         <constructor>
             <idArg column="mid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="notes" javaType="java.lang.String" jdbcType="VARCHAR"/>
             <arg column="layer_set" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="update_all" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="update_mini" javaType="java.lang.Integer" jdbcType="INTEGER"/>
@@ -12,7 +14,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        mid, layer_set, update_all, update_mini, time, username
+        mid, title, notes, layer_set, update_all, update_mini, time, username
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -26,30 +28,32 @@
         from info
         where username = #{username,jdbcType=VARCHAR}
     </select>
-    <select id="selectLastByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from info
-        where username = #{username,jdbcType=VARCHAR}
-        ORDER BY mid DESC
-        LIMIT 1
-    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from info
         where mid = #{mid,jdbcType=INTEGER}
     </delete>
     <insert id="insert" useGeneratedKeys="true" keyProperty="mid" parameterType="com.chii.server.tt2anjian.pojo.Info">
-        insert into info (layer_set, update_all, update_mini, time, username)
-        values (#{layerSet,jdbcType=INTEGER},
+        insert into info (mid, title, notes, layer_set, update_all, update_mini, time, username)
+        values (#{mid,jdbcType=INTEGER},
+                #{title,jdbcType=VARCHAR},
+                #{notes,jdbcType=VARCHAR},
+                #{layerSet,jdbcType=INTEGER},
                 #{updateAll,jdbcType=INTEGER},
                 #{updateMini,jdbcType=INTEGER},
                 #{time,jdbcType=TIMESTAMP},
                 #{username,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="mid" parameterType="com.chii.server.tt2anjian.pojo.Info">
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="mid"
+            parameterType="com.chii.server.tt2anjian.pojo.Info">
         insert into info
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">
+                title,
+            </if>
+            <if test="notes != null">
+                notes,
+            </if>
             <if test="layerSet != null">
                 layer_set,
             </if>
@@ -67,6 +71,12 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
             <if test="layerSet != null">
                 #{layerSet,jdbcType=INTEGER},
             </if>
@@ -87,6 +97,12 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.chii.server.tt2anjian.pojo.Info">
         update info
         <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
             <if test="layerSet != null">
                 layer_set = #{layerSet,jdbcType=INTEGER},
             </if>
@@ -107,11 +123,13 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.chii.server.tt2anjian.pojo.Info">
         update info
-        set layer_set = #{layerSet,jdbcType=INTEGER},
-            update_all = #{updateAll,jdbcType=INTEGER},
+        set title       = #{title,jdbcType=VARCHAR},
+            notes       = #{notes,jdbcType=VARCHAR},
+            layer_set   = #{layerSet,jdbcType=INTEGER},
+            update_all  = #{updateAll,jdbcType=INTEGER},
             update_mini = #{updateMini,jdbcType=INTEGER},
-            time = #{time,jdbcType=TIMESTAMP},
-            username = #{username,jdbcType=VARCHAR}
+            time        = #{time,jdbcType=TIMESTAMP},
+            username    = #{username,jdbcType=VARCHAR}
         where mid = #{mid,jdbcType=INTEGER}
     </update>
 </mapper>
