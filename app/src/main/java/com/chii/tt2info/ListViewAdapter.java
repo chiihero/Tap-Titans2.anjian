@@ -15,6 +15,7 @@ import com.chii.tt2info.pojo.Info;
 import com.chii.tt2info.swipe.SimpleSwipeListener;
 import com.chii.tt2info.swipe.SwipeLayout;
 import com.chii.tt2info.swipe.adapters.BaseSwipeAdapter;
+import com.chii.tt2info.util.TimeUtil;
 
 import java.util.List;
 
@@ -55,13 +56,22 @@ public class ListViewAdapter extends BaseSwipeAdapter {
 
     @Override
     public void fillValues(int position, View convertView) {
-        TextView tpos = (TextView)convertView.findViewById(R.id.position);
-        TextView tdata = (TextView)convertView.findViewById(R.id.text_data);
+        TextView TV_layerSet = (TextView)convertView.findViewById(R.id.info_layerSet);
+        TextView TV_updateAll = (TextView)convertView.findViewById(R.id.info_updateAll);
+        TextView TV_updateMini = (TextView)convertView.findViewById(R.id.info_updateMini);
+        TextView TV_time = (TextView)convertView.findViewById(R.id.info_time);
 
-        tpos.setText(String.valueOf(position + 1));
-        String title = minfolist.get(position).getLayerSet().toString();
-        Log.d(MainActivity.TAG, "fillValues: "+title);
-        tdata.setText(title);
+        String layerSet = "最高层数设定："+minfolist.get(position).getLayerSet().toString();
+        String updateAll = "全面升级次数："+minfolist.get(position).getUpdateAll().toString();
+        String updateMini = "小升级次数："+minfolist.get(position).getUpdateMini().toString();
+        Long longtime = minfolist.get(position).getTimestamp();
+        String time = TimeUtil.Timestamp2Data(longtime).toString();
+
+        TV_layerSet.setText(layerSet);
+        TV_updateAll.setText(updateAll);
+        TV_updateMini.setText(updateMini);
+        TV_time.setText(time);
+
     }
 
     @Override

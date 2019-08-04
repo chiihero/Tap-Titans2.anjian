@@ -5,4 +5,16 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+
+    <!-- 30像素 -->
+    <dimen name="NORMAL">15sp</dimen>
+    <!-- 36像素 -->
+    <dimen name="BIG">18sp</dimen>
+    <!-- 32像素 -->
+    <dimen name="MIDDLE">16sp</dimen>
+    <!-- 26像素 -->
+    <dimen name="SMALL">13sp</dimen>
+    <!-- 20像素 -->
+    <dimen name="MINI">11sp</dimen>
 </resources>

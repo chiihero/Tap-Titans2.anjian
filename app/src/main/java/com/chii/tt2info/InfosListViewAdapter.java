@@ -41,15 +41,14 @@ public class InfosListViewAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.listview_infos, null);
         }
-        String pos = String.valueOf(position + 1) + ".";
-        String layer = minfoslist.get(position).getLayer();
-        String usetime = minfoslist.get(position).getUsetime();
+        TextView TV_data = ViewHolder.get(convertView, R.id.infos_data);
+        TextView TV_usename = ViewHolder.get(convertView, R.id.infos_usetime);
 
-        TextView tpos = ViewHolder.get(convertView, R.id.infos_position);
-        TextView tdata = ViewHolder.get(convertView, R.id.infos_data);
+        String layer = "层数："+minfoslist.get(position).getLayer();
+        String usetime = "运行时间："+minfoslist.get(position).getUsetime();
+        TV_data.setText(layer);
+        TV_usename.setText(usetime);
 
-        tpos.setText(pos);
-        tdata.setText(layer+" "+usetime);
         return convertView;
     }
 }
