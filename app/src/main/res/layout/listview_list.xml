@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="90dp"
         android:background="#FF5534"
         android:gravity="center"
         android:tag="Bottom3"
@@ -43,7 +43,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="90dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:padding="10dp">
@@ -53,30 +53,46 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/info_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="info_title"
+                android:textSize="@dimen/BIG"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
                 android:id="@+id/info_layerSet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="info_layerSet"/>
+                android:textSize="@dimen/NORMAL"
+                android:text="info_layerSet"
+                android:layout_below="@id/info_title"/>
 
 
             <TextView
                 android:id="@+id/info_updateAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/info_layerSet"
-                android:text="info_updateAll" />
+                android:textSize="@dimen/NORMAL"
+                android:text="info_updateAll"
+                android:layout_below="@id/info_layerSet"/>
 
             <TextView
                 android:id="@+id/info_updateMini"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/info_updateAll"
-                android:text="info_updateMini"/>
+                android:text="info_updateMini"
+                android:textSize="@dimen/NORMAL"
+                android:layout_below="@id/info_layerSet"
+                android:layout_toEndOf="@id/info_updateAll"
+                android:layout_marginStart="50dp" />
 
             <TextView
                 android:id="@+id/info_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/NORMAL"
+
                 android:layout_alignParentRight="true"
                 android:text="info_time" />
         </RelativeLayout>

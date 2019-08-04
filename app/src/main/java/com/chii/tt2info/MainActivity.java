@@ -37,6 +37,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.chii.tt2info.connes.MyVolley.infolist_url;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.toolbar)
@@ -52,8 +54,6 @@ public class MainActivity extends AppCompatActivity
     private ListViewAdapter mAdapter;
     private Context context = this;
     private Gson gson = new Gson();
-    String infolist_url = "http://192.168.2.117:8088/info/getinfolist";
-    //    String infolist_url = "http://www.chiinas.club:8088/info/getinfolist";
     List<Info> infoList = new ArrayList<>();
     public static String TAG = "MainActivitytag";
     MyVolley myVolley;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 //                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//                startActivity(intent);
+//                startActivity(intent
                 Toast.makeText(context, "hello", Toast.LENGTH_LONG).show();
             }
         });

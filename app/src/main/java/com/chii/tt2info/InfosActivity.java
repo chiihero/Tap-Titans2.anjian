@@ -23,6 +23,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.chii.tt2info.connes.MyVolley.infos_url;
+
 public class InfosActivity extends AppCompatActivity {
     @BindView(R.id.infolistview)
     ListView listView;
@@ -33,8 +35,6 @@ public class InfosActivity extends AppCompatActivity {
     private Context context = this;
     private Gson gson = new Gson();
     List<Infos> infosList = new ArrayList<>();
-    String infos_url = "http://192.168.2.117:8088/info/getinfos";
-//    String infos_url = "http://www.chiinas.club:8088/info/getinfos";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
