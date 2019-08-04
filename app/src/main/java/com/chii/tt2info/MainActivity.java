@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,18 +15,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.AbsListView;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
-import com.chii.tt2info.swipe.util.Attributes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -50,20 +46,17 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
-    @BindView(R.id.listview)
+    @BindView(R.id.mainlistview)
     ListView listView;
-    @BindView(R.id.testbutton)
-    Button testbutton;
-    @BindView(R.id.testtext)
-    TextView testtext;
-
-    private myListViewAdapter mAdapter;
-    private Context context = this; 
+    private ListViewAdapter mAdapter;
+    private Context context = this;
     private Gson gson = new Gson();
     String infolist_url = "http://www.chiinas.club:8088/info/getinfolist";
     String infos_url = "http://www.chiinas.club:8088/info/getinfos";
     List<Info> infolist = new ArrayList<>();
     public static String TAG = "chiitag";
+    MyVolley myVolley;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,37 +83,22 @@ public class MainActivity extends AppCompatActivity
         });
         initDate();
         initList();
-        initUI();
     }
-
-    private void initUI() {
-        testbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                testtext.setText(infolist.get(1).getMid().toString());
-                mAdapter.notifyDatasetChanged();
-            }
-        });
-
-
-    }
-
 
     private void initDate() {
-        MyVolley myVolley;
-        myVolley =MyVolley.getMyVolley(MainActivity.this);
-        HashMap<String,String> map = new HashMap<String, String>();
-        map.put("username","chii");
-        myVolley.Get(infolist_url,map, new volleyInterface() {
+        myVolley = MyVolley.getMyVolley(MainActivity.this);
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("username", "chii");
+        myVolley.Get(infolist_url, map, new volleyInterface() {
 
             @Override
             public void ResponseResult(String jsonObject) {
-                Type type = new TypeToken<List<Info>>() {}.getType();
-
-                infolist =  gson.fromJson(jsonObject,type);
-
-                Log.d(TAG, "ResponseResult: "+infolist.get(0).getUsername());
-
+                Type type = new TypeToken<List<Info>>() {
+                }.getType();
+                List<Info> list = gson.fromJson(jsonObject, type);
+                infolist.addAll(list);
+                Log.d(TAG, "ResponseResult: " + infolist.get(0).getUsername());
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -128,44 +106,29 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "GET请求失败" + volleyError.toString());
             }
         });
-
-
     }
 
     public void initList() {
         Log.d(TAG, "initList: test");
-        mAdapter = new myListViewAdapter(this,infolist);
+        mAdapter = new ListViewAdapter(this, infolist);
         listView.setAdapter(mAdapter);
-        mAdapter.setMode(Attributes.Mode.Single);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                ((SwipeLayout)(listView.getChildAt(position - listView.getFirstVisiblePosition
-//                ()))).open(true);
-//            }
-//        });
-        listView.setOnTouchListener(new View.OnTouchListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.e("ListView", "OnTouch");
-                return false;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(context, "hello"+position, Toast.LENGTH_LONG).show();
+
             }
         });
-
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                Log.e("ListView", "onScrollStateChanged");
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-                                 int totalItemCount) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+                                           long id) {
+                Toast.makeText(context, "OnItemLongClickListener", Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
 
     }
-
 
     @OnClick(R.id.fab)
     public void fabClick(View view) {
@@ -229,4 +192,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

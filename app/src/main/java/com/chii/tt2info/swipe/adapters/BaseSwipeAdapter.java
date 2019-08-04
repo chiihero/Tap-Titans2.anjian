@@ -17,7 +17,7 @@ public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemM
     protected SwipeItemMangerImpl mItemManger = new SwipeItemMangerImpl(this);
 
     /**
-     * return the {@link com.chii.tt2info.swipe.SwipeLayout} resource id, int the view item.
+     * return the {@link SwipeLayout} resource id, int the view item.
      * @param position
      * @return
      */

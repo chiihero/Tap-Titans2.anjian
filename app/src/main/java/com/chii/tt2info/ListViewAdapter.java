@@ -5,17 +5,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.chii.tt2info.MainActivity;
+import com.chii.tt2info.R;
 import com.chii.tt2info.pojo.Info;
-
+import com.chii.tt2info.swipe.SimpleSwipeListener;
+import com.chii.tt2info.swipe.SwipeLayout;
+import com.chii.tt2info.swipe.adapters.BaseSwipeAdapter;
 
 import java.util.List;
 
-public class ListViewAdapter extends BaseAdapter {
+public class ListViewAdapter extends BaseSwipeAdapter {
 
     private Context mContext;
     private List<Info> minfolist;
@@ -25,7 +28,41 @@ public class ListViewAdapter extends BaseAdapter {
         this.minfolist = infolist;
     }
 
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
+    }
 
+    @Override
+    public View generateView(int position, ViewGroup parent) {
+        View v = LayoutInflater.from(mContext).inflate(R.layout.listview_list, null);
+        SwipeLayout swipeLayout = (SwipeLayout)v.findViewById(getSwipeLayoutResourceId(position));
+        swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+            @Override
+            public void onOpen(SwipeLayout layout) {
+
+            }
+        });
+
+        v.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, "click delete", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return v;
+    }
+
+    @Override
+    public void fillValues(int position, View convertView) {
+        TextView tpos = (TextView)convertView.findViewById(R.id.position);
+        TextView tdata = (TextView)convertView.findViewById(R.id.text_data);
+
+        tpos.setText(String.valueOf(position + 1));
+        String title = minfolist.get(position).getLayerSet().toString();
+        Log.d(MainActivity.TAG, "fillValues: "+title);
+        tdata.setText(title);
+    }
 
     @Override
     public int getCount() {
@@ -40,22 +77,5 @@ public class ListViewAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView ==null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.listview_test,null);
-
-        }
-
-        TextView tpos = ViewHolder.get(convertView,R.id.position);
-        TextView tdata = ViewHolder.get(convertView,R.id.text_data);
-//
-        tpos.setText(String.valueOf(position + 1));
-        String title = minfolist.get(position+1).getLayerSet().toString();
-        Log.d(MainActivity.TAG, "fillValues: "+title);
-        tdata.setText(title);
-        return convertView;
     }
 }
