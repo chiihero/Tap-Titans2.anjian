@@ -44,14 +44,7 @@ public class InfoController {
         logger.info(new Gson().toJson(infos));
         return infos;
     }
-//    @PostMapping("/insert")
-//    public void insert(@ModelAttribute("username") String username,@ModelAttribute("layerset") int layerset){
-//        Info info =new Info();
-//        info.setUsername(username);
-//        info.setLayerSet(layerset);
-//        info.setTime(new Date());
-//        infoService.insertInfo(info);
-//    }
+
     @PostMapping("/insertinfo")
     public void insertinfo(@RequestBody String json){
 //        logger.info(json);

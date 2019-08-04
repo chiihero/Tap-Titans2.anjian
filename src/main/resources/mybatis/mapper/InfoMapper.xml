@@ -7,7 +7,7 @@
             <arg column="layer_set" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="update_all" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="update_mini" javaType="java.lang.Integer" jdbcType="INTEGER"/>
-            <arg column="time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
             <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR"/>
         </constructor>
     </resultMap>

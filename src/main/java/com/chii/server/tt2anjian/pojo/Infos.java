@@ -1,6 +1,5 @@
 package com.chii.server.tt2anjian.pojo;
 
-import org.springframework.stereotype.Component;
 
 public class Infos {
     private Integer iid;

@@ -14,10 +14,10 @@ plugins {
 }
 apply plugin: 'io.spring.dependency-management'
 //引入 mybatis-generator 插件
-apply plugin: "com.arenagod.gradle.MybatisGenerator"
+apply plugin: "com.arenagod.gradle.MybatisGenerator" 
 
 group = 'com.chii.server'
-version = '0.0.5-SNAPSHOT'
+version = '0.0.6-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {

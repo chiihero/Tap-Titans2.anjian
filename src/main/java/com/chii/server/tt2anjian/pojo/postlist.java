@@ -1,5 +1,6 @@
 package com.chii.server.tt2anjian.pojo;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class postlist {
 
     private Integer updateMini;
 
-    private Date time;
+    private Timestamp time;
 
     private String username;
 
@@ -20,7 +21,7 @@ public class postlist {
 
     private List<Infos> infos;
 
-    public postlist(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Date time, String username,String passwd, List<Infos> infos) {
+    public postlist(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Timestamp time, String username,String passwd, List<Infos> infos) {
         this.mid = mid;
         this.layerSet = layerSet;
         this.updateAll = updateAll;
@@ -67,11 +68,11 @@ public class postlist {
         this.updateMini = updateMini;
     }
 
-    public Date getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 

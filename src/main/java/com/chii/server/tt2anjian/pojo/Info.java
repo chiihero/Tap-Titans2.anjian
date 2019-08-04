@@ -1,5 +1,6 @@
 package com.chii.server.tt2anjian.pojo;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Info {
@@ -11,11 +12,11 @@ public class Info {
 
     private Integer updateMini;
 
-    private Date time;
+    private Timestamp time;
 
     private String username;
 
-    public Info(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Date time, String username) {
+    public Info(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Timestamp time, String username) {
         this.mid = mid;
         this.layerSet = layerSet;
         this.updateAll = updateAll;
@@ -60,11 +61,11 @@ public class Info {
         this.updateMini = updateMini;
     }
 
-    public Date getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 
