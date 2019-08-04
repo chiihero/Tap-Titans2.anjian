@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.chii.tt2info.adapter.ListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
@@ -30,6 +31,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -98,10 +100,9 @@ public class MainActivity extends AppCompatActivity
                 Type type = new TypeToken<List<Info>>() {
                 }.getType();
                 List<Info> list = gson.fromJson(jsonObject, type);
+                Collections.reverse(list);//将list逆序
                 infoList.addAll(list);
                 Log.d(TAG, "ResponseResult: " + infoList.get(0).getTime());
-                Log.d(TAG, "ResponseResult2: " + infoList.get(0).getTimestamp());
-
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -122,7 +123,6 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(context, "hello"+position, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.putExtra("mid", infoList.get(position).getMid());
-
                 intent.setClass(MainActivity.this, InfosActivity.class);
                 MainActivity.this.startActivity(intent);
             }
@@ -140,6 +140,8 @@ public class MainActivity extends AppCompatActivity
 
     @OnClick(R.id.fab)
     public void fabClick(View view) {
+        infoList.clear();
+        initDate();
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }

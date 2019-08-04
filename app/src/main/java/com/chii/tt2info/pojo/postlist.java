@@ -1,10 +1,15 @@
 package com.chii.tt2info.pojo;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 public class postlist {
     private Integer mid;
+
+    private String title;
+
+    private String notes;
 
     private Integer layerSet;
 
@@ -12,7 +17,7 @@ public class postlist {
 
     private Integer updateMini;
 
-    private Date time;
+    private Timestamp time;
 
     private String username;
 
@@ -20,8 +25,10 @@ public class postlist {
 
     private List<Infos> infos;
 
-    public postlist(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Date time, String username,String passwd, List<Infos> infos) {
+    public postlist(Integer mid, String title, String notes, Integer layerSet, Integer updateAll, Integer updateMini, Timestamp time, String username,String passwd, List<Infos> infos) {
         this.mid = mid;
+        this.title = title;
+        this.notes = notes;
         this.layerSet = layerSet;
         this.updateAll = updateAll;
         this.updateMini = updateMini;
@@ -41,6 +48,22 @@ public class postlist {
 
     public void setMid(Integer mid) {
         this.mid = mid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title == null ? null : title.trim();
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
     }
 
     public Integer getLayerSet() {
@@ -67,11 +90,11 @@ public class postlist {
         this.updateMini = updateMini;
     }
 
-    public Date getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 

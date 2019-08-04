@@ -8,9 +8,9 @@ import android.util.Log;
 import android.widget.ListView;
 
 import com.android.volley.VolleyError;
+import com.chii.tt2info.adapter.InfosListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
-import com.chii.tt2info.pojo.Info;
 import com.chii.tt2info.pojo.Infos;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

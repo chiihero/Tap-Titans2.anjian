@@ -1,4 +1,4 @@
-package com.chii.tt2info;
+package com.chii.tt2info.adapter;
 
 import android.util.SparseArray;
 import android.view.View;

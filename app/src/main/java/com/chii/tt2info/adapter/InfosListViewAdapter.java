@@ -1,4 +1,4 @@
-package com.chii.tt2info;
+package com.chii.tt2info.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.chii.tt2info.pojo.Info;
+import com.chii.tt2info.R;
 import com.chii.tt2info.pojo.Infos;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class InfosListViewAdapter extends BaseAdapter {
     private Context mContext;
     private List<Infos> minfoslist;
 
-    InfosListViewAdapter(Context mContext, List<Infos> infoslist ) {
+    public InfosListViewAdapter(Context mContext, List<Infos> infoslist) {
         this.mContext = mContext;
         this.minfoslist = infoslist;
     }
