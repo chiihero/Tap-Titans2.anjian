@@ -1,10 +1,13 @@
 package com.chii.server.tt2anjian.pojo;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 public class Info {
     private Integer mid;
+
+    private String title;
+
+    private String notes;
 
     private Integer layerSet;
 
@@ -12,12 +15,14 @@ public class Info {
 
     private Integer updateMini;
 
-    private Timestamp time;
+    private Date time;
 
     private String username;
 
-    public Info(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Timestamp time, String username) {
+    public Info(Integer mid, String title, String notes, Integer layerSet, Integer updateAll, Integer updateMini, Date time, String username) {
         this.mid = mid;
+        this.title = title;
+        this.notes = notes;
         this.layerSet = layerSet;
         this.updateAll = updateAll;
         this.updateMini = updateMini;
@@ -35,6 +40,22 @@ public class Info {
 
     public void setMid(Integer mid) {
         this.mid = mid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title == null ? null : title.trim();
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
     }
 
     public Integer getLayerSet() {
@@ -61,11 +82,11 @@ public class Info {
         this.updateMini = updateMini;
     }
 
-    public Timestamp getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 

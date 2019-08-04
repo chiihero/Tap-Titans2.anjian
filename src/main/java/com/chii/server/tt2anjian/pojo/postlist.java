@@ -7,6 +7,10 @@ import java.util.List;
 public class postlist {
     private Integer mid;
 
+    private String title;
+
+    private String notes;
+
     private Integer layerSet;
 
     private Integer updateAll;
@@ -21,8 +25,10 @@ public class postlist {
 
     private List<Infos> infos;
 
-    public postlist(Integer mid, Integer layerSet, Integer updateAll, Integer updateMini, Timestamp time, String username,String passwd, List<Infos> infos) {
+    public postlist(Integer mid, String title, String notes, Integer layerSet, Integer updateAll, Integer updateMini, Timestamp time, String username,String passwd, List<Infos> infos) {
         this.mid = mid;
+        this.title = title;
+        this.notes = notes;
         this.layerSet = layerSet;
         this.updateAll = updateAll;
         this.updateMini = updateMini;
@@ -42,6 +48,22 @@ public class postlist {
 
     public void setMid(Integer mid) {
         this.mid = mid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title == null ? null : title.trim();
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
     }
 
     public Integer getLayerSet() {

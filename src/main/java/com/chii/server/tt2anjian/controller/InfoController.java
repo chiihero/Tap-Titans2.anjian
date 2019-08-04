@@ -34,9 +34,9 @@ public class InfoController {
 
     @GetMapping("/getinfolist")
     public List<Info> getInfoByUsername(@ModelAttribute("username") String username) {
-        List<Info> infos = infoService.getInfoInfoByUsername(username);
-        logger.info(new Gson().toJson(infos));
-       return infos;
+        List<Info> infoList = infoService.getInfoInfoByUsername(username);
+        logger.info(new Gson().toJson(infoList));
+       return infoList;
     }
     @GetMapping("/getinfos")
     public List<Infos> getInfosByMid(@ModelAttribute("mid") int mid) {
@@ -62,7 +62,8 @@ public class InfoController {
         } else {
             return ;
         }
-
+        info.setTitle(postlist.getTitle());
+        info.setNotes(postlist.getNotes());
         info.setUsername(postlist.getUsername());
         info.setLayerSet(postlist.getLayerSet());
         info.setUpdateAll(postlist.getUpdateAll());
