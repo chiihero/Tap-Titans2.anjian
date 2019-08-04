@@ -63,7 +63,9 @@ public class Info {
     public Date getTime() {
         return time;
     }
-
+    public Long getTimestamp() {
+        return time.getTime();
+    }
     public void setTime(Date time) {
         this.time = time;
     }

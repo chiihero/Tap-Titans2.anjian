@@ -5,17 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.chii.tt2info.pojo.Info;
 import com.chii.tt2info.pojo.Infos;
 
 import java.util.List;
 
-public class InofsListViewAdapter extends BaseAdapter {
+public class InfosListViewAdapter extends BaseAdapter {
     private Context mContext;
     private List<Infos> minfoslist;
 
-    InofsListViewAdapter(Context mContext, List<Infos> infoslist ) {
+    InfosListViewAdapter(Context mContext, List<Infos> infoslist ) {
         this.mContext = mContext;
         this.minfoslist = infoslist;
     }
@@ -40,8 +41,15 @@ public class InofsListViewAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.listview_infos, null);
         }
+        String pos = String.valueOf(position + 1) + ".";
+        String layer = minfoslist.get(position).getLayer();
+        String usetime = minfoslist.get(position).getUsetime();
 
+        TextView tpos = ViewHolder.get(convertView, R.id.infos_position);
+        TextView tdata = ViewHolder.get(convertView, R.id.infos_data);
 
-        return null;
+        tpos.setText(pos);
+        tdata.setText(layer+" "+usetime);
+        return convertView;
     }
 }

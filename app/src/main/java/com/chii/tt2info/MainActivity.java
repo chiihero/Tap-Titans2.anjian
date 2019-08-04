@@ -1,6 +1,7 @@
 package com.chii.tt2info;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -51,10 +52,10 @@ public class MainActivity extends AppCompatActivity
     private ListViewAdapter mAdapter;
     private Context context = this;
     private Gson gson = new Gson();
-    String infolist_url = "http://www.chiinas.club:8088/info/getinfolist";
-    String infos_url = "http://www.chiinas.club:8088/info/getinfos";
-    List<Info> infolist = new ArrayList<>();
-    public static String TAG = "chiitag";
+    String infolist_url = "http://192.168.2.117:8088/info/getinfolist";
+    //    String infolist_url = "http://www.chiinas.club:8088/info/getinfolist";
+    List<Info> infoList = new ArrayList<>();
+    public static String TAG = "MainActivitytag";
     MyVolley myVolley;
 
     @Override
@@ -81,8 +82,9 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(context, "hello", Toast.LENGTH_LONG).show();
             }
         });
-        initDate();
         initList();
+        initDate();
+
     }
 
     private void initDate() {
@@ -96,8 +98,10 @@ public class MainActivity extends AppCompatActivity
                 Type type = new TypeToken<List<Info>>() {
                 }.getType();
                 List<Info> list = gson.fromJson(jsonObject, type);
-                infolist.addAll(list);
-                Log.d(TAG, "ResponseResult: " + infolist.get(0).getUsername());
+                infoList.addAll(list);
+                Log.d(TAG, "ResponseResult: " + infoList.get(0).getTime());
+                Log.d(TAG, "ResponseResult2: " + infoList.get(0).getTimestamp());
+
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -110,13 +114,17 @@ public class MainActivity extends AppCompatActivity
 
     public void initList() {
         Log.d(TAG, "initList: test");
-        mAdapter = new ListViewAdapter(this, infolist);
+        mAdapter = new ListViewAdapter(this, infoList);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(context, "hello"+position, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                intent.putExtra("mid", infoList.get(position).getMid());
 
+                intent.setClass(MainActivity.this, InfosActivity.class);
+                MainActivity.this.startActivity(intent);
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
