@@ -36,8 +36,9 @@ public class InfoController {
     public List<Info> getInfoByUsername(@ModelAttribute("username") String username) {
         List<Info> infoList = infoService.getInfoInfoByUsername(username);
         logger.info(new Gson().toJson(infoList));
-       return infoList;
+        return infoList;
     }
+
     @GetMapping("/getinfos")
     public List<Infos> getInfosByMid(@ModelAttribute("mid") int mid) {
         List<Infos> infos = infosService.getInfosByMid(mid);
@@ -46,10 +47,10 @@ public class InfoController {
     }
 
     @PostMapping("/insertinfo")
-    public void insertinfo(@RequestBody String json){
+    public void insertinfo(@RequestBody String json) {
 //        logger.info(json);
         Gson gson = new Gson();
-        Info info =new Info();
+        Info info = new Info();
         Infos infos = new Infos();
 
         postlist postlist = gson.fromJson(json, postlist.class);
@@ -60,7 +61,7 @@ public class InfoController {
         if (user != null && user.getPasswd().equals(postlist.getPasswd())) {
             logger.info("login success");
         } else {
-            return ;
+            return;
         }
         info.setTitle(postlist.getTitle());
         info.setNotes(postlist.getNotes());
@@ -69,8 +70,8 @@ public class InfoController {
         info.setUpdateAll(postlist.getUpdateAll());
         info.setUpdateMini(postlist.getUpdateMini());
         infoService.insertInfo(info);
-        for (postlist.Infos infosone: postlist.getInfos()) {
-            if (info.getMid()==null)break;
+        for (postlist.Infos infosone : postlist.getInfos()) {
+            if (info.getMid() == null) break;
             infos.setMid(info.getMid());
             infos.setLayer(infosone.getLayer());
             infos.setUsetime(infosone.getUsetime());
@@ -79,7 +80,7 @@ public class InfoController {
     }
 
     @PostMapping("/delete")
-    public void delete(@ModelAttribute("mid") int mid){
+    public void delete(@ModelAttribute("mid") int mid) {
         infoService.deleteInfo(mid);
     }
 }
