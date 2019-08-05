@@ -25,6 +25,7 @@ public class MyVolley {
     private static String server_rul= "http://www.chiinas.club:8088";
     public static String infolist_url = server_rul+"/info/getinfolist";
     public static String infos_url = server_rul+"/info/getinfos";
+    public static String login_url = server_rul+"/login";
 
 
     private static RequestQueue requestQueue = null;

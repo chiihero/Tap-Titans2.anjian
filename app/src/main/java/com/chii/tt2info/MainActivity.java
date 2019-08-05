@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -26,6 +27,7 @@ import com.chii.tt2info.adapter.ListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
+import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -53,13 +55,16 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     @BindView(R.id.mainlistview)
     ListView listView;
+
+    TextView signinState;
+    ImageView headImage;
     private ListViewAdapter mAdapter;
     private Context context = this;
     private Gson gson = new Gson();
+    private Boolean isSignin=false;
     List<Info> infoList = new ArrayList<>();
     public static String TAG = "MainActivitytag";
     MyVolley myVolley;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,15 +77,20 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        myVolley = MyVolley.getMyVolley(MainActivity.this);
 
         View headerView = navigationView.getHeaderView(0);
-
-        ImageView imageView = headerView.findViewById(R.id.imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        signinState = headerView.findViewById(R.id.signinState);
+        headImage = headerView.findViewById(R.id.headImage);
+        headImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//                startActivity(intent
+                if (isSignin){
+                    SPUtil.remove(MainActivity.this,"username");
+                    SPUtil.remove(MainActivity.this,"passwd");
+                }
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
                 Toast.makeText(context, "hello", Toast.LENGTH_LONG).show();
             }
         });
@@ -90,11 +100,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initDate() {
-        myVolley = MyVolley.getMyVolley(MainActivity.this);
         HashMap<String, String> map = new HashMap<String, String>();
-        map.put("username", "chii");
-        myVolley.Get(infolist_url, map, new volleyInterface() {
+        String saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
+        String savepasswd = (String) SPUtil.get(MainActivity.this, "passwd", "");
+        Log.d(TAG, "onCreate: " + saveusername + " " + savepasswd);
+        if ((!savepasswd.equals("")) && (!saveusername.equals(""))) {
+            map.put("username", saveusername);
+            logged();//已经登录处理
+            getinfoList(map);
+        }
 
+    }
+    private void getinfoList(HashMap<String, String> map){
+        myVolley.Get(infolist_url, map, new volleyInterface() {
             @Override
             public void ResponseResult(String jsonObject) {
                 Type type = new TypeToken<List<Info>>() {
@@ -105,12 +123,18 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "ResponseResult: " + infoList.get(0).getTime());
                 mAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void ResponError(VolleyError volleyError) {
                 Log.d(TAG, "GET请求失败" + volleyError.toString());
             }
         });
+    }
+
+
+    private void logged() {
+        signinState.setText("点击头像退出登录");
+        headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_check_black),null));
+        isSignin = true;
     }
 
     public void initList() {
@@ -142,7 +166,7 @@ public class MainActivity extends AppCompatActivity
     public void fabClick(View view) {
         infoList.clear();
         initDate();
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        Snackbar.make(view, "正在更新数据ing", Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
     }
 
