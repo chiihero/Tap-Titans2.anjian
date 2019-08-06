@@ -21,11 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 public class MyVolley {
-//    private static String server_rul= "http://192.168.2.117:8088";
-    private static String server_rul= "http://www.chiinas.club:8088";
+    private static String server_rul= "http://192.168.2.117:8088";
+//    private static String server_rul= "http://www.chiinas.club:8088";
     public static String infolist_url = server_rul+"/info/getinfolist";
     public static String infos_url = server_rul+"/info/getinfos";
-    public static String login_url = server_rul+"/login";
+    public static String signin_url = server_rul+"/signin";
+    public static String register_url = server_rul+"/register";
 
 
     private static RequestQueue requestQueue = null;

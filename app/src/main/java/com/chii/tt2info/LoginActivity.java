@@ -1,8 +1,13 @@
 package com.chii.tt2info;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +25,8 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.chii.tt2info.connes.MyVolley.login_url;
+import static com.chii.tt2info.MainActivity.REQUESTCODE_FROM_REGISTER;
+import static com.chii.tt2info.connes.MyVolley.signin_url;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText usernameEditText;
     @BindView(R.id.password)
     EditText passwordEditText;
+    @BindView(R.id.toregister)
+    Button toregisterButton;
     @BindView(R.id.login)
     Button loginButton;
     @BindView(R.id.loading)
@@ -38,13 +46,19 @@ public class LoginActivity extends AppCompatActivity {
     public static String TAG = "LoginActivity";
     private String username, passwd;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         myVolley = MyVolley.getMyVolley(LoginActivity.this);
-
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         String saveusername = (String) SPUtil.get(LoginActivity.this, "username", "");
         String savepasswd = (String) SPUtil.get(LoginActivity.this, "passwd", "");
@@ -62,6 +76,13 @@ public class LoginActivity extends AppCompatActivity {
                 initDate(username, passwd);
             }
         });
+        toregisterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivityForResult(intent,REQUESTCODE_FROM_REGISTER);
+            }
+        });
 
     }
 
@@ -69,17 +90,24 @@ public class LoginActivity extends AppCompatActivity {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("username", username);
         map.put("passwd", passwd);
-        myVolley.Post(login_url, map, new volleyInterface() {
+        myVolley.Post(signin_url, map, new volleyInterface() {
             @Override
             public void ResponseResult(String jsonObject) {
                 Log.d(TAG, "ResponseResult: " + jsonObject);
                 if (jsonObject.equals("")) {
                     Log.d(TAG, "登录失败");
+                    loadingProgressBar.setVisibility(View.GONE);
+
                 } else {
                     Log.d(TAG, "登录成功");
+
                     SPUtil.put(LoginActivity.this, "username", username);
                     SPUtil.put(LoginActivity.this, "passwd", passwd);
                     finish();
+                    Intent intent = new Intent();
+                    intent.putExtra("username", username);
+                    intent.putExtra("passwd", passwd);
+                    setResult(Activity.RESULT_OK,intent);
                 }
             }
 
@@ -90,5 +118,43 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 当otherActivity中返回数据的时候，会响应此方法
+        // requestCode和resultCode必须与请求startActivityForResult()和返回setResult()的时候传入的值一致。
+        Log.d(TAG, "onActivityResult: " + requestCode + "  " + resultCode);
+        Log.d(TAG, "RESULT_OK "+Activity.RESULT_OK);
 
+        switch (requestCode) {
+            case REQUESTCODE_FROM_REGISTER:
+                if (resultCode == Activity.RESULT_OK){
+                    Log.d(TAG, "RegisterActivity.REQUESTCODE_FROM_REGISTER ");
+                    String username = data.getStringExtra("username");
+                    String passwd = data.getStringExtra("passwd");
+
+                    Log.d(TAG, "onCreate: " + username + " " + passwd);
+                    if ((!passwd.equals("")) && (!username.equals(""))) {
+                        initDate(username, passwd);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

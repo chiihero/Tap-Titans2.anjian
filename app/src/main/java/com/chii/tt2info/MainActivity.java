@@ -1,10 +1,13 @@
 package com.chii.tt2info;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
 import static com.chii.tt2info.connes.MyVolley.infolist_url;
 
 public class MainActivity extends AppCompatActivity
@@ -61,10 +65,14 @@ public class MainActivity extends AppCompatActivity
     private ListViewAdapter mAdapter;
     private Context context = this;
     private Gson gson = new Gson();
-    private Boolean isSignin=false;
+    private Boolean isSignin = false;
     List<Info> infoList = new ArrayList<>();
     public static String TAG = "MainActivitytag";
     MyVolley myVolley;
+    public final static int REQUESTCODE_FROM_LOGIN = 1;
+    public final static int REQUESTCODE_FROM_REGISTER = 2;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,12 +93,13 @@ public class MainActivity extends AppCompatActivity
         headImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSignin){
-                    SPUtil.remove(MainActivity.this,"username");
-                    SPUtil.remove(MainActivity.this,"passwd");
+                if (isSignin) {
+                    SPUtil.remove(MainActivity.this, "username");
+                    SPUtil.remove(MainActivity.this, "passwd");
                 }
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUESTCODE_FROM_LOGIN);
+                logged(false);
                 Toast.makeText(context, "hello", Toast.LENGTH_LONG).show();
             }
         });
@@ -99,19 +108,20 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void initDate() {
+    public void initDate() {
         HashMap<String, String> map = new HashMap<String, String>();
         String saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
         String savepasswd = (String) SPUtil.get(MainActivity.this, "passwd", "");
         Log.d(TAG, "onCreate: " + saveusername + " " + savepasswd);
         if ((!savepasswd.equals("")) && (!saveusername.equals(""))) {
             map.put("username", saveusername);
-            logged();//已经登录处理
+            logged(true);//已经登录处理
             getinfoList(map);
         }
 
     }
-    private void getinfoList(HashMap<String, String> map){
+
+    private void getinfoList(HashMap<String, String> map) {
         myVolley.Get(infolist_url, map, new volleyInterface() {
             @Override
             public void ResponseResult(String jsonObject) {
@@ -120,9 +130,9 @@ public class MainActivity extends AppCompatActivity
                 List<Info> list = gson.fromJson(jsonObject, type);
                 Collections.reverse(list);//将list逆序
                 infoList.addAll(list);
-                Log.d(TAG, "ResponseResult: " + infoList.get(0).getTime());
                 mAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void ResponError(VolleyError volleyError) {
                 Log.d(TAG, "GET请求失败" + volleyError.toString());
@@ -131,10 +141,17 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void logged() {
-        signinState.setText("点击头像退出登录");
-        headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_check_black),null));
-        isSignin = true;
+    private void logged(Boolean flag) {
+        if (flag) {
+            signinState.setText("点击√退出登录");
+            headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_check_black),
+                    null));
+        } else {
+            signinState.setText("点击X登录");
+            headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_close_black),
+                    null));
+        }
+        isSignin = flag;
     }
 
     public void initList() {
@@ -144,7 +161,7 @@ public class MainActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, "hello"+position, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "hello" + position, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.putExtra("mid", infoList.get(position).getMid());
                 intent.setClass(MainActivity.this, InfosActivity.class);
@@ -199,7 +216,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -210,13 +226,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
+
+
+        } else if (id == R.id.nav_daynight) {
+            MyApplication.updateNightMode(true);
+            // 刷新界面
+            finish();
+            startActivity(new Intent(this, this.getClass()));
+            overridePendingTransition(0, 0);
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
         } else if (id == R.id.nav_settings) {
 
 
@@ -227,5 +245,26 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 当otherActivity中返回数据的时候，会响应此方法
+        // requestCode和resultCode必须与请求startActivityForResult()和返回setResult()的时候传入的值一致。
+        Log.d(TAG, "onActivityResult: " + requestCode + "  " + resultCode);
+        Log.d(TAG, "RESULT_OK "+Activity.RESULT_OK);
+
+        switch (requestCode) {
+            case REQUESTCODE_FROM_LOGIN:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.d(TAG, "LoginActivity.RESULT_CODE ");
+                    infoList.clear();
+                    initDate();
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
 
 }

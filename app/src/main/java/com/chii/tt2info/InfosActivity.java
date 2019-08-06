@@ -2,9 +2,11 @@ package com.chii.tt2info;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.android.volley.VolleyError;
@@ -41,6 +43,14 @@ public class InfosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infos);
         ButterKnife.bind(this);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+
         Intent intent = getIntent();
         int mid = intent.getIntExtra("mid",0);
         Log.d(TAG, "onCreate: "+mid);
@@ -76,7 +86,17 @@ public class InfosActivity extends AppCompatActivity {
         mAdapter = new InfosListViewAdapter(this,infosList);
         listView.setAdapter(mAdapter);
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
 
-
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
