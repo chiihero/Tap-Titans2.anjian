@@ -93,9 +93,8 @@ public class MainActivity extends AppCompatActivity
         headImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSignin) {
-                    SPUtil.remove(MainActivity.this, "username");
-                    SPUtil.remove(MainActivity.this, "passwd");
+                if (isSignin != null && isSignin) {
+                    SPUtil.put(MainActivity.this, "isSignin", false);
                 }
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivityForResult(intent, REQUESTCODE_FROM_LOGIN);
@@ -112,8 +111,11 @@ public class MainActivity extends AppCompatActivity
         HashMap<String, String> map = new HashMap<String, String>();
         String saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
         String savepasswd = (String) SPUtil.get(MainActivity.this, "passwd", "");
-        Log.d(TAG, "onCreate: " + saveusername + " " + savepasswd);
-        if ((!savepasswd.equals("")) && (!saveusername.equals(""))) {
+        SPUtil.put(MainActivity.this, "isSignin", true);
+        isSignin = (Boolean) SPUtil.get(MainActivity.this, "isSignin", Boolean.FALSE);
+
+        Log.d(TAG, "initDate: " + saveusername + " " + savepasswd + " " + isSignin);
+        if (isSignin != null && isSignin) {
             map.put("username", saveusername);
             logged(true);//已经登录处理
             getinfoList(map);
@@ -151,7 +153,6 @@ public class MainActivity extends AppCompatActivity
             headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_close_black),
                     null));
         }
-        isSignin = flag;
     }
 
     public void initList() {
@@ -227,16 +228,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
 
-
         } else if (id == R.id.nav_daynight) {
-            MyApplication.updateNightMode(true);
-            // 刷新界面
-            finish();
-            startActivity(new Intent(this, this.getClass()));
-            overridePendingTransition(0, 0);
-            // Handle the camera action
-        } else if (id == R.id.nav_settings) {
 
+        } else if (id == R.id.nav_settings) {
 
         }
 
@@ -251,7 +245,7 @@ public class MainActivity extends AppCompatActivity
         // 当otherActivity中返回数据的时候，会响应此方法
         // requestCode和resultCode必须与请求startActivityForResult()和返回setResult()的时候传入的值一致。
         Log.d(TAG, "onActivityResult: " + requestCode + "  " + resultCode);
-        Log.d(TAG, "RESULT_OK "+Activity.RESULT_OK);
+        Log.d(TAG, "RESULT_OK " + Activity.RESULT_OK);
 
         switch (requestCode) {
             case REQUESTCODE_FROM_LOGIN:

@@ -45,8 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     User user = new User();
     public static String TAG = "LoginActivity";
     private String username, passwd;
-
-
+    Boolean isSignin = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,16 +54,20 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         myVolley = MyVolley.getMyVolley(LoginActivity.this);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         String saveusername = (String) SPUtil.get(LoginActivity.this, "username", "");
         String savepasswd = (String) SPUtil.get(LoginActivity.this, "passwd", "");
+        isSignin = (Boolean) SPUtil.get(LoginActivity.this, "isSignin", Boolean.FALSE);
         Log.d(TAG, "onCreate: " + saveusername + " " + savepasswd);
-        if ((!savepasswd.equals("")) && (!saveusername.equals(""))) {
+        if (isSignin != null && isSignin) {
             initDate(saveusername, savepasswd);
+        } else if (saveusername != null && savepasswd != null) {
+            usernameEditText.setText(saveusername);
+            passwordEditText.setText(savepasswd);
         }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +82,8 @@ public class LoginActivity extends AppCompatActivity {
         toregisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
-                startActivityForResult(intent,REQUESTCODE_FROM_REGISTER);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivityForResult(intent, REQUESTCODE_FROM_REGISTER);
             }
         });
 
@@ -100,14 +103,15 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
                     Log.d(TAG, "登录成功");
-
+                    SPUtil.put(LoginActivity.this, "isSignin", true);
                     SPUtil.put(LoginActivity.this, "username", username);
                     SPUtil.put(LoginActivity.this, "passwd", passwd);
-                    finish();
                     Intent intent = new Intent();
                     intent.putExtra("username", username);
                     intent.putExtra("passwd", passwd);
-                    setResult(Activity.RESULT_OK,intent);
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+
                 }
             }
 
@@ -124,11 +128,11 @@ public class LoginActivity extends AppCompatActivity {
         // 当otherActivity中返回数据的时候，会响应此方法
         // requestCode和resultCode必须与请求startActivityForResult()和返回setResult()的时候传入的值一致。
         Log.d(TAG, "onActivityResult: " + requestCode + "  " + resultCode);
-        Log.d(TAG, "RESULT_OK "+Activity.RESULT_OK);
+        Log.d(TAG, "RESULT_OK " + Activity.RESULT_OK);
 
         switch (requestCode) {
             case REQUESTCODE_FROM_REGISTER:
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     Log.d(TAG, "RegisterActivity.REQUESTCODE_FROM_REGISTER ");
                     String username = data.getStringExtra("username");
                     String passwd = data.getStringExtra("passwd");
@@ -144,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
