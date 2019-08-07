@@ -38,8 +38,8 @@ public class UserController {
         return user;
     }
 
-    @PostMapping("/login")
-    public User login(@ModelAttribute("username") String username, @ModelAttribute("passwd") String passwd) {
+    @PostMapping("/signin")
+    public User signin(@ModelAttribute("username") String username, @ModelAttribute("passwd") String passwd) {
         User user = userService.getUserInfoByUsername(username);
         if (user != null && user.getPasswd().equals(passwd)) {
             logger.info("login success");
@@ -49,17 +49,18 @@ public class UserController {
         }
     }
 
-    @PostMapping("/signin")
-    public String signin(@ModelAttribute("username") String username, @ModelAttribute("passwd") String passwd) {
+    @PostMapping("/register")
+    public String register(@ModelAttribute("username") String username, @ModelAttribute("email") String email, @ModelAttribute("passwd") String passwd) {
         User user = userService.getUserInfoByUsername(username);
         if (user != null) {
-            return "Your username has been registered";
+            return "false";
         } else {
             User newuser = new User();
             newuser.setUsername(username);
+            newuser.setMail(email);
             newuser.setPasswd(passwd);
             userService.insertUserInfo(newuser);
-            return "Your username registered successfully";
+            return "true";
         }
     }
 }

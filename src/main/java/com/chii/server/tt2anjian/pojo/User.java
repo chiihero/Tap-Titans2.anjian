@@ -1,15 +1,16 @@
 package com.chii.server.tt2anjian.pojo;
 
-import org.springframework.stereotype.Component;
-
 public class User {
     private String username;
 
     private String passwd;
 
-    public User(String username, String passwd) {
+    private String mail;
+
+    public User(String username, String passwd, String mail) {
         this.username = username;
         this.passwd = passwd;
+        this.mail = mail;
     }
 
     public User() {
@@ -30,5 +31,13 @@ public class User {
 
     public void setPasswd(String passwd) {
         this.passwd = passwd == null ? null : passwd.trim();
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail == null ? null : mail.trim();
     }
 }
