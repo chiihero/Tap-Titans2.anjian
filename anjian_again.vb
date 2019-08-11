@@ -1113,7 +1113,8 @@ Function boss
         If ocrchar_layer <= layer_last Then 
             boss_num = boss_num + 1
             If boss_num > boss_maxnum Then 
-    			Thread.Stop(th_tap)
+    			Thread.SetShareVar "istap", False
+    			Thread.SetShareVar "use_flag", False
                 TracePrint "boss进入次数过多进行蜕变"
                 Call Navbar_main("hero",2)//蜕变
             End If
