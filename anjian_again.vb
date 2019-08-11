@@ -1,4 +1,4 @@
-//2019年8月5日00:49:38
+//2019年8月11日16:18:42
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -542,11 +542,14 @@ Function kill()
         End If
         //防止进入boss模式过频繁导致蜕变
         If TickCount() - boss_task > 10000 Then 
+        	Thread.SetShareVar "istap", False
             Call boss()//启动boss
-            boss_task =TickCount()
+            boss_task = TickCount()
+            Thread.SetShareVar "istap", True
         End If
         Call skills()//技能
     Next
+    Thread.SetShareVar "istap", False
     Thread.SetShareVar "use_flag", False
     Thread.Stop(th_tap)
 End Function
@@ -1110,6 +1113,7 @@ Function boss
         If ocrchar_layer <= layer_last Then 
             boss_num = boss_num + 1
             If boss_num > boss_maxnum Then 
+    			Thread.Stop(th_tap)
                 TracePrint "boss进入次数过多进行蜕变"
                 Call Navbar_main("hero",2)//蜕变
             End If
