@@ -1,4 +1,4 @@
-//2019年7月30日19:19:20
+//2019年8月5日00:49:38
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -447,7 +447,7 @@ Function check_status()
     //定时重启
     If  TickCount()- reboot_game >reboot_time  And reboot_time > 0 Then 
         TracePrint "定时重启"
-        Call postmail("定时重启")
+//        Call postmail("定时重启")
         Call kill_app()
         GG_blue_bool = True
         reboot_game = TickCount()
@@ -460,7 +460,7 @@ Function check_status()
 
     FindPic 482,1227,548,1303,"Attachment:服务器维护.png","000000",0,0.9,intX,intY
     If intX > -1 And intY > -1 Then 
-        Call postmail("服务器维护")
+//        Call postmail("服务器维护")
         TracePrint "stop"
         EndScript
     End If
@@ -527,32 +527,54 @@ End Function
 //杀怪
 Function kill()
     TracePrint "杀怪冲关"
+    //技能延迟&点击
+    Thread.SetShareVar "istap", True
+	Thread.SetShareVar "use_flag", True 
+    Dim th_tap = Thread.Start(kill_tap)
     //单次击杀点击
     For 5
         Call close_thing()
         Call close_layer()
-        If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
+        If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575", 1) = 1 Then 
+        	Thread.SetShareVar "istap", False
             Call little_fairy()//小仙女
+            Thread.SetShareVar "istap", True
         End If
         //防止进入boss模式过频繁导致蜕变
         If TickCount() - boss_task > 10000 Then 
             Call boss()//启动boss
             boss_task =TickCount()
         End If
-        
         Call skills()//技能
-        //技能延迟&点击
-        For 18
-            Touch RndEx(260,900), RndEx(320, 1000),RndEx(30, 55)
-            Delay delay_x(RndEx(50, 100))
-            If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
-                Exit For
-            End If
-        Next
-        //点击宠物
-        Touch RndEx(635,650), RndEx(920, 930),RndEx(30, 55)
     Next
+    Thread.SetShareVar "use_flag", False
+    Thread.Stop(th_tap)
 End Function
+
+Function kill_tap()
+    Dim istap=Thread.GetShareVar("istap")
+    Dim use_flag=Thread.GetShareVar("use_flag")
+    While use_flag
+        If istap Then 
+            TracePrint "istap:",istap
+            use_flag=Thread.GetShareVar("use_flag")
+            istap=Thread.GetShareVar("istap")
+            For 10
+                Touch RndEx(260,900), RndEx(320, 1000),RndEx(30, 55)
+                Delay RndEx(50, 100)
+            Next
+            //点击帮手
+            Touch RndEx(350, 450), RndEx(920, 930), RndEx(30, 55)
+            Delay RndEx(50, 100)
+            //点击宠物
+            Touch RndEx(635, 650), RndEx(920, 930), RndEx(30, 55)
+        End If
+    	
+    Wend
+End Function
+
+
+
 //判断层数
 Function layer()
     //数字0-9
@@ -1104,11 +1126,10 @@ Function skills
     //关闭面板
     Call close_navbar()
 	//技能1-6
-    For i = 0 To 5
+    For i = 5 To 0 Step -1
     	skillerror(i) = skill_one(84+179*i, 1654, 200, skill_bool(i), skillerror(i))
     Next
-    
- 
+   
 End Function
 //单一技能点击
 Function skill_one(intX, intY,max_error, skill_true, error)
@@ -1144,8 +1165,9 @@ Function prestige
     TracePrint "蜕变"
     //发送日志
     If send_flag = 1 Then 
-        Call postmail(ocrchar_layer)
-        Call postserver(ocrchar_layer)
+//        Call postmail(ocrchar_layer)
+//        Call postserver(ocrchar_layer)
+        Call postmessage(ocrchar_layer)
         send_flag = 0
     End If
     //本人等级提升|解锁技能|英雄等级提升
@@ -1901,14 +1923,13 @@ Function swipe_down(num)
     Next
 End Function
 
-//邮箱
+//邮箱//TODEL
 Function postmail(subject)
     TracePrint "邮箱"
     If mail_username = 0 or mail_passwd = 0 or mail_tomail = 0 Then 
         TracePrint "邮箱信息不全"
         Exit Function
     End If
-    Dim error_one = 0
     Dim mail_host ="smtp.qq.com"
     Dim mail_subject = subject
     If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
@@ -1926,22 +1947,57 @@ Function postmail(subject)
         End If
     Wend
 End Function
-//日志服务器
+//日志服务器//TODEL
 Function postserver(subject)
     TracePrint "服务器"
     If username = 0 or passwd = 0  Then 
         TracePrint "账号密码错误"
         Exit Function
     End If
+//    Dim server_url ="http://139.199.11.57:8088/info/insertinfo"
     Dim server_url ="http://192.168.2.162:8088/info/insertinfo"
-    //    Dim server_url ="http://192.168.2.117:8088/info/insertinfo"
     Dim header = "Content-Type: application/json"
     If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
-        post_info = "[{""layer"":"""& s_layer_number &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info&"]"
+        post_info = "[{""layer"":"""& subject &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info&"]"
     End If
     post_info = "{""username"":""" & username & """,""passwd"":""" & passwd & """,""layerSet"":""" & layer_number_max & """,""updateAll"":""" & updateAll & """,""updateMini"":""" & updateMini & """,""infos"":" & post_info&"}"
     TracePrint post_info
     ShanHai.PostHttp(server_url,post_info,10,header)
+End Function
+//发送日志
+Function postmessage(subject)
+    Dim mail_host ="smtp.qq.com"
+    Dim mail_subject = subject
+        Dim server_url ="http://139.199.11.57:8088/info/insertinfo"
+//    Dim server_url ="http://192.168.2.162:8088/info/insertinfo"
+    Dim header = "Content-Type: application/json"
+    Dim notes="出错"
+    If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
+    	notes="正常"
+        post_info = "[{""layer"":"""& subject &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info&"]"
+        mail_info ="最终层数:"& subject &"  时间:"&DateTime.Format("%H:%M:%S") &" 使用时间:"& data_time((TickCount()-tribe_usetime)/1000) &"\n" & mail_info 
+    End If
+    post_info = "{""username"":""" & username & """,""passwd"":""" & passwd & """,""title"":""" & subject & """,""notes"":""" & notes & """,""layerSet"":""" & layer_number_max & """,""updateAll"":""" & updateAll & """,""updateMini"":""" & updateMini & """,""infos"":" & post_info&"}"
+    mail_info = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&updateAll&"\n升级次数(少):"&updateMini&"\n"& mail_info 
+	//邮箱
+    If mail_username <> 0 And mail_passwd <> 0 And mail_tomail <> 0 Then 
+        TracePrint "邮箱"
+        Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_passwd,mail_subject,mail_info,mail_tomail) 
+        TracePrint Ret
+        While Ret = False
+            Delay delay_x(500)
+            Ret = SendSimpleEmail (mail_host, mail_username, mail_passwd, mail_subject, mail_info, mail_tomail)
+            If while_over(5) Then 
+                Exit While
+            End If
+        Wend
+    End If
+    //日志服务器
+	If username<> 0 And passwd <> 0 Then 
+        TracePrint "日志服务器"
+        TracePrint post_info
+    	ShanHai.PostHttp(server_url,post_info,10,header)
+    End If
 End Function
 
 //发送内容
