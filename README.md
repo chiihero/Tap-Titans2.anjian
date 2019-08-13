@@ -71,7 +71,7 @@ ___
 3. 选择Tap Tians2<br />
 <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/源文件截图/修改器/截图5.png" width="240"><br/>
 4. 点击搜索<br />
-<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/源文件截图/修改器/截图2.png" width="240"><br/>
+<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/源文件截图/修改器/搜索2.png" width="240"><br/>
 修改魔法值：<br />
 (1).看当前魔方值和总魔法值<br />
 (2).构建成："当前魔方值~当前魔方值+1;总魔方值~总魔方值+1::5"<br />
