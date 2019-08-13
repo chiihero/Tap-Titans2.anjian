@@ -41,7 +41,6 @@ ___
 <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/3.png" width="480"><br/>
 4. 在附件部分添加层数.txt和数字.txt<<br/>
 <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/4.png" width="480"><br/>
-<br />
 5. 连接手机，保存脚本和上传脚本到手机<br />
 <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/5.png" width="480"><br/>
 6. 查看手机脚本并点开<br />
@@ -49,20 +48,20 @@ ___
 7. 游戏选项解释<br />
 关卡切换设置为开启<br />
 游戏设置语言必须为简体中文<br />
-   1. 挂机设置解释<br />
-<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/7.1.jpg" width="240"><br/>
-修改选项查看下方攻略
-其他没啥好解释，乖巧<br />
-   2. 升级蜕变设置解释<br />
-<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/7.2.jpg" width="240"><br/>
-      1. 蜕变层数选择你能蜕变最高的层数<br />
-      2. 建议勾选自动蜕变，然后设置无需修改<br />
-      3. 最下方技能勾选则使用技能（最高频率）<br />
-   3. 其他设置解释<br />
-<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/7.3.jpg" width="240"><br/>
-   7.3.1. 2点到7点停止运行值得是凌晨2点蜕变后开始停止到早上7点接受重新开始游戏<br />
-   7.3.2. 低电量停止运行是判断电量低于30%时候结束运行游戏，然后等待电量充到80%再重新开始<br />
-   7.3.3. 以上两种方式都是由定时触发home键来退出到桌面，并且防止机器睡眠<br />
+   7.1. 挂机设置解释<br />
+   <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/7.1.jpg" width="240"><br/>
+   7.1.1. 修改选项查看下方攻略<br />
+   7.1.2. 其他没啥好解释，乖巧<br />
+   7.2. 升级蜕变设置解释<br />
+   <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/7.2.jpg" width="240"><br/>
+      7.2.1. 蜕变层数选择你能蜕变最高的层数<br />
+      7.2.2. 建议勾选自动蜕变，然后设置无需修改<br />
+      7.2.3. 最下方技能勾选则使用技能（最高频率）<br />
+   7.3. 其他设置解释<br />
+   <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/7.3.jpg" width="240"><br/>
+      7.3.1. 2点到7点停止运行值得是凌晨2点蜕变后开始停止到早上7点接受重新开始游戏<br />
+      7.3.2. 低电量停止运行是判断电量低于30%时候结束运行游戏，然后等待电量充到80%再重新开始<br />
+      7.3.3. 以上两种方式都是由定时触发home键来退出到桌面，并且防止机器睡眠<br />
 
 ___
 
