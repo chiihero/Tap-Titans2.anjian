@@ -36,7 +36,7 @@ ___
 安装教程:
 1. 首先在按键精灵手机助手（电脑端）创建一个脚本<br />
 1. 将anjian.c文件中的代码复制进去<br />
-![image](https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/2.png)
+<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/2.png" width="480">
 1. 在界面部分将jiemian.c文件中的代码复制进去<br />
 ![image](https://github.com/chiihero/Tap-Titans2.anjian/blob/master/screenshot/3.png)
 1. 在附件部分添加层数.txt和数字.txt<br />
