@@ -301,10 +301,7 @@ Function main
     If tapkill_bool = True Then 
         Do
             //延迟&点击
-            For 14
-                Touch RndEx(250,830), RndEx(320, 1000),RndEx(10, 15)
-                Delay delay_x(RndEx(140, 160))
-            Next
+            Call kill()//点杀
             Delay delay_x(800)
         Loop
         Exit Function
@@ -353,17 +350,9 @@ Function main
         //电量不足关屏充电
         If electricity_bool And Sys.GetBatteryLevel() < 30 Then 
             While Sys.GetBatteryLevel() < 80
-                //        		If Device.IsLock()=False Then
-                //            		Device.Lock()
-                //        		End If
                 KeyPress "Home"
                 Delay 10000
             Wend
-            //    		For 5
-            //    			Device.Lock()
-            //    			Delay 2000
-            //    			Device.UnLock()
-            //    		Next
             While Device.IsLock()
                 Device.UnLock()
                 Delay 5000
@@ -524,15 +513,50 @@ Function update_main(update_main_flat)
     End If
 End Function
 
+
+
 //杀怪
 Function kill()
+    TracePrint "杀怪冲关"
+    //单次击杀点击
+    For 5
+        Call close_thing()
+        Call close_layer()
+        If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575",1) = 1 Then
+            Call little_fairy()//小仙女
+        End If
+        //防止进入boss模式过频繁导致蜕变
+        If TickCount() - boss_task > 10000 Then 
+            Call boss()//启动boss
+            boss_task =TickCount()
+        End If
+        
+        Call skills()//技能
+        //技能延迟&点击
+        For 18
+            Touch RndEx(260,900), RndEx(320, 1000),RndEx(30, 55)
+            Delay delay_x(RndEx(50, 100))
+            If CmpColorEx("83|1654|FFFFFF", 1) = 1 Then 
+                Exit For
+            End If
+        Next
+        //点击帮手
+        Touch RndEx(350, 450), RndEx(920, 930), RndEx(30, 55)
+        Delay RndEx(50, 100)
+        //点击宠物
+        Touch RndEx(635,650), RndEx(920, 930),RndEx(30, 55)
+    Next
+End Function
+
+//杀怪
+Function kill_new()
     TracePrint "杀怪冲关"
     //技能延迟&点击
     Thread.SetShareVar "istap", True
 	Thread.SetShareVar "use_flag", True 
     Dim th_tap = Thread.Start(kill_tap)
     //单次击杀点击
-    For 5
+    For 10
         Call close_thing()
         Call close_layer()
         If CmpColorEx("300|800|FFFFD8", 1) = 1 or CmpColorEx("309|849|D7C575", 1) = 1 Then 
@@ -548,6 +572,7 @@ Function kill()
             Thread.SetShareVar "istap", True
         End If
         Call skills()//技能
+        Delay 3000
     Next
     Thread.SetShareVar "istap", False
     Thread.SetShareVar "use_flag", False
@@ -558,10 +583,10 @@ Function kill_tap()
     Dim istap=Thread.GetShareVar("istap")
     Dim use_flag=Thread.GetShareVar("use_flag")
     While use_flag
+        TracePrint "istap:",istap
+        use_flag=Thread.GetShareVar("use_flag")
+        istap=Thread.GetShareVar("istap")
         If istap Then 
-            TracePrint "istap:",istap
-            use_flag=Thread.GetShareVar("use_flag")
-            istap=Thread.GetShareVar("istap")
             For 10
                 Touch RndEx(260,900), RndEx(320, 1000),RndEx(30, 55)
                 Delay RndEx(50, 100)
@@ -572,12 +597,75 @@ Function kill_tap()
             //点击宠物
             Touch RndEx(635, 650), RndEx(920, 930), RndEx(30, 55)
         End If
-    	
+    	Delay 500
     Wend
 End Function
 
-
-
+//主动进入boss模式
+Function boss	
+    Dim intX,intY
+    FindColor 946,72,967,97,"125DED-111111",0,1,intX,intY
+    If intX > -1 And intY > -1 Then 
+        TracePrint "主动进入boss模式"
+        Delay delay_x(50)
+        TouchDown RndEx(intX-5, intX + 5), RndEx(intY-5, intY + 5), 1
+        Delay 85
+        TouchUp 1
+        Delay delay_x(100)
+        //判断层数不变，boss进入次数过多进行蜕变
+        If ocrchar_layer <= layer_last Then 
+            boss_num = boss_num + 1
+            If boss_num > boss_maxnum Then 
+    			Thread.SetShareVar "istap", False
+    			Thread.SetShareVar "use_flag", False
+                TracePrint "boss进入次数过多进行蜕变"
+                Call Navbar_main("hero",2)//蜕变
+            End If
+        Else 
+            boss_num = 0
+            layer_last = ocrchar_layer
+        End If
+    End If
+End Function
+//技能
+Function skills
+    TracePrint "技能"
+    Dim i
+    //关闭面板
+    Call close_navbar()
+	//技能1-6
+    For i = 5 To 0 Step -1
+    	skillerror(i) = skill_one(84+179*i, 1654, 200, skill_bool(i), skillerror(i))
+    Next
+   
+End Function
+//单一技能点击
+Function skill_one(intX, intY,max_error, skill_true, error)
+    Dim MyArray
+    Dim cmpColors
+    //技能num
+    //融合字符串
+    MyArray = Array(intX,intY,"00AEFF")
+    cmpColors = Join(MyArray, "|")
+    If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
+        //		TracePrint "x="&intX&"y="&intY
+        Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
+        Delay RndEx(40, 100)
+        If CmpColorEx(cmpColors, 1) = 0 Then 
+        	TracePrint "技能没有点击到"
+        	Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
+        End If
+        error = error + 1
+        If error > max_error Then 
+            TracePrint "技能无法使用"
+            Call Navbar_main("hero",1)//升级本人与技能
+            error = 0
+        End If
+    Else 
+        error = 0
+    End If
+    skill_one = error
+End Function
 //判断层数
 Function layer()
     //数字0-9
@@ -1097,72 +1185,6 @@ Function close_navbar()
         Delay delay_x(500)
     End If
 End Function
-
-//主动进入boss模式
-Function boss	
-    Dim intX,intY
-    FindColor 946,72,967,97,"125DED-111111",0,1,intX,intY
-    If intX > -1 And intY > -1 Then 
-        TracePrint "主动进入boss模式"
-        Delay delay_x(50)
-        TouchDown RndEx(intX-5, intX + 5), RndEx(intY-5, intY + 5), 1
-        Delay 85
-        TouchUp 1
-        Delay delay_x(100)
-        //判断层数不变，boss进入次数过多进行蜕变
-        If ocrchar_layer <= layer_last Then 
-            boss_num = boss_num + 1
-            If boss_num > boss_maxnum Then 
-    			Thread.SetShareVar "istap", False
-    			Thread.SetShareVar "use_flag", False
-                TracePrint "boss进入次数过多进行蜕变"
-                Call Navbar_main("hero",2)//蜕变
-            End If
-        Else 
-            boss_num = 0
-            layer_last = ocrchar_layer
-        End If
-    End If
-End Function
-//技能
-Function skills
-    TracePrint "技能"
-    Dim i
-    //关闭面板
-    Call close_navbar()
-	//技能1-6
-    For i = 5 To 0 Step -1
-    	skillerror(i) = skill_one(84+179*i, 1654, 200, skill_bool(i), skillerror(i))
-    Next
-   
-End Function
-//单一技能点击
-Function skill_one(intX, intY,max_error, skill_true, error)
-    Dim MyArray
-    Dim cmpColors
-    //技能num
-    //融合字符串
-//    MyArray(0) = intX
-//    MyArray(1) = intY
-//    MyArray(2) = "00AEFF"
-    MyArray = Array(intX,intY,"00AEFF")
-    cmpColors = Join(MyArray, "|")
-    If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
-        //		TracePrint "x="&intX&"y="&intY
-        Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
-        Delay RndEx(40, 60)
-        error = error + 1
-        If error > max_error Then 
-            TracePrint "技能无法使用"
-            Call Navbar_main("hero",1)//升级本人与技能
-            error = 0
-        End If
-    Else 
-        error = 0
-    End If
-    skill_one = error
-End Function
-
 
 //蜕变
 Function prestige
