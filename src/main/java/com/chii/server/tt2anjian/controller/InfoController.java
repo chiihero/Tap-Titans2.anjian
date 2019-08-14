@@ -2,6 +2,7 @@ package com.chii.server.tt2anjian.controller;
 
 
 import com.chii.server.tt2anjian.Tt2anjianApplication;
+import com.chii.server.tt2anjian.Utils.SafePasswd;
 import com.chii.server.tt2anjian.pojo.Info;
 import com.chii.server.tt2anjian.pojo.Infos;
 import com.chii.server.tt2anjian.pojo.User;
@@ -58,7 +59,8 @@ public class InfoController {
 
         //验证身份
         User user = userService.getUserInfoByUsername(postlist.getUsername());
-        if (user != null && user.getPasswd().equals(postlist.getPasswd())) {
+        String passwd = SafePasswd.safe_password(postlist.getPasswd(), postlist.getUsername(), 10);
+        if (user != null && user.getPasswd().equals(passwd)) {
             logger.info("login success");
         } else {
             return;
