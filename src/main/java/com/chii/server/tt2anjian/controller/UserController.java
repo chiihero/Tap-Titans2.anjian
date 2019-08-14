@@ -21,7 +21,7 @@ public class UserController {
     private UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(Tt2anjianApplication.class);
-
+    //localhost:8088/hello
     @GetMapping("/hello")
     public String hello() {
         logger.info("hello chii"+new Date());
