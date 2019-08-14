@@ -1,4 +1,4 @@
-﻿package com.chii.server.tt2anjian.controller;
+package com.chii.server.tt2anjian.controller;
 
 
 import com.chii.server.tt2anjian.Tt2anjianApplication;
@@ -39,7 +39,7 @@ public class UserController {
         return user;
     }
 
-    //密码md5：2362bd2db97ea1335c3065db66d7ccd5
+    //密码md5：58ab0aa429cbe3e4a7ece65a4dd5cdfc
     @PostMapping("/signin")
     public User signin(@ModelAttribute("username") String username, @ModelAttribute("passwd") String passwd) {
         User user = userService.getUserInfoByUsername(username);
