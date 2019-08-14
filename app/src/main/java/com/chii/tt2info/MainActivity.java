@@ -44,7 +44,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
 import static com.chii.tt2info.connes.MyVolley.infolist_url;
 
 public class MainActivity extends AppCompatActivity
