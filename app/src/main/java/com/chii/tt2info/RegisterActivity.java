@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.User;
+import com.chii.tt2info.util.Md5;
 import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 
@@ -63,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String email = emailEditText.getText().toString();
                 String passwd = passwordEditText.getText().toString();
+                passwd = Md5.safepasswd(passwd,1024);
                 initDate(username, email,passwd);
             }
         });

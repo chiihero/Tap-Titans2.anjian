@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.User;
+import com.chii.tt2info.util.Md5;
 import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 
@@ -76,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 String username = usernameEditText.getText().toString();
                 String passwd = passwordEditText.getText().toString();
+                passwd = Md5.safepasswd(passwd,1024);
                 initDate(username, passwd);
             }
         });
@@ -90,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initDate(final String username, final String passwd) {
+        Log.d(TAG, "initDate: "+passwd);
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("username", username);
         map.put("passwd", passwd);
@@ -129,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
         // requestCode和resultCode必须与请求startActivityForResult()和返回setResult()的时候传入的值一致。
         Log.d(TAG, "onActivityResult: " + requestCode + "  " + resultCode);
         Log.d(TAG, "RESULT_OK " + Activity.RESULT_OK);
-
         switch (requestCode) {
             case REQUESTCODE_FROM_REGISTER:
                 if (resultCode == Activity.RESULT_OK) {
