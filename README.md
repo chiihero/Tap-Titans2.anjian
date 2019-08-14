@@ -1,6 +1,6 @@
 ﻿# Tap-Titans2.anjian
 ## 如果转载和引用参考的话，请说明来源。
-### 有bug请反馈issues或邮箱853879993@qq.com
+### 有bug请反馈issues或邮箱chii.lj@foxmail.com
 ### 目前只配适了1080p的，添加了自动适配分辨率，其他分辨率可以尝试，如果不能用请见谅，或自行修改源代码
 ### 更新时间：2019年8月13日23:44:06
 ### 对应版本：3.2.1(配适)
@@ -71,7 +71,7 @@ ___
 3. 选择Tap Tians2<br />
 <img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/源文件截图/修改器/截图5.png" width="240"><br/>
 4. 点击搜索<br />
-<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/源文件截图/修改器/截图2.png" width="240"><br/>
+<img src="https://github.com/chiihero/Tap-Titans2.anjian/blob/master/源文件截图/修改器/搜索2.png" width="240"><br/>
 修改魔法值：<br />
 (1).看当前魔方值和总魔法值<br />
 (2).构建成："当前魔方值~当前魔方值+1;总魔方值~总魔方值+1::5"<br />
