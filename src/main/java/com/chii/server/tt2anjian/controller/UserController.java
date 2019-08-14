@@ -2,6 +2,7 @@ package com.chii.server.tt2anjian.controller;
 
 
 import com.chii.server.tt2anjian.Tt2anjianApplication;
+import com.chii.server.tt2anjian.Utils.SafePasswd;
 import com.chii.server.tt2anjian.pojo.User;
 import com.chii.server.tt2anjian.service.UserService;
 import com.google.gson.Gson;
@@ -24,7 +25,7 @@ public class UserController {
 
     @GetMapping("/hello")
     public String hello() {
-        logger.info("hello chii"+new Date());
+        logger.info("hello chii" + new Date());
         return "hello chii";
     }
 
@@ -38,20 +39,25 @@ public class UserController {
         return user;
     }
 
+    //密码md5：58ab0aa429cbe3e4a7ece65a4dd5cdfc
     @PostMapping("/signin")
     public User signin(@ModelAttribute("username") String username, @ModelAttribute("passwd") String passwd) {
         User user = userService.getUserInfoByUsername(username);
-        if (user != null && user.getPasswd().equals(passwd)) {
-            logger.info("login success");
-            return user;
-        } else {
-            return null;
+        if (user != null) {
+            passwd = SafePasswd.safe_password(passwd, username, 10);
+            if (user.getPasswd().equals(passwd)) {
+                logger.info("login success");
+                return user;
+            }
         }
+        return null;
     }
 
     @PostMapping("/register")
     public String register(@ModelAttribute("username") String username, @ModelAttribute("email") String email, @ModelAttribute("passwd") String passwd) {
+
         User user = userService.getUserInfoByUsername(username);
+        passwd = SafePasswd.safe_password(passwd, username, 10);
         if (user != null) {
             return "false";
         } else {
