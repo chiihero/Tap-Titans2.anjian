@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v4.content.SharedPreferencesCompat;
+import androidx.core.content.SharedPreferencesCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
