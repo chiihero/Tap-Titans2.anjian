@@ -1,7 +1,9 @@
 package com.chii.tt2info.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -45,7 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.chii.tt2info.connes.MyVolley.infolist_url;
+import static com.chii.tt2info.connes.MyVolley.infodeleteAll_url;
 import static com.chii.tt2info.connes.MyVolley.infopage_url;
 
 public class MainActivity extends AppCompatActivity
@@ -72,7 +74,12 @@ public class MainActivity extends AppCompatActivity
     MyVolley myVolley;
     public final static int REQUESTCODE_FROM_LOGIN = 1;
     public final static int REQUESTCODE_FROM_REGISTER = 2;
-
+    private int featureId;
+    private MenuItem item;
+    private static String pageNum = "1";
+    private static String pageSize = "100";
+    private AlertDialog.Builder builder;
+    private String saveusername, savepasswd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,16 +117,17 @@ public class MainActivity extends AppCompatActivity
 
     public void initDate() {
         HashMap<String, String> map = new HashMap<String, String>();
-        String saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
-        String savepasswd = (String) SPUtil.get(MainActivity.this, "passwd", "");
+        saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
+        savepasswd = (String) SPUtil.get(MainActivity.this, "passwd", "");
         SPUtil.put(MainActivity.this, "isSignin", true);
         isSignin = (Boolean) SPUtil.get(MainActivity.this, "isSignin", Boolean.FALSE);
 
         Log.d(TAG, "initDate: " + saveusername + " " + savepasswd + " " + isSignin);
         if (isSignin != null && isSignin) {
+            Log.d(TAG, "isSignin: " + isSignin);
             map.put("username", saveusername);
-            map.put("pageNum", "1");
-            map.put("pageSize", "1000");
+            map.put("pageNum", pageNum);
+            map.put("pageSize", pageSize);
             logged(true);//已经登录处理
             getinfoList(map);
         }
@@ -216,10 +224,70 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_show_100:
+                Log.d(TAG, "onOptionsItemSelected: action_show_100");
+                pageSize = "100";
+                break;
+            case R.id.action_show_1000:
+                Log.d(TAG, "onOptionsItemSelected: action_show_1000");
+                pageSize = "1000";
+                break;
+            case R.id.action_show_all:
+                Log.d(TAG, "onOptionsItemSelected: action_show_all");
+                pageSize = "0";
+                break;
+                case R.id.action_clear:
+                Log.d(TAG, "onOptionsItemSelected: action_clear");
+                showDialog();
+                return true;
         }
+        infoList.clear();
+        initDate();
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 两个按钮的 dialog
+     */
+    private void showDialog() {
+
+        builder = new AlertDialog.Builder(this).setIcon(R.drawable.ic_delete_sweep).setTitle("删除信息")
+                .setMessage("你要删除哪些数据？").setNeutralButton("全部", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put("username", saveusername);
+                        map.put("passwd", savepasswd);
+                        myVolley.Post(infodeleteAll_url, map, new volleyInterface() {
+                            @Override
+                            public void ResponseResult(String jsonObject) {
+                                if (jsonObject.equals("true")) {
+                                    Toast.makeText(MainActivity.this, "成功", Toast.LENGTH_LONG).show();
+                                }else{
+                                    Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            @Override
+                            public void ResponError(VolleyError volleyError) {
+                            }
+                        });
+                    }
+                    //ToDo: 你想做的事情
+                }).setNegativeButton("一个月前(无效)", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(MainActivity.this, "一个月前", Toast.LENGTH_LONG).show();
+                    }
+                }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(MainActivity.this, "取消", Toast.LENGTH_LONG).show();
+                        dialogInterface.dismiss();
+                    }
+                });
+
+        builder.create().show();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

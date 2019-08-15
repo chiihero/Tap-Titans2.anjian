@@ -2,12 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+
+        android:title="@string/action_show"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/action_show_100"
+                android:title="@string/action_100" />
+            <item
+                android:id="@+id/action_show_1000"
+                android:title="@string/action_1000" />
+            <item
+                android:id="@+id/action_show_all"
+                android:title="@string/action_Alldate" />
+        </menu>
+    </item>
     <item
-            android:orderInCategory="100"
-            android:title="@string/action_operation"
-            app:showAsAction="never" />
+        android:id="@+id/action_clear"
+        android:title="@string/action_clear"
+        app:showAsAction="never" />
 </menu>
