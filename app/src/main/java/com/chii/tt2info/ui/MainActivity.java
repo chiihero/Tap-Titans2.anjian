@@ -30,6 +30,7 @@ import com.chii.tt2info.adapter.ListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
+import com.chii.tt2info.pojo.Page;
 import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -45,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.chii.tt2info.connes.MyVolley.infolist_url;
+import static com.chii.tt2info.connes.MyVolley.infopage_url;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -116,6 +118,8 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "initDate: " + saveusername + " " + savepasswd + " " + isSignin);
         if (isSignin != null && isSignin) {
             map.put("username", saveusername);
+            map.put("pageNum", "1");
+            map.put("pageSize", "1000");
             logged(true);//已经登录处理
             getinfoList(map);
         }
@@ -123,14 +127,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getinfoList(HashMap<String, String> map) {
-        myVolley.Get(infolist_url, map, new volleyInterface() {
+        myVolley.Get(infopage_url, map, new volleyInterface() {
             @Override
             public void ResponseResult(String jsonObject) {
-                Type type = new TypeToken<List<Info>>() {
+                Type type = new TypeToken<Page<Info>>() {
                 }.getType();
-                List<Info> list = gson.fromJson(jsonObject, type);
-                Collections.reverse(list);//将list逆序
-                infoList.addAll(list);
+                Page<Info> list = gson.fromJson(jsonObject, type);
+                infoList.addAll(list.getList());
                 mAdapter.notifyDataSetChanged();
             }
 
