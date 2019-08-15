@@ -11,13 +11,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.chii.tt2info.MainActivity;
-import com.google.gson.Gson;
+import com.chii.tt2info.ui.MainActivity;
 
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MyVolley {

@@ -1,4 +1,4 @@
-package com.chii.tt2info;
+package com.chii.tt2info.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,14 +11,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.chii.tt2info.R;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.User;
 import com.chii.tt2info.util.Md5;
-import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.chii.tt2info.connes.MyVolley.register_url;
-import static com.chii.tt2info.connes.MyVolley.signin_url;
 
 public class RegisterActivity extends AppCompatActivity {
 

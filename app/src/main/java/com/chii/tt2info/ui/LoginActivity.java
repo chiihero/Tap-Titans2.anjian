@@ -1,4 +1,4 @@
-package com.chii.tt2info;
+package com.chii.tt2info.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.android.volley.VolleyError;
+import com.chii.tt2info.R;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.User;
@@ -26,7 +29,7 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.chii.tt2info.MainActivity.REQUESTCODE_FROM_REGISTER;
+import static com.chii.tt2info.ui.MainActivity.REQUESTCODE_FROM_REGISTER;
 import static com.chii.tt2info.connes.MyVolley.signin_url;
 
 public class LoginActivity extends AppCompatActivity {
@@ -47,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     public static String TAG = "LoginActivity";
     private String username, passwd;
     Boolean isSignin = false;
-
+    static Boolean encrypt = false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,15 +72,31 @@ public class LoginActivity extends AppCompatActivity {
         } else if (saveusername != null && savepasswd != null) {
             usernameEditText.setText(saveusername);
             passwordEditText.setText(savepasswd);
+            encrypt = true;
         }
+        passwordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                encrypt = false;
+            }
+        });
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 String username = usernameEditText.getText().toString();
                 String passwd = passwordEditText.getText().toString();
-                passwd = Md5.safepasswd(passwd,1024);
+                if (!encrypt) passwd = Md5.safepasswd(passwd,1024);
                 initDate(username, passwd);
             }
         });

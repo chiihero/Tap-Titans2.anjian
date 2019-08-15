@@ -1,4 +1,4 @@
-package com.chii.tt2info;
+package com.chii.tt2info.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.android.volley.VolleyError;
+import com.chii.tt2info.R;
 import com.chii.tt2info.adapter.InfosListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;

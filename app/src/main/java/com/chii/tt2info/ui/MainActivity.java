@@ -1,4 +1,4 @@
-package com.chii.tt2info;
+package com.chii.tt2info.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -26,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.chii.tt2info.R;
 import com.chii.tt2info.adapter.ListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         signinState = headerView.findViewById(R.id.signinState);
         headImage = headerView.findViewById(R.id.headImage);
-        headImage.setOnClickListener(new View.OnClickListener() {
+        signinState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isSignin != null && isSignin) {
@@ -144,11 +144,11 @@ public class MainActivity extends AppCompatActivity
 
     private void logged(Boolean flag) {
         if (flag) {
-            signinState.setText("点击√退出登录");
+            signinState.setText("退出登录");
             headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_check_black),
                     null));
         } else {
-            signinState.setText("点击X登录");
+            signinState.setText("点击登录");
             headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_close_black),
                     null));
         }

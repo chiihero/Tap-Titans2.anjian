@@ -1,7 +1,6 @@
 package com.chii.tt2info.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.chii.tt2info.MainActivity;
 import com.chii.tt2info.R;
 import com.chii.tt2info.pojo.Info;
 import com.chii.tt2info.swipe.SimpleSwipeListener;
