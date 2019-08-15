@@ -71,11 +71,9 @@ public class MainActivity extends AppCompatActivity
     private Boolean isSignin = false;
     List<Info> infoList = new ArrayList<>();
     public static String TAG = "MainActivitytag";
-    MyVolley myVolley;
+    private MyVolley myVolley;
     public final static int REQUESTCODE_FROM_LOGIN = 1;
     public final static int REQUESTCODE_FROM_REGISTER = 2;
-    private int featureId;
-    private MenuItem item;
     private static String pageNum = "1";
     private static String pageSize = "100";
     private AlertDialog.Builder builder;
@@ -237,7 +235,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "onOptionsItemSelected: action_show_all");
                 pageSize = "0";
                 break;
-                case R.id.action_clear:
+            case R.id.action_clear:
                 Log.d(TAG, "onOptionsItemSelected: action_clear");
                 showDialog();
                 return true;
@@ -248,10 +246,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * 两个按钮的 dialog
+     * dialog
      */
     private void showDialog() {
-
         builder = new AlertDialog.Builder(this).setIcon(R.drawable.ic_delete_sweep).setTitle("删除信息")
                 .setMessage("你要删除哪些数据？").setNeutralButton("全部", new DialogInterface.OnClickListener() {
                     @Override
@@ -264,10 +261,11 @@ public class MainActivity extends AppCompatActivity
                             public void ResponseResult(String jsonObject) {
                                 if (jsonObject.equals("true")) {
                                     Toast.makeText(MainActivity.this, "成功", Toast.LENGTH_LONG).show();
-                                }else{
+                                } else {
                                     Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_LONG).show();
                                 }
                             }
+
                             @Override
                             public void ResponError(VolleyError volleyError) {
                             }
@@ -295,14 +293,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.nav_home:
 
-        if (id == R.id.nav_home) {
-
-        } else if (id == R.id.nav_daynight) {
-
-        } else if (id == R.id.nav_settings) {
+                break;
+            case R.id.nav_settings:
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivityForResult(intent, REQUESTCODE_FROM_LOGIN);
+                break;
 
         }
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

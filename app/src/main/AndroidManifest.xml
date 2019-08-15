@@ -18,12 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.SettingActivity"></activity>
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/action_sign_in"></activity>
+            android:label="@string/action_sign_in" />
         <activity
             android:name=".ui.RegisterActivity"
-            android:label="@string/action_register"></activity>
+            android:label="@string/action_register" />
         <activity android:name=".ui.InfosActivity" />
         <activity
             android:name=".ui.MainActivity"

@@ -10,13 +10,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField("boolean","enableLog","true");
+        buildConfigField("boolean", "enableLog", "true");
 
     }
     buildTypes {
         release {
             minifyEnabled false
-            buildConfigField("boolean","enableLog","false");
+            buildConfigField("boolean", "enableLog", "false");
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
