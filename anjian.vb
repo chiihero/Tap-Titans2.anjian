@@ -25,17 +25,17 @@ Dim tribe_usetime //蜕变使用时间
 Dim mistake_reboot//出错重启
 Dim reboot_game = TickCount()//定时重启
 Dim boss_task = TickCount()//防止进入boss模式过频繁导致蜕变
-//初始化发送邮件内容
-Dim mail_info
+/*=============发送log相关=============*/
+Dim mail_info//初始化发送邮件内容
+Dim post_info//初始化发送内容
 Dim send_flag = 0
-Dim s_layer_number_mix
-//初始化发送内容
-Dim post_info
-//初始化识别层数
-Dim ocrchar,ocrchar_layer
+Dim info_layer_number
+Dim info_layer_number_last
+Dim ocrchar,ocrchar_layer//初始化识别层数
 Dim layer_temp
 Dim ocrchar_layer_temp
-Dim s_layer_number
+Dim info_notes
+/*===================================*/
 //初始化升级
 Dim update_main_flat
 Dim update_main_init_time
@@ -169,7 +169,9 @@ reboot_time = reboot_time_ui//定时重启
 Dim username = ReadUIConfig("username",0)
 //密码
 Dim passwd = ReadUIConfig("passwd",0)
-
+For 1024
+	passwd = Encode.Md5(passwd)
+Next
 //邮箱
 //发送邮箱账号
 Dim mail_username = ReadUIConfig("mail_username",0)
@@ -221,8 +223,8 @@ Function init()
     //初始化发送内容
     mail_info = ""
     post_info=""
-    s_layer_number_mix = 1
-    s_layer_number = 1
+    info_layer_number_last = 1
+    info_layer_number = 1
     //初始化识别层数
     ocrchar =0
     ocrchar_layer=0
@@ -242,7 +244,7 @@ Function init()
     Call close_occlusion()//广告
     Call layer()//层数
     Call prestige_check()//层数处理
-    Call sendmessage(ocrchar_layer)//邮件内容记录
+    Call info_layer_add(ocrchar_layer)//邮件内容记录
     Call egg()//宠物蛋
     Call chest()//宝箱
     Call daily_reward()//每日奖励
@@ -333,7 +335,7 @@ Function main
             Call update_main(2)//定时升级
             update_time_main = TickCount()
         End If
-        Call sendmessage(ocrchar_layer)//邮件内容记录
+        Call info_layer_add(ocrchar_layer)//邮件内容记录
 
         Call close_occlusion()
         //2点到7点暂停运行
@@ -436,7 +438,7 @@ Function check_status()
     //定时重启
     If  TickCount()- reboot_game >reboot_time  And reboot_time > 0 Then 
         TracePrint "定时重启"
-//        Call postmail("定时重启")
+        Call info_notes_add("定时重启")
         Call kill_app()
         GG_blue_bool = True
         reboot_game = TickCount()
@@ -449,7 +451,7 @@ Function check_status()
 
     FindPic 482,1227,548,1303,"Attachment:服务器维护.png","000000",0,0.9,intX,intY
     If intX > -1 And intY > -1 Then 
-//        Call postmail("服务器维护")
+        Call info_notes_add("服务器维护")
         TracePrint "stop"
         EndScript
     End If
@@ -1192,8 +1194,6 @@ Function prestige
     TracePrint "蜕变"
     //发送日志
     If send_flag = 1 Then 
-//        Call postmail(ocrchar_layer)
-//        Call postserver(ocrchar_layer)
         Call postmessage(ocrchar_layer)
         send_flag = 0
     End If
@@ -1949,48 +1949,6 @@ Function swipe_down(num)
         Call close_window()//普通弹窗
     Next
 End Function
-
-//邮箱//TODEL
-Function postmail(subject)
-    TracePrint "邮箱"
-    If mail_username = 0 or mail_passwd = 0 or mail_tomail = 0 Then 
-        TracePrint "邮箱信息不全"
-        Exit Function
-    End If
-    Dim mail_host ="smtp.qq.com"
-    Dim mail_subject = subject
-    If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
-        mail_info ="最终层数:"& subject &"  时间:"&DateTime.Format("%H:%M:%S") &" 使用时间:"& data_time((TickCount()-tribe_usetime)/1000) &"\n" & mail_info 
-    End If 
-    mail_info = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&updateAll&"\n升级次数(少):"&updateMini&"\n"& mail_info 
-    Dim mail_message = mail_info
-    Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_passwd,mail_subject,mail_message,mail_tomail) 
-    TracePrint Ret
-    While Ret = False
-        Delay delay_x(500)
-        Ret = SendSimpleEmail (mail_host, mail_username, mail_passwd, mail_subject, mail_message, mail_tomail)
-        If while_over(5) Then 
-            Exit While
-        End If
-    Wend
-End Function
-//日志服务器//TODEL
-Function postserver(subject)
-    TracePrint "服务器"
-    If username = 0 or passwd = 0  Then 
-        TracePrint "账号密码错误"
-        Exit Function
-    End If
-//    Dim server_url ="http://139.199.11.57:8088/info/insertinfo"
-    Dim server_url ="http://192.168.2.162:8088/info/insertinfo"
-    Dim header = "Content-Type: application/json"
-    If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
-        post_info = "[{""layer"":"""& subject &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info&"]"
-    End If
-    post_info = "{""username"":""" & username & """,""passwd"":""" & passwd & """,""layerSet"":""" & layer_number_max & """,""updateAll"":""" & updateAll & """,""updateMini"":""" & updateMini & """,""infos"":" & post_info&"}"
-    TracePrint post_info
-    ShanHai.PostHttp(server_url,post_info,10,header)
-End Function
 //发送日志
 Function postmessage(subject)
     Dim mail_host ="smtp.qq.com"
@@ -1998,13 +1956,14 @@ Function postmessage(subject)
         Dim server_url ="http://139.199.11.57:8088/info/insertinfo"
 //    Dim server_url ="http://192.168.2.162:8088/info/insertinfo"
     Dim header = "Content-Type: application/json"
-    Dim notes="出错"
-    If IsNumeric(subject)=True And subject > s_layer_number Then//防止重复
-    	notes="正常"
+    If IsNumeric(subject)=True And subject > info_layer_number Then//防止重复
+    	info_notes="正常"& info_notes 
         post_info = "[{""layer"":"""& subject &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info&"]"
         mail_info ="最终层数:"& subject &"  时间:"&DateTime.Format("%H:%M:%S") &" 使用时间:"& data_time((TickCount()-tribe_usetime)/1000) &"\n" & mail_info 
+    Else 
+    	info_notes="错误"& info_notes 
     End If
-    post_info = "{""username"":""" & username & """,""passwd"":""" & passwd & """,""title"":""" & subject & """,""notes"":""" & notes & """,""layerSet"":""" & layer_number_max & """,""updateAll"":""" & updateAll & """,""updateMini"":""" & updateMini & """,""infos"":" & post_info&"}"
+    post_info = "{""username"":""" & username & """,""passwd"":""" & passwd & """,""title"":""" & subject & """,""notes"":""" & info_notes & """,""layerSet"":""" & layer_number_max & """,""updateAll"":""" & updateAll & """,""updateMini"":""" & updateMini & """,""infos"":" & post_info&"}"
     mail_info = "内容为:\n最高设定层数:"& layer_number_max &"\n升级次数(全):"&updateAll&"\n升级次数(少):"&updateMini&"\n"& mail_info 
 	//邮箱
     If mail_username <> 0 And mail_passwd <> 0 And mail_tomail <> 0 Then 
@@ -2027,13 +1986,20 @@ Function postmessage(subject)
     End If
 End Function
 
-//发送内容
-Function sendmessage(s_layer_number)
-    TracePrint"发送内容"
-    If Int(s_layer_number / 100) > s_layer_number_mix Then 
-        s_layer_number_mix = Int(s_layer_number / 100)
-        mail_info = "层数:"& s_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-tribe_usetime)/1000) &"\n"&mail_info
-   		post_info = ",{""layer"":"""& s_layer_number &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info
+//备忘信息记录
+Function info_notes_add(info)
+    TracePrint"备忘信息记录"
+    info_notes=info_notes&" "&info
+End Function
+
+
+//信息层数记录
+Function info_layer_add(info_layer_number)
+    TracePrint"信息层数记录"
+    If Int(info_layer_number / 100) > info_layer_number_last Then 
+        info_layer_number_last = Int(info_layer_number / 100)
+        mail_info = "层数:"& info_layer_number &"\n 时间:"&DateTime.Format("%H:%M:%S") &"使用时间:"& data_time((TickCount()-tribe_usetime)/1000) &"\n"&mail_info
+   		post_info = ",{""layer"":"""& info_layer_number &""",""usetime"":"""& data_time((TickCount()-tribe_usetime)/1000) &"""}"&post_info
    End If
 End Function
 //适配分辨率
