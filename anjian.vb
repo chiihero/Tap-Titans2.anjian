@@ -1,4 +1,4 @@
-//2019年8月11日16:18:42
+//2019年8月24日01:07:02
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -384,6 +384,7 @@ Function kill_app()
     Loop While intX = -1 
     //退出，点击是
     FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
+    error_time =0
     While intX > -1 
         TracePrint"等待退出"
         Touch 758,1264, 10
@@ -675,6 +676,7 @@ Function layer()
     ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
 //	ocrchar = SmartOcr(482, 86, 599, 124, "FFFFFF-222222")
 	TracePrint ocrchar
+	error_time =0
     While CInt(ocrchar)<ocrchar_layer 
         ocrchar = Ocr(489, 87, 600, 122, "FFFFFF-222222", 0.8)
 //		ocrchar = SmartOcr(482,86,599,124,"FFFFFF-222222")
@@ -836,6 +838,7 @@ Function Navbar_one_check(num)
     MyArray = Array(intX,intY,colour)
     cmpColors=Join(MyArray, "|")
     TracePrint cmpColors
+    error_time =0
     While CmpColorEx(cmpColors,1) = 1//识别未打开
         TracePrint	message_unopen
         Touch intX,intY, 100
@@ -917,6 +920,7 @@ Function tribe()
         Exit Function
     End If
     //战队突袭—战斗
+    error_time =0
     While CmpColorEx("354|1252|0C81FB",0.9) = 0
         TracePrint"点击战斗"
         Touch 772, 1663, 100
@@ -939,6 +943,7 @@ Function tribe()
     Loop While CmpColorEx("724|1244|C3AF00", 0.9) = 0
     i = i - 1//使i为当前位置
     //战队突袭—战斗2
+    error_time =0
     Do
         TracePrint"战队突袭—战斗2"
         Touch 724, 1244, 150
@@ -983,6 +988,7 @@ Function tribe()
     //等待boss界面提交
     Delay delay_x(1500)
     TracePrint "等待boss界面提交"
+    error_time =0
     While CmpColorEx("296|1467|D7A928",0.9) <> 1
         Delay delay_x(5000)
         If while_over(30) Then 
@@ -991,6 +997,7 @@ Function tribe()
     Wend
     //离开部落boos界面
     TracePrint "离开部落boos界面"
+    error_time =0
     While CmpColorEx("296|1467|D7A928", 0.9) = 1
         Touch 296,1467, RndEx(100, 300)
         Delay delay_x(2000)
@@ -1004,6 +1011,7 @@ Function tribe()
 End Function
 //关闭遮挡
 Function close_occlusion()
+	error_time =0
     //检测界面是否被遮挡
     While CmpColorEx("991|1881|414424",0.9) = 0 or CmpColorEx("65|79|6D6859",1) = 0
         TracePrint "界面被遮挡"
@@ -1083,6 +1091,7 @@ Function little_fairy_watch(t)
     ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
     Delay delay_x(1000)
     //确认已点击观看
+    error_time =0
     While CmpColorEx("162|1174|FFFF6C",0.9) = 1
         Touch 804, 1420, 200
         Delay delay_x(1000)
@@ -1093,6 +1102,7 @@ Function little_fairy_watch(t)
     TracePrint"已点击观看"
     Delay 30000
     //判断时间内页面有误变化
+    error_time =0
     While shanhai.IsDisplayChange(227, 534, 729, 1024, 5, 1)
         Delay delay_x(5000)
         If while_over(10) Then 
@@ -1100,6 +1110,7 @@ Function little_fairy_watch(t)
         End If
     Wend
     //判断收集字符出现
+    error_time =0
     While CmpColorEx("536|1458|C29926",1) = 0
         KeyPress "Back"
         TracePrint "等待收集"
@@ -1119,6 +1130,7 @@ End Function
 //点击收集字符 
 Function little_fairy_rec
     Dim intX,intY,error_one
+    error_time =0
     While CmpColorEx("446|1396|796220",0.9) = 1
         Touch 452,1417,150
         TracePrint "收集"
@@ -1161,6 +1173,7 @@ Function close_window()
     TracePrint "关闭窗口"
     Dim closeX, closeY,error_one
     FindColor 879, 80, 1000, 650, "303843|303845", 4, 1, closeX, closeY
+    error_time =0
     While closeX > -1
         ShowMessage "关闭窗口", 1000, screenX / 2 - 150, screenY / 4 - 200
         Touch closeX+1, closeY+1, 200
@@ -1209,6 +1222,7 @@ Function prestige
             Exit Function
         End If
     End If
+    error_time =0
     While pX > -1
         Touch pX+2, pY+2, 100
         Delay delay_x(1000)
@@ -1218,6 +1232,7 @@ Function prestige
         End If
     Wend
     Delay delay_x(1000)
+    error_time =0
     Do
         TracePrint "点击第一层蜕变"
         Touch 541, 1484, 100
@@ -1227,6 +1242,7 @@ Function prestige
         End If
     Loop While CmpColorEx("536|1453|D7AA28-111111",0.9) = 1
     Delay delay_x(3000)
+    error_time =0
     Do
         TracePrint "点击第二层蜕变"
         Touch 736, 1272, 100
@@ -1340,7 +1356,8 @@ End Function
 //升级单个选项
 Function update_one(update_type)
     Dim up1X, up1Y,up2X, up2Y, update_time = 0
-    FindColor 990,238,1051,1753, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
+    FindColor 990, 238, 1051, 1753, "0428A2-111111|003C96-111111|8A6400-111111", 6, 1, up1X, up1Y
+    error_time =0
     While up1X > -1
         TracePrint "升级识别:x="&up1X&"y="&up1Y
         update_time = update_time+1
@@ -1372,19 +1389,21 @@ Function artifact_update()
     TracePrint "升级神书"
     Dim  checkX, checkY,up1X,up1Y
     FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
+    error_time =0
     While checkX = -1 And checkY = -1
         Delay delay_x(100)
         Swipe 730, 1400, 730, 1650, 200
         TracePrint "上滑"
         Delay delay_x(100)
-        If while_over(40) Then 
+        If while_over(3) Then 
             Call close_occlusion()
             Exit While
         End If
         FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
     Wend
     
-    FindColor 749,394,867,461, "0428A2-333333|003C96-333333|8A6400-333333", 0, 1, up1X, up1Y
+    FindColor 749, 394, 867, 461, "0428A2-333333|003C96-333333|8A6400-333333", 0, 1, up1X, up1Y
+    error_time =0
     While up1X > -1
         TracePrint "升级神书"
         Touch 910,479, RndEx(5,15)
@@ -1407,6 +1426,7 @@ Function ocrchar_blue(accuracy)
     //降下物品栏
     Call close_navbar()
     Delay delay_x(500)
+    error_time =0
     Do
         //搜索精准性
         ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", accuracy*0.1)
@@ -1606,7 +1626,8 @@ Function GG_databaseOne(intX, intY, str, flat)
     Touch intX, intY, 10
     Delay delay_x(3000)
     //移除输入法栏
-	FindColor 950,1050,1058,1210,"7E7E7E",2,1,intX,intY
+	FindColor 950, 1050, 1058, 1210, "7E7E7E", 2, 1, intX, intY
+	error_time =0
 	While intX > -1 And intY > -1
 		TracePrint "正在移除输入法栏 x="&intX&" y="&intY
 		Touch intX-5, intY+5, 210
@@ -1634,6 +1655,7 @@ End Function
 Function GG_search(flat)
 	Dim intX,intY,int2X, int2Y
     //打开搜索
+    error_time =0
     While CmpColorEx("1008|72|FFFFFF",1) = 1
         Touch 872,298, 10
         Delay delay_x(2000)
@@ -1644,7 +1666,8 @@ Function GG_search(flat)
     Wend
     Delay 3000
     //移除输入法栏
-	FindColor 950,1050,1058,1210,"7E7E7E",2,1,intX,intY
+	FindColor 950, 1050, 1058, 1210, "7E7E7E", 2, 1, intX, intY
+	error_time =0
 	While intX > -1 And intY > -1
 		TracePrint "正在移除输入法栏 x="&intX&" y="&intY
 		Touch intX-5, intY+5, 210
@@ -1658,7 +1681,8 @@ Function GG_search(flat)
     KeyPress "Del"
     //选择输入框中的数据
     
-    FindColor 156,510,204,674, "FFFFFF", 0, 1, intX, intY
+    FindColor 156, 510, 204, 674, "FFFFFF", 0, 1, intX, intY
+    error_time =0
     While intX > -1 And intY > -1
         KeyPress "Del"
         Delay delay_x(300)
@@ -1699,6 +1723,7 @@ Function GG_search(flat)
     End If
     Delay delay_x(2000)
     //隐藏
+    error_time =0
     While CmpColorEx("984|805|6A6A6A", 1) = 1
     	TracePrint "等待搜索结束"
         Delay delay_x(3000)
@@ -1756,6 +1781,7 @@ End Function
 
 //关闭修改器
 Function GG_kill()
+	error_time =0
     While CmpColorEx("65|34|6D6859,990|1887|414424",1) = 0
         TracePrint "退出修改器"
         //        KeyPress "Back"
@@ -1825,6 +1851,7 @@ Function achievement
     TracePrint "成就"
     //购买框识别
     FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
+    error_time =0
     While checkX = -1 And checkY = -1
         TracePrint "物品栏识别"
         //物品栏下箭头高
@@ -1862,7 +1889,8 @@ Function achievement
         Delay delay_x(500)
         Dim intX,intY,checkX,checkY,boxX,boxY
         //确认成就页面打开
-        FindColor 117,93,147,119,"1473B4",1,0.9,intX,intY
+        FindColor 117, 93, 147, 119, "1473B4", 1, 0.9, intX, intY
+        error_time =0
         While intX = -1 And intY = -1
             TracePrint "点开成就"
             Touch 461, 150, 150
@@ -1873,7 +1901,8 @@ Function achievement
             End If
         Wend
         //确认成就领取
-        FindColor 691,388,843,1210,"0430AC-111111",0,0.9,intX,intY
+        FindColor 691, 388, 843, 1210, "0430AC-111111", 0, 0.9, intX, intY
+        error_time =0
         While intX > -1 And intY > -1
             TracePrint "领取成就"
             Touch RndEx(intX,intX+10),RndEx(intY,intY+10),100
@@ -1900,7 +1929,8 @@ Function competition
     If CmpColorEx("67|171|12BFFF",1) = 1 Then
         Touch 67, 171, 100
         //等待加入按键
-        FindColor 511,1577,556,1754,"D7AB28-111111",0,0.9,intX,intY
+        FindColor 511, 1577, 556, 1754, "D7AB28-111111", 0, 0.9, intX, intY
+        error_time =0
         While intX = -1 And intY = -1
             Delay delay_x(1000)
             //出现退赛按键则退出
@@ -1970,6 +2000,7 @@ Function postmessage(subject)
         TracePrint "邮箱"
         Dim Ret = SendSimpleEmail(mail_host,mail_username,mail_passwd,mail_subject,mail_info,mail_tomail) 
         TracePrint Ret
+        error_time =0
         While Ret = False
             Delay delay_x(500)
             Ret = SendSimpleEmail (mail_host, mail_username, mail_passwd, mail_subject, mail_info, mail_tomail)
@@ -2024,8 +2055,8 @@ Function while_over(error_max)
     error_time = error_time + 1
     If error_time > error_max Then 
         TracePrint"出错"
-        while_over() = True
         error_time =0
+        while_over() = True
     Else 
         while_over() = False
     End If
