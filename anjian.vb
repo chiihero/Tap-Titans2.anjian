@@ -137,6 +137,32 @@ Dim skill_bool =Array(skill_1,skill_2,skill_3,skill_4,skill_5,skill_6)
 //技能未使用统计报错
 Dim skillerror=Array(0,0,0,0,0,0)
 /*===============杂项===================*/
+//日志等级
+Dim log_debug_bool,log_info_bool,log_warn_bool,log_error_bool
+Dim log_level = ReadUIConfig("log_level",1)
+Select Case log_level
+Case 0
+    log_debug_bool = True
+    log_info_bool = True
+	log_warn_bool = True
+	log_error_bool = True
+Case 1
+    log_debug_bool = False
+    log_info_bool = True
+	log_warn_bool = True
+	log_error_bool = True
+Case 2
+    log_debug_bool = False
+    log_info_bool = False
+	log_warn_bool = True
+	log_error_bool = True
+Case Else
+	log_debug_bool = False
+    log_info_bool = False
+	log_warn_bool = False
+	log_error_bool = True
+End Select
+TracePrint "日志等级:"log_level
 //2点到7点暂停运行
 Dim rest_bool = ReadUIConfig("rest",false)
 TracePrint shanhai.iif(rest_bool, "2点到7点暂停运行:开启", "2点到7点暂停运行:关闭")
@@ -1439,7 +1465,7 @@ Function ocrchar_blue(accuracy)
             ElseIf ocr_blue(0) = ocr_blue(1) Then 
                 blue_input = ocr_blue(0) &"~" & CStr(CInt(ocr_blue(0)) + 1)& ";" & ocr_blue(1) &"~" & CStr(CInt(ocr_blue(1)) + 1)& "::5" 
             Else 
-                blue_input = ocr_blue(0) & "~" & CStr(CInt(ocr_blue(0)) + 20) & ";" & ocr_blue(1)  & "~" & CStr(CInt(ocr_blue(1)) + 1) & "::5"
+                blue_input = CStr(CInt(ocr_blue(0)) + 3) & "~" & CStr(CInt(ocr_blue(0)) + 30) & ";" & ocr_blue(1)  & "~" & CStr(CInt(ocr_blue(1)) + 1) & "::5"
             End If
             TracePrint blue_input
             Sys.SetClipText blue_input
@@ -2113,6 +2139,27 @@ End Function
 Function delay_x(delay_t)
     delay_x = Int(delay_t*delay_multiple)
 End Function
+//log输出
+Function logd(msg)
+If log_debug_bool = true Then
+    TracePrint msg
+End If
+End Function
+Function logi(msg)
+If log_info_bool = true Then
+    TracePrint msg
+End If
+End Function
+Function logw(msg)
+If log_warn_bool = true Then
+    TracePrint msg
+End If
+End Function
+Function loge(msg)
+If log_error_bool = true Then
+    TracePrint msg
+End If
+End Function
 //while超时跳出
 //Function while_over(error_max)
 //    error_time = error_time + 1
@@ -2138,7 +2185,7 @@ Function RndEx(min, max)
     RndEx = Int(((max-min) * Rnd()) + min)
 End Function
 Function OnScriptExit()
-    TracePrint "脚本已经停止！"
+    logi( "脚本已经停止！")
     ShowMessage "脚本已经停止！"
     KeepScreen False
     Log.Close 
