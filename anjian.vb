@@ -26,15 +26,13 @@ Dim mistake_reboot//出错重启
 Dim reboot_game = TickCount()//定时重启
 Dim boss_task = TickCount()//防止进入boss模式过频繁导致蜕变
 
-
 Dim send_flag = 0
 Dim ocrchar_layer//初始化识别层数
 Dim layer_temp
 Dim ocrchar_layer_temp
 Dim info_notes
 
-
-/*===================================*/
+//===================================//
 //初始化升级
 Dim update_main_flat
 Dim update_main_init_time
@@ -48,8 +46,7 @@ Dim prestige_tick=0
 //定义如果蜕变超时时候的改变层数设定
 Dim auto_prestige_flat=0
 Dim auto_prestige_temp=0
-//boss计数器
-Dim boss_num = 0
+
 Dim layer_last
 //初始化xml全局坐标
 Dim arrXY1,arrXY2
@@ -91,7 +88,7 @@ Dim GG_cd_bool = ReadUIConfig("GG_cd")
 TracePrint shanhai.iif(GG_cd_bool, "修改cd:开启", "修改cd:关闭 ")
 Dim GG_blue_bool = ReadUIConfig("GG_blue")
 TracePrint shanhai.iif(GG_blue_bool, "修改蓝:开启", "修改蓝:关闭 ")
-Dim orc_blue//自己蓝量
+Dim ocr_blue//自己蓝量
 Dim blue_input//修改器输入蓝量
 Dim GG_success_bool = False
 /*=========================蜕变设置========================*/
@@ -105,9 +102,12 @@ TracePrint shanhai.iif(auto_prestige, "自动蜕变:开启", "自动蜕变:关�
 //挑战头目失败强制蜕变次数
 Dim boss_maxnum = ReadUIConfig("boss_maxnum","3")
 boss_maxnum = CInt(boss_maxnum)
+//boss计数器
+Dim boss_num = 0
 //卡层强制蜕变时间
 Dim prestige_maxtime = ReadUIConfig("prestige_maxtime","600")
 prestige_maxtime = CInt(prestige_maxtime)
+
 /*=========================神器设置========================*/
 //升级神器
 Dim artifact_bool = ReadUIConfig("artifact")
@@ -340,6 +340,7 @@ Function main
 End Function
 //判断应用存在
 Function check_status()
+    Dim intX, intY
     //断网自动关闭游戏等待
     error_time =0
     While GetNetworkTime() = ""
@@ -391,7 +392,7 @@ Function check_status()
         RunApp "com.gamehivecorp.taptitans2"
         Dim start_time = TickCount()//开始时间
         //检测界面
-        Dim intX, intY
+
         While CmpColorEx("991|1881|414424",1) = 0
             If Sys.IsRunning("com.gamehivecorp.taptitans2") = False or Sys.AppIsFront("com.gamehivecorp.taptitans2")  = False Then 
                 RunApp "com.gamehivecorp.taptitans2"
@@ -417,7 +418,7 @@ End Function
 Function kill_app()
     TracePrint "关闭游戏"	
     //等待识别退出
-    Dim intX,intY,error_one
+    Dim intX,intY
     //	FindColor 341, 1246, 422, 1303, "0B81FA", 0, 0.9, intX, intY
     error_time = 0
     Do
@@ -449,12 +450,12 @@ Function kill_app()
         Delay delay_x(5000)
     End If
     //等待修改器的确认游戏退出
-    error_one = 0
+    error_time = 0
     Do
         TracePrint"等待修改器的确认游戏退出"
         Delay delay_x(500)
-        error_one = error_one + 1
-        If error_one > 10 Then 
+        error_time = error_time + 1
+        If error_time > 10 Then 
             TracePrint"层数出错"
             Exit Do
         End If
@@ -499,7 +500,8 @@ Function kill()
         Touch RndEx(635,650), RndEx(920, 930),RndEx(30, 55)
     Next
 End Function
-
+//TODO
+//=====================测试区=====================//
 //杀怪
 Function kill_new()
     TracePrint "杀怪冲关"
@@ -552,7 +554,7 @@ Function kill_tap()
     	Delay 500
     Wend
 End Function
-
+//=====================测试区=====================//
 //主动进入boss模式
 Function boss	
     Dim intX,intY
@@ -647,7 +649,7 @@ Function update_main(update_main_flat)
 End Function
 //下面面板功能
 Function Navbar_main(navbar_name,flat)
-    Dim intX,intY,error_one
+    Dim intX,intY
     Call close_occlusion()//广告
     If navbar_name = "hero" Then 
         TracePrint "英雄" 
@@ -705,7 +707,7 @@ End Function
 
 Function Navbar_one_check(num)
     TracePrint"检测单一面板的启动"
-    Dim intX,intY,colour,message_open,message_unopen,error_one,cmpColors,MyArray
+    Dim intX,intY,colour,message_open,message_unopen,cmpColors,MyArray
     Select Case num
     Case 1
         intX=87
@@ -997,7 +999,7 @@ Function prestige()
         send_flag = 0
     End If
     //本人等级提升|解锁技能|英雄等级提升
-    Dim pX,pY,intX,intY,error_one
+    Dim pX,pY,intX,intY
     FindColor 760,1707,1046,1826,"0428A2-111111|003C96-111111|8A6400-111111",1,1,pX,pY
     If pX = -1 And pY = -1 Then 
         Call swipe_down(2)
@@ -1049,17 +1051,17 @@ Function prestige()
     TracePrint "蜕变等待"
     Dim old_ocrchar_layer = ocrchar_layer 
     Call layer()
-    error_one=0
+    error_time=0
     While ocrchar_layer >= old_ocrchar_layer
         TracePrint "蜕变等待"
         Call close_occlusion()//广告
         Delay delay_x(1000)
         ocrchar_layer=layer()
-        error_one = error_one + 1
+        error_time = error_time + 1
         if ocrchar_layer<layer_number_max*0.7  Then 
             TracePrint"蜕变成功跳出"
             Exit While
-        ElseIf error_one > 50 Then
+        ElseIf error_time > 50 Then
             TracePrint"蜕变等待出错"
             Exit Function
         End If
@@ -1077,7 +1079,7 @@ Function tribe()
     End If
     TracePrint "进入部落"
     Call close_occlusion()
-    Dim ocrchar_diamond,timeX,timeY,intX,intY,error_one
+    Dim ocrchar_diamond,timeX,timeY,intX,intY
     Touch 188,79,150
     Delay delay_x(2000)
     //判断部落欢迎界面
@@ -1086,7 +1088,7 @@ Function tribe()
         Delay delay_x(1000)
     End If
     //部落聊天界面检测
-    error_one = 0
+    error_time = 0
     While CmpColorEx("889|305|EFD555",1) = 0//部落聊天
         //判断部落欢迎界面
         If CmpColorEx("517|1611|C3AF00", 0.9) = 1 Then 
@@ -1110,7 +1112,7 @@ Function tribe()
     Touch 204, 1749, 150
     Delay delay_x(4000)
     //部落任务界面检测
-    error_one = 0
+    error_time = 0
     While CmpColorEx("916|1005|BEA318-111111",0.9) = 0  //部落任务
         TracePrint"部落任务界面检测"
         Touch 204, 1749, 150
@@ -1396,7 +1398,7 @@ Function GG()
         Delay 1000
 		/******************魔法*******************/	
         TracePrint "魔法"
-        Call GG_databaseOne(479, 449, orc_blue(1)-10, 2)//2为冻结模式
+        Call GG_databaseOne(479, 449, ocr_blue(1)-10, 2)//2为冻结模式
         Delay delay_x(1000)
     End If
 	/*****************退出修改器界面********************/
@@ -1407,7 +1409,7 @@ Function GG()
     Call skills()
     Delay delay_x(3000)
     Call ocrchar_blue(9)
-    If CInt(orc_blue(0)) < 70 Then 
+    If CInt(ocr_blue(0)) < 70 Then 
         GG_success_bool = False
         Exit Function
     End If
@@ -1427,15 +1429,15 @@ Function ocrchar_blue(accuracy)
         ocrchar = Ocr(39,1563,177,1601, "FFF534-111111", accuracy*0.1)
         If ocrchar <> "" Then  
             TracePrint ocrchar
-            orc_blue = Split(ocrchar, "/")
-            TracePrint "当前魔法量:"&orc_blue(0)&"魔法总量:"&orc_blue(1)
+            ocr_blue = Split(ocrchar, "/")
+            TracePrint "当前魔法量:"&ocr_blue(0)&"魔法总量:"&ocr_blue(1)
             //当前魔法量必须小于魔法总量
-            If CInt(orc_blue(0)) > CInt(orc_blue(1)) And CInt(orc_blue(0))<>500 Then 
+            If CInt(ocr_blue(0)) > CInt(ocr_blue(1)) And CInt(ocr_blue(0))<>500 Then 
                 ocrchar = ""
-            ElseIf orc_blue(0) = orc_blue(1) Then 
-                blue_input = orc_blue(0) &"~" & CStr(CInt(orc_blue(0)) + 1)& ";" & orc_blue(1) &"~" & CStr(CInt(orc_blue(1)) + 1)& "::5" 
+            ElseIf ocr_blue(0) = ocr_blue(1) Then 
+                blue_input = ocr_blue(0) &"~" & CStr(CInt(ocr_blue(0)) + 1)& ";" & ocr_blue(1) &"~" & CStr(CInt(ocr_blue(1)) + 1)& "::5" 
             Else 
-                blue_input = orc_blue(0) & "~" & CStr(CInt(orc_blue(0)) + 20) & ";" & orc_blue(1)  & "~" & CStr(CInt(orc_blue(1)) + 1) & "::5"
+                blue_input = ocr_blue(0) & "~" & CStr(CInt(ocr_blue(0)) + 20) & ";" & ocr_blue(1)  & "~" & CStr(CInt(ocr_blue(1)) + 1) & "::5"
             End If
             TracePrint blue_input
             Sys.SetClipText blue_input
@@ -1447,7 +1449,7 @@ Function ocrchar_blue(accuracy)
         error_time = error_time + 1
         If error_time > 40 Then 
             TracePrint"出错"
-            orc_blue(0) = 0
+            ocr_blue(0) = 0
             Call close_occlusion()
             EndScript
         End If
@@ -1866,11 +1868,9 @@ End Function
 
 
 Function little_fairy()
-
     If CmpColorEx("300|800|FFFFD8", 1) = 0 and CmpColorEx("309|849|D7C575",1) = 0 Then
         Exit Function
     End If
-		
     //小仙女
     TracePrint "小仙女"
     ShowMessage "小仙女", 1000, screenX / 2 - 150, screenY / 4 - 200
@@ -1962,7 +1962,7 @@ Function little_fairy_watch(t)
 End Function
 //点击收集字符 
 Function little_fairy_rec()
-    Dim intX,intY,error_one
+    Dim intX,intY
     error_time =0
     While CmpColorEx("446|1396|796220",0.9) = 1
         Touch 452,1417,150
@@ -2005,7 +2005,7 @@ End Function
 //关闭窗口
 Function close_window()
     TracePrint "关闭窗口"
-    Dim closeX, closeY,error_one
+    Dim closeX, closeY
     FindColor 879, 80, 1000, 650, "303843|303845", 4, 1, closeX, closeY
     error_time =0
     While closeX > -1
@@ -2021,7 +2021,8 @@ Function close_window()
             TracePrint"出错"
             Exit Function
         End If
-    Wend 
+    Wend
+    TracePrint "关闭窗口结束"
 End Function
 
 //关闭面板
@@ -2039,6 +2040,7 @@ End Function
 //=========================工具区==========================//
 
 Function find_xml(str1,str2)
+    TracePrint "find_xml"
     Dim XY1,XY2,sPos2,ePos2,sPos1, ePos1
     // 获取当前界面的XML信息
     Dim UI_XML = shanhai.GetUIXml()
@@ -2095,7 +2097,7 @@ Function Screen
     //这里设置成开发的分辨率
     scrX = 1080
     scrY = 1920
-    SetScreenScale scrX, scrY,0
+    SetScreenScale scrX, scrY,1
     Dim src = scrX & scrY
 End Function
 //封装时间格式化输出函数
