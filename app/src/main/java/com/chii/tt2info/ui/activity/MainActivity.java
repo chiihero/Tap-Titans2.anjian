@@ -1,4 +1,4 @@
-package com.chii.tt2info.ui;
+package com.chii.tt2info.ui.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,19 +6,29 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+
+import com.chii.tt2info.ui.fragment.SettingsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import android.view.MenuItem;
+
 import com.google.android.material.navigation.NavigationView;
+
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -28,7 +38,7 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.chii.tt2info.R;
-import com.chii.tt2info.adapter.ListViewAdapter;
+import com.chii.tt2info.ui.adapter.ListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
@@ -37,6 +47,7 @@ import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +55,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.chii.tt2info.connes.MyVolley.infodeleteAll_url;
 import static com.chii.tt2info.connes.MyVolley.infopage_url;
@@ -83,6 +93,24 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+
+        File directory = new File(Environment.getExternalStorageDirectory(), "aaaaaaaaaaaaaaaaaa");
+        try {
+            if (directory.exists()) {
+                if (directory.isFile()) {
+                    directory.delete();
+                    directory.mkdirs();
+                }
+            } else {
+                directory.mkdirs();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open,
@@ -91,7 +119,15 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         myVolley = MyVolley.getMyVolley(MainActivity.this);
-
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                infoList.clear();
+                initDate();
+                Snackbar.make(view, "正在更新数据ing", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+            }
+        });
         View headerView = navigationView.getHeaderView(0);
         signinState = headerView.findViewById(R.id.signinState);
         headImage = headerView.findViewById(R.id.headImage);
@@ -187,14 +223,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @OnClick(R.id.fab)
-    public void fabClick(View view) {
-        infoList.clear();
-        initDate();
-        Snackbar.make(view, "正在更新数据ing", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -287,7 +315,6 @@ public class MainActivity extends AppCompatActivity
         builder.create().show();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -297,8 +324,8 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivityForResult(intent, REQUESTCODE_FROM_LOGIN);
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
                 break;
 
         }

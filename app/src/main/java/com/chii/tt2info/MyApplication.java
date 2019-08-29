@@ -12,7 +12,6 @@ import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
 public class MyApplication extends Application {
     private static Resources sRes;
 
-
     @Override
     public void onCreate() {
         super.onCreate();

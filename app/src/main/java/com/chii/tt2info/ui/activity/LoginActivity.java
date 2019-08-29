@@ -1,4 +1,4 @@
-package com.chii.tt2info.ui;
+package com.chii.tt2info.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.chii.tt2info.ui.MainActivity.REQUESTCODE_FROM_REGISTER;
+import static com.chii.tt2info.ui.activity.MainActivity.REQUESTCODE_FROM_REGISTER;
 import static com.chii.tt2info.connes.MyVolley.signin_url;
 
 public class LoginActivity extends AppCompatActivity {

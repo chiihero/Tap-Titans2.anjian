@@ -1,4 +1,4 @@
-package com.chii.tt2info.ui;
+package com.chii.tt2info.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 import com.android.volley.VolleyError;
 import com.chii.tt2info.R;
-import com.chii.tt2info.adapter.InfosListViewAdapter;
+import com.chii.tt2info.ui.adapter.InfosListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Infos;
@@ -44,12 +44,12 @@ public class InfosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infos);
         ButterKnife.bind(this);
-
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
 
 
         Intent intent = getIntent();
@@ -86,7 +86,6 @@ public class InfosActivity extends AppCompatActivity {
     private void initList() {
         mAdapter = new InfosListViewAdapter(this,infosList);
         listView.setAdapter(mAdapter);
-
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

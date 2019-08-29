@@ -11,15 +11,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.chii.tt2info.ui.MainActivity;
+import com.chii.tt2info.ui.activity.MainActivity;
 
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MyVolley {
-    private static String server_rul= "http://192.168.2.144:8088";
-    //    private static String server_rul= "http://www.chiinas.club:8088";
+//    private static String server_rul= "http://192.168.2.144:8088";
+        private static String server_rul= "http://www.chiinas.club:8088";
 
     //    public static String infolist_url = server_rul+"/info/getinfolist";
     public static String infopage_url = server_rul+"/info/getinfopage";

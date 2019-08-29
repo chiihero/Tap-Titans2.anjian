@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <PreferenceCategory android:title="@string/settings_category_basic"
+        android:key="basic">
+
+        <ListPreference
+            android:entries="@array/auto_night_mode_types"
+            android:entryValues="@array/auto_night_mode_types"
+            android:key="@string/key_auto_night_mode"
+            android:title="@string/settings_title_auto_night_mode"
+            android:defaultValue="Follow system"/>
+
+        <Preference
+            android:title="@string/settings_title_night_start_time"
+            android:key="@string/key_night_start_time"/>
+        <Preference
+            android:title="@string/settings_title_night_end_time"
+            android:key="@string/key_night_end_time"/>
+    </PreferenceCategory>
+</PreferenceScreen>

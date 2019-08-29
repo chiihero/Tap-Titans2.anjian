@@ -1,4 +1,4 @@
-package com.chii.tt2info.ui;
+package com.chii.tt2info.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;

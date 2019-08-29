@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- auto night mode. -->
+    <string-array name="auto_night_mode_types">
+        <item>Close</item>
+        <item>Auto</item>
+        <item>Follow system</item>
+    </string-array>
+    <string-array name="auto_night_mode_type_values">
+        <item>close</item>
+        <item>auto</item>
+        <item>follow_system</item>
+    </string-array>
+
+    <!-- language. -->
+    <string-array name="languages">
+        <item>@string/follow_system</item>
+        <item>English (USA)</item>
+        <item>English (UK)</item>
+        <item>English (AU)</item>
+        <item>中文</item>
+        <item>Italiano</item>
+        <item>Türk</item>
+        <item>Deutsche</item>
+        <item>Русский</item>
+        <item>Español</item>
+        <item>日本語</item>
+        <item>Français</item>
+        <item>Português (Brasil)</item>
+    </string-array>
+    <string-array name="language_values">
+        <item>follow_system</item>
+        <item>english_usa</item>
+        <item>english_uk</item>
+        <item>english_au</item>
+        <item>chinese</item>
+        <item>italian</item>
+        <item>turkish</item>
+        <item>german</item>
+        <item>russian</item>
+        <item>spanish</item>
+        <item>japanese</item>
+        <item>french</item>
+        <item>portuguese_brazil</item>
+    </string-array>
+
+</resources>
