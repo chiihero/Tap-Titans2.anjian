@@ -11,12 +11,12 @@
             android:title="@string/menu_home" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_daynight"
                 android:icon="@drawable/ic_theme_night"
-                android:title="night" />
+                android:title="@string/theme_night" />
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_menu_settings"
@@ -24,7 +24,7 @@
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_about_black"
-                android:title="About" />
+                android:title="@string/menu_about" />
         </menu>
     </item>
 

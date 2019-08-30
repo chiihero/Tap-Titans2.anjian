@@ -53,6 +53,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        changeLanguage();
 
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -134,7 +136,18 @@ public class MainActivity extends AppCompatActivity
         initDate();
 
     }
-
+    /*
+    * 更改语言
+    *
+    * */
+    private void changeLanguage() {
+        Configuration config = this.getResources().getConfiguration();
+        if ("US".equals(config.getLocales())) {
+            config.setLocale(Locale.ENGLISH);
+        }else {
+            config.setLocale(Locale.CHINA);
+        }
+    }
     public void initDate() {
         HashMap<String, String> map = new HashMap<String, String>();
         saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
