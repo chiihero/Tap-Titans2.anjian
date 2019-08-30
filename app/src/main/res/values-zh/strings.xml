@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources>
     <string name="app_name">tt2info</string>
     <!-- Strings related to login -->
     <string name="prompt_username">用户名</string>
@@ -12,7 +11,7 @@
 
     <string name="now">现在</string>
 
-    <string name="follow_system">follow system</string>
+    <string name="follow_system">跟随系统</string>
 
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
@@ -47,17 +46,11 @@
     <string name="action_clearAll">清除全部数据</string>
     <string name="action_clearSome">清除一个月前数据</string>
 
-    <!-- settings. -->
-    <string name="settings_category_basic">Basic</string>
-    <string name="settings_title_auto_night_mode">Auto Night mode</string>
-    <string name="settings_title_night_start_time">Night Mode Start Time</string>
-    <string name="settings_title_night_end_time">Night Mode End Time</string>
-    <string name="settings_title_language">Language</string>
-
-    <!--share preferences-->
-    <string name="key_auto_night_mode">auto_night_mode</string>
-    <string name="key_night_start_time">night_start_time</string>
-    <string name="key_night_end_time">night_end_time</string>
-    <string name="key_language">language</string>
+    <!--设置-->
+    <string name="settings_category_basic">基础</string>
+    <string name="settings_title_auto_night_mode">自动夜间模式</string>
+    <string name="settings_title_night_start_time">夜间模式开始时间</string>
+    <string name="settings_title_night_end_time">夜间模式结束时间</string>
+    <string name="settings_title_language">语言</string>
 
 </resources>

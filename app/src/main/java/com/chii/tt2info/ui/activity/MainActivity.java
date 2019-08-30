@@ -1,24 +1,37 @@
-package com.chii.tt2info.ui;
+package com.chii.tt2info.ui.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
+import androidx.annotation.Nullable;
+
+import com.chii.tt2info.ui.fragment.SettingsFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.MenuItem;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.view.GravityCompat;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import android.view.MenuItem;
+
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -28,7 +41,7 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.chii.tt2info.R;
-import com.chii.tt2info.adapter.ListViewAdapter;
+import com.chii.tt2info.ui.adapter.ListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
@@ -37,15 +50,14 @@ import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.chii.tt2info.connes.MyVolley.infodeleteAll_url;
 import static com.chii.tt2info.connes.MyVolley.infopage_url;
@@ -62,6 +74,9 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     @BindView(R.id.mainlistview)
     ListView listView;
+
+
+
 
     TextView signinState;
     ImageView headImage;
@@ -84,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open,
@@ -91,8 +107,18 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        myVolley = MyVolley.getMyVolley(MainActivity.this);
+//        upThemeVw();
 
+        myVolley = MyVolley.getMyVolley(MainActivity.this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                infoList.clear();
+                initDate();
+                Snackbar.make(view, "正在更新数据ing", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+            }
+        });
         View headerView = navigationView.getHeaderView(0);
         signinState = headerView.findViewById(R.id.signinState);
         headImage = headerView.findViewById(R.id.headImage);
@@ -188,14 +214,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @OnClick(R.id.fab)
-    public void fabClick(View view) {
-        infoList.clear();
-        initDate();
-        Snackbar.make(view, "正在更新数据ing", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -265,7 +283,6 @@ public class MainActivity extends AppCompatActivity
                                     Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_LONG).show();
                                 }
                             }
-
                             @Override
                             public void ResponError(VolleyError volleyError) {
                             }
@@ -288,18 +305,22 @@ public class MainActivity extends AppCompatActivity
         builder.create().show();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_home:
 
                 break;
+            case R.id.nav_daynight:
+                upThemeVw();
+//
+                break;
             case R.id.nav_settings:
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivityForResult(intent, REQUESTCODE_FROM_LOGIN);
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
                 break;
 
         }
@@ -309,7 +330,36 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    /**
+     * 更新主题切换按钮
+     */
+    private void upThemeVw() {
 
+        Menu drawerMenu = navigationView.getMenu();
+
+        MenuItem vwNightTheme = drawerMenu.findItem(R.id.nav_daynight);
+        int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (mode == Configuration.UI_MODE_NIGHT_YES) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//            vwNightTheme.setIcon(R.drawable.ic_theme_night);
+//            vwNightTheme.setTitle("nigth");
+        } else if (mode == Configuration.UI_MODE_NIGHT_NO) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            vwNightTheme.setIcon(R.drawable.ic_theme_day);
+//            vwNightTheme.setTitle("day");
+        }
+        recreate();
+        if (mode == Configuration.UI_MODE_NIGHT_YES) {
+            vwNightTheme.setIcon(R.drawable.ic_theme_night);
+            vwNightTheme.setTitle("nigth");
+        } else if (mode == Configuration.UI_MODE_NIGHT_NO) {
+            vwNightTheme.setIcon(R.drawable.ic_theme_day);
+            vwNightTheme.setTitle("day");
+        }
+//        finish();
+//                startActivity(new Intent( this, this.getClass()));
+//                overridePendingTransition(0, 0);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

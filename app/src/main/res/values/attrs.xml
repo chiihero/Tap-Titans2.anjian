@@ -17,13 +17,4 @@
         </attr>
         <attr name="clickToClose" format="boolean" />
     </declare-styleable>
-
-
-
-    <!-- 自动夜间模式 -->
-    <string-array name="auto_night_mode_types">
-        <item>关闭</item>
-        <item>自动</item>
-        <item>跟随系统</item>
-    </string-array>
 </resources>
