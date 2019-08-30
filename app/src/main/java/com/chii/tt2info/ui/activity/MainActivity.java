@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Intent intent;
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_home:
@@ -314,9 +315,12 @@ public class MainActivity extends AppCompatActivity
                 upTheme();
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_about:
+                intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -329,11 +333,11 @@ public class MainActivity extends AppCompatActivity
     private void upTheme() {
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (mode == Configuration.UI_MODE_NIGHT_YES) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //            NightTheme.setIcon(R.drawable.ic_theme_night);
             SPUtil.put(MainActivity.this, "nightTheme", false);
         } else if (mode == Configuration.UI_MODE_NIGHT_NO) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 //            NightTheme.setIcon(R.drawable.ic_theme_day);
             SPUtil.put(MainActivity.this, "nightTheme", true);
         }

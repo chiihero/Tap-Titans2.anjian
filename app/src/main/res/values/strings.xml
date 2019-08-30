@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">tt2info</string>
     <!-- Strings related to login -->
     <string name="prompt_username">用户名</string>
@@ -59,5 +58,10 @@
     <string name="key_night_start_time">night_start_time</string>
     <string name="key_night_end_time">night_end_time</string>
     <string name="key_language">language</string>
+    <string name="action_about">关于</string>
+    <string name="introduce">介绍</string>
+    <string name="tt2info">tt2info</string>
+    <string name="version_code">1.0.1</string>
+    <string name="Github">GITHUB</string>
 
 </resources>
