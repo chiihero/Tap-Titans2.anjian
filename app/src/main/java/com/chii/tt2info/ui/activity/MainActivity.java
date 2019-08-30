@@ -10,16 +10,13 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.chii.tt2info.ui.fragment.SettingsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -34,14 +31,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.chii.tt2info.R;
-import com.chii.tt2info.ui.adapter.ListViewAdapter;
+import com.chii.tt2info.ui.adapter.InfoListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
@@ -50,7 +49,6 @@ import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +78,7 @@ public class MainActivity extends AppCompatActivity
 
     TextView signinState;
     ImageView headImage;
-    private ListViewAdapter mAdapter;
+    private InfoListViewAdapter mAdapter;
     private Context context = this;
     private Gson gson = new Gson();
     private Boolean isSignin = false;
@@ -191,7 +189,7 @@ public class MainActivity extends AppCompatActivity
 
     public void initList() {
         Log.d(TAG, "initList: test");
-        mAdapter = new ListViewAdapter(this, infoList);
+        mAdapter = new InfoListViewAdapter(this, infoList);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -301,30 +299,25 @@ public class MainActivity extends AppCompatActivity
                         dialogInterface.dismiss();
                     }
                 });
-
         builder.create().show();
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_home:
 
                 break;
             case R.id.nav_daynight:
-                upThemeVw();
-//
+                upTheme();
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
                 break;
-
         }
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -333,32 +326,21 @@ public class MainActivity extends AppCompatActivity
     /**
      * 更新主题切换按钮
      */
-    private void upThemeVw() {
-
-        Menu drawerMenu = navigationView.getMenu();
-
-        MenuItem vwNightTheme = drawerMenu.findItem(R.id.nav_daynight);
+    private void upTheme() {
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (mode == Configuration.UI_MODE_NIGHT_YES) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//            vwNightTheme.setIcon(R.drawable.ic_theme_night);
-//            vwNightTheme.setTitle("nigth");
+//            NightTheme.setIcon(R.drawable.ic_theme_night);
+            SPUtil.put(MainActivity.this, "nightTheme", false);
         } else if (mode == Configuration.UI_MODE_NIGHT_NO) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//            vwNightTheme.setIcon(R.drawable.ic_theme_day);
-//            vwNightTheme.setTitle("day");
+//            NightTheme.setIcon(R.drawable.ic_theme_day);
+            SPUtil.put(MainActivity.this, "nightTheme", true);
         }
         recreate();
-        if (mode == Configuration.UI_MODE_NIGHT_YES) {
-            vwNightTheme.setIcon(R.drawable.ic_theme_night);
-            vwNightTheme.setTitle("nigth");
-        } else if (mode == Configuration.UI_MODE_NIGHT_NO) {
-            vwNightTheme.setIcon(R.drawable.ic_theme_day);
-            vwNightTheme.setTitle("day");
-        }
 //        finish();
-//                startActivity(new Intent( this, this.getClass()));
-//                overridePendingTransition(0, 0);
+//        startActivity(new Intent(this, this.getClass()));
+//        overridePendingTransition(0, 0);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
