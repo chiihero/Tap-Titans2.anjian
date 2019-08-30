@@ -333,18 +333,18 @@ public class MainActivity extends AppCompatActivity
     private void upTheme() {
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (mode == Configuration.UI_MODE_NIGHT_YES) {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //            NightTheme.setIcon(R.drawable.ic_theme_night);
             SPUtil.put(MainActivity.this, "nightTheme", false);
         } else if (mode == Configuration.UI_MODE_NIGHT_NO) {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 //            NightTheme.setIcon(R.drawable.ic_theme_day);
             SPUtil.put(MainActivity.this, "nightTheme", true);
         }
-        recreate();
-//        finish();
-//        startActivity(new Intent(this, this.getClass()));
-//        overridePendingTransition(0, 0);
+//        recreate();
+        finish();
+        startActivity(new Intent(this, this.getClass()));
+        overridePendingTransition(0, 0);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
