@@ -27,7 +27,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preference_setting);
         if (getActivity() != null) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
             initBasicPart(sharedPreferences);
         }
     }
@@ -35,7 +36,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     private void initBasicPart(SharedPreferences sharedPreferences) {
         //auto day night
         ListPreference autoDayNigth = findPreference(getString(R.string.key_auto_night_mode));
-        String autoDayNigthValue = sharedPreferences.getString(getString(R.string.key_auto_night_mode), "Follow system");
+        String autoDayNigthValue =
+                sharedPreferences.getString(getString(R.string.key_auto_night_mode), "Follow " +
+                        "system");
         String autoDayNigthName = ValueUtils.getAutoNightModeName(getActivity(), autoDayNigthValue);
         autoDayNigth.setSummary(getString(R.string.now) + " : " + autoDayNigthName);
         autoDayNigth.setOnPreferenceChangeListener(this);
@@ -61,7 +64,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         if (preference.getKey().equals(getString(R.string.key_auto_night_mode))) {
             // auto night mode.
             SettingsOptionManager.getInstance(getActivity()).setAutoNightMode((String) newValue);
-            String autoNightMode = ValueUtils.getAutoNightModeName(getActivity(), (String) newValue);
+            String autoNightMode = ValueUtils.getAutoNightModeName(getActivity(),
+                    (String) newValue);
             preference.setSummary(getString(R.string.now) + " : " + autoNightMode);
             if (((String) newValue).equals("auto")) {
                 findPreference(getString(R.string.key_night_start_time)).setEnabled(true);

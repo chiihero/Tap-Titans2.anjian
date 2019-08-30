@@ -7,18 +7,20 @@ import java.util.Date;
 import java.util.Locale;
 
 public class TimeUtil {
-    public static Date Timestamp2Data(Long timestamp){
+    public static Date Timestamp2Data(Long timestamp) {
         Timestamp ts = new Timestamp(timestamp);
-        return (Date)ts;
+        return (Date) ts;
     }
-    public static Date String2Data(String timestamp){
+
+    public static Date String2Data(String timestamp) {
         Timestamp ts = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.CHINA);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CHINA);
         try {
             Date dt = sdf.parse(timestamp);
             ts = new Timestamp(dt.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
-        }        return (Date)ts;
+        }
+        return (Date) ts;
     }
 }

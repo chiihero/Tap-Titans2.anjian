@@ -27,8 +27,6 @@ public class SettingActivity extends AppCompatActivity {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.settings_container, new SettingsFragment())
                 .commit();
-
-
     }
 
     private void initWidget() {
@@ -45,7 +43,6 @@ public class SettingActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 break;
-
             default:
                 break;
         }

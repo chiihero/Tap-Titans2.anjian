@@ -44,8 +44,8 @@ public class InfosListViewAdapter extends BaseAdapter {
         TextView TV_data = ViewHolder.get(convertView, R.id.infos_data);
         TextView TV_usename = ViewHolder.get(convertView, R.id.infos_usetime);
 
-        String layer = "层数："+minfoslist.get(position).getLayer();
-        String usetime = "运行时间："+minfoslist.get(position).getUsetime();
+        String layer = "层数：" + minfoslist.get(position).getLayer();
+        String usetime = "运行时间：" + minfoslist.get(position).getUsetime();
         TV_data.setText(layer);
         TV_usename.setText(usetime);
 

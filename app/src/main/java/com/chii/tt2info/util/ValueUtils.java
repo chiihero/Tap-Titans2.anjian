@@ -20,6 +20,7 @@ public class ValueUtils {
                 return null;
         }
     }
+
     public static String getLanguageName(Context c, String key) {
         switch (key) {
             case "follow_system":

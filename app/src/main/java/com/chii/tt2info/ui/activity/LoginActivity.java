@@ -3,9 +3,11 @@ package com.chii.tt2info.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -51,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     private String username, passwd;
     Boolean isSignin = false;
     static Boolean encrypt = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 String username = usernameEditText.getText().toString();
                 String passwd = passwordEditText.getText().toString();
-                if (!encrypt) passwd = Md5.safepasswd(passwd,1024);
+                if (!encrypt) passwd = Md5.safepasswd(passwd, 1024);
                 initDate(username, passwd);
             }
         });
@@ -111,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initDate(final String username, final String passwd) {
-        Log.d(TAG, "initDate: "+passwd);
+        Log.d(TAG, "initDate: " + passwd);
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("username", username);
         map.put("passwd", passwd);

@@ -27,12 +27,14 @@ public class SettingsOptionManager {
         }
         return instance;
     }
+
     private String autoNightMode;
     private String language;
 
 
     private SettingsOptionManager(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(context);
 
         this.autoNightMode = sharedPreferences.getString(
                 context.getString(R.string.key_auto_night_mode),

@@ -2,8 +2,10 @@ package com.chii.tt2info.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -45,16 +47,15 @@ public class InfosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_infos);
         ButterKnife.bind(this);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
 
-
         Intent intent = getIntent();
-        int mid = intent.getIntExtra("mid",0);
-        Log.d(TAG, "onCreate: "+mid);
+        int mid = intent.getIntExtra("mid", 0);
+        Log.d(TAG, "onCreate: " + mid);
         initList();
         initDate(mid);
 
@@ -84,9 +85,10 @@ public class InfosActivity extends AppCompatActivity {
     }
 
     private void initList() {
-        mAdapter = new InfosListViewAdapter(this,infosList);
+        mAdapter = new InfosListViewAdapter(this, infosList);
         listView.setAdapter(mAdapter);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

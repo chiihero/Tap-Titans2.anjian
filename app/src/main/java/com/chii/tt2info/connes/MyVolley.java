@@ -18,17 +18,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MyVolley {
-//    private static String server_rul= "http://192.168.2.144:8088";
-        private static String server_rul= "http://www.chiinas.club:8088";
+    //    private static String server_rul= "http://192.168.2.144:8088";
+    private static String server_rul = "http://www.chiinas.club:8088";
 
     //    public static String infolist_url = server_rul+"/info/getinfolist";
-    public static String infopage_url = server_rul+"/info/getinfopage";
-    public static String infodeleteAll_url = server_rul+"/info/deleteAll";
-    public static String infodelete_url = server_rul+"/info/delete";
+    public static String infopage_url = server_rul + "/info/getinfopage";
+    public static String infodeleteAll_url = server_rul + "/info/deleteAll";
+    public static String infodelete_url = server_rul + "/info/delete";
 
-    public static String infos_url = server_rul+"/info/getinfos";
-    public static String signin_url = server_rul+"/signin";
-    public static String register_url = server_rul+"/register";
+    public static String infos_url = server_rul + "/info/getinfos";
+    public static String signin_url = server_rul + "/signin";
+    public static String register_url = server_rul + "/register";
 
 
     private static RequestQueue requestQueue = null;
@@ -40,6 +40,7 @@ public class MyVolley {
         requestQueue = Volley.newRequestQueue(context);
         return volleyHelper;
     }
+
     /**
      * post请求
      *
@@ -47,16 +48,16 @@ public class MyVolley {
      * @return bean
      */
     public void Post(String url, final HashMap<String, String> hashMap,
-                         final volleyInterface volleyInterface) {
+                     final volleyInterface volleyInterface) {
         Log.i(MainActivity.TAG, "开始请求");
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(MainActivity.TAG, "onResponse: "+response);
-                volleyInterface.ResponseResult(response);
-            }
-        }, new Response.ErrorListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(MainActivity.TAG, "onResponse: " + response);
+                        volleyInterface.ResponseResult(response);
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 volleyInterface.ResponError(volleyError);
@@ -78,16 +79,16 @@ public class MyVolley {
      * 以实体类形式返回，然后进行强转
      **/
     public void Get(String url, HashMap<String, String> hashMap,
-                        final volleyInterface volleyInterface) {
+                    final volleyInterface volleyInterface) {
         String str = paramsCastUrl(url, hashMap);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, str,
                 new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(MainActivity.TAG, "onResponse: "+response);
-                volleyInterface.ResponseResult(response);
-            }
-        }, new Response.ErrorListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(MainActivity.TAG, "onResponse: " + response);
+                        volleyInterface.ResponseResult(response);
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 volleyInterface.ResponError(volleyError);
@@ -96,7 +97,6 @@ public class MyVolley {
         });
         AddrequestQueue(stringRequest);
     }
-
 
 
     //此方法是 Volley配置方法

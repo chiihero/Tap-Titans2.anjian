@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+
 import androidx.appcompat.app.AppCompatDelegate;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -24,7 +26,7 @@ public class MyApplication extends Application {
     }
 
     public void initNightTheme() {
-        Log.d(TAG, "initNightTheme: "+isNightTheme());
+        Log.d(TAG, "initNightTheme: " + isNightTheme());
         if (isNightTheme()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
@@ -32,10 +34,10 @@ public class MyApplication extends Application {
         }
     }
 
-
     public boolean isNightTheme() {
-        return (Boolean) SPUtil.get(this, "nightTheme",  Boolean.FALSE);
+        return (Boolean) SPUtil.get(this, "nightTheme", Boolean.FALSE);
     }
+
     @Override
     public void onLowMemory() {
         super.onLowMemory();

@@ -3,8 +3,10 @@ package com.chii.tt2info.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         myVolley = MyVolley.getMyVolley(RegisterActivity.this);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -62,14 +64,14 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String email = emailEditText.getText().toString();
                 String passwd = passwordEditText.getText().toString();
-                passwd = Md5.safepasswd(passwd,1024);
-                initDate(username, email,passwd);
+                passwd = Md5.safepasswd(passwd, 1024);
+                initDate(username, email, passwd);
             }
         });
 
     }
 
-    private void initDate(final String username,final String email, final String passwd) {
+    private void initDate(final String username, final String email, final String passwd) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("username", username);
         map.put("email", email);
@@ -81,12 +83,12 @@ public class RegisterActivity extends AppCompatActivity {
                 if (jsonObject.equals("false")) {
                     Log.d(TAG, "注册失败");
                     loadingProgressBar.setVisibility(View.GONE);
-                } else if (jsonObject.equals("true")){
+                } else if (jsonObject.equals("true")) {
                     Log.d(TAG, "注册成功");
                     Intent intent = new Intent();
                     intent.putExtra("username", username);
                     intent.putExtra("passwd", passwd);
-                    setResult(Activity.RESULT_OK,intent);
+                    setResult(Activity.RESULT_OK, intent);
                     finish();
                 }
             }

@@ -19,7 +19,8 @@ public class Info {
 
     private String username;
 
-    public Info(Integer mid, String title, String notes, Integer layerSet, Integer updateAll, Integer updateMini, String time, String username) {
+    public Info(Integer mid, String title, String notes, Integer layerSet, Integer updateAll,
+                Integer updateMini, String time, String username) {
         this.mid = mid;
         this.title = title;
         this.notes = notes;
@@ -85,9 +86,11 @@ public class Info {
     public String getTime() {
         return time;
     }
+
     public void setTime(String time) {
         this.time = time;
     }
+
     public String getUsername() {
         return username;
     }

@@ -23,6 +23,7 @@ public class InfoListViewAdapter extends BaseAdapter {
         this.mContext = mContext;
         this.minfolist = infolist;
     }
+
     @Override
     public int getCount() {
         return minfolist.size();
@@ -51,11 +52,11 @@ public class InfoListViewAdapter extends BaseAdapter {
         TextView TV_time = ViewHolder.get(convertView, R.id.info_time);
 
 
-        String title =minfolist.get(position).getTitle();
-        String layerSet = "层数设定："+minfolist.get(position).getLayerSet().toString();
-        String notes ="备注："+minfolist.get(position).getNotes();
-        String updateAll = "全面升级次数："+minfolist.get(position).getUpdateAll().toString();
-        String updateMini = "小升级次数："+minfolist.get(position).getUpdateMini().toString();
+        String title = minfolist.get(position).getTitle();
+        String layerSet = "层数设定：" + minfolist.get(position).getLayerSet().toString();
+        String notes = "备注：" + minfolist.get(position).getNotes();
+        String updateAll = "全面升级次数：" + minfolist.get(position).getUpdateAll().toString();
+        String updateMini = "小升级次数：" + minfolist.get(position).getUpdateMini().toString();
         String timestamp = minfolist.get(position).getTime();
         //2019-08-05 09:22:27.0/
         //获取.之前的字符串

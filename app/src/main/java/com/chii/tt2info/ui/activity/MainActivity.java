@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity
     ListView listView;
 
 
-
-
     TextView signinState;
     ImageView headImage;
     private InfoListViewAdapter mAdapter;
@@ -266,7 +264,8 @@ public class MainActivity extends AppCompatActivity
      */
     private void showDialog() {
         builder = new AlertDialog.Builder(this).setIcon(R.drawable.ic_delete_sweep).setTitle("删除信息")
-                .setMessage("你要删除哪些数据？").setNeutralButton("全部", new DialogInterface.OnClickListener() {
+                .setMessage("你要删除哪些数据？").setNeutralButton("全部",
+                        new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         HashMap<String, String> map = new HashMap<String, String>();
@@ -281,6 +280,7 @@ public class MainActivity extends AppCompatActivity
                                     Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_LONG).show();
                                 }
                             }
+
                             @Override
                             public void ResponError(VolleyError volleyError) {
                             }
@@ -327,6 +327,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     /**
      * 更新主题切换按钮
      */
@@ -346,6 +347,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, this.getClass()));
         overridePendingTransition(0, 0);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

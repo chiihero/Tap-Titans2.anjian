@@ -12,12 +12,14 @@ import com.chii.tt2info.swipe.util.Attributes;
 
 import java.util.List;
 
-public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemMangerInterface, SwipeAdapterInterface {
+public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemMangerInterface,
+        SwipeAdapterInterface {
 
     protected SwipeItemMangerImpl mItemManger = new SwipeItemMangerImpl(this);
 
     /**
      * return the {@link SwipeLayout} resource id, int the view item.
+     *
      * @param position
      * @return
      */
@@ -28,6 +30,7 @@ public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemM
      * Never bind SwipeListener or fill values here, every item has a chance to fill value or bind
      * listeners in fillValues.
      * to fill it in {@code fillValues} method.
+     *
      * @param position
      * @param parent
      * @return
@@ -36,6 +39,7 @@ public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemM
 
     /**
      * fill values or bind listeners to the view.
+     *
      * @param position
      * @param convertView
      */
@@ -50,7 +54,7 @@ public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemM
     @Override
     public final View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
-        if(v == null){
+        if (v == null) {
             v = generateView(position, parent);
         }
         mItemManger.bind(v, position);

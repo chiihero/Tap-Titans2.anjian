@@ -1,6 +1,7 @@
 package com.chii.tt2info.ui.activity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -24,21 +25,34 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
         initWidget();
-
     }
 
     private void initWidget() {
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         itemAboutGithub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntentHelper.startWebActivity(view.getContext(), "https://github.com/chiihero/Tap-Titans2.anjian");
+                IntentHelper.startWebActivity(view.getContext(), "https://github" +
+                        ".com/chiihero/Tap-Titans2.anjian");
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 }
