@@ -1,4 +1,4 @@
-//2019年8月25日15:14:42
+//2019年9月2日13:09:38
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -162,7 +162,7 @@ Case Else
 	log_warn_bool = False
 	log_error_bool = True
 End Select
-TracePrint "日志等级:"log_level
+TracePrint "日志等级:",log_level
 //2点到7点暂停运行
 Dim rest_bool = ReadUIConfig("rest",false)
 TracePrint shanhai.iif(rest_bool, "2点到7点暂停运行:开启", "2点到7点暂停运行:关闭")
@@ -246,7 +246,8 @@ Function init()
     tribe_usetime = TickCount()//蜕变使用时间初始化
     //初始化发送内容
     mail_info = ""
-    post_info=""
+    post_info = ""
+    info_notes = ""
     info_layer_number_last = 1
     info_layer_number = 1
     //初始化识别层数
@@ -917,7 +918,7 @@ Function artifact_update()
         Touch 910,479, RndEx(5,15)
         Delay delay_x(1000)
         error_time = error_time + 1
-        If error_time > 10 Then 
+        If error_time > 2 Then 
             TracePrint"出错"
             Call close_occlusion()
             Exit While
