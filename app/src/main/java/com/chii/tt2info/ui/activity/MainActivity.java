@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     private InfoListViewAdapter mAdapter;
     private Context context = this;
     private Gson gson = new Gson();
-    private Boolean isSignin = false;
+    private boolean isSignin = false;
     List<Info> infoList = new ArrayList<>();
     public static String TAG = "MainActivitytag";
     private MyVolley myVolley;
@@ -123,8 +123,8 @@ public class MainActivity extends AppCompatActivity
         signinState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSignin != null && isSignin) {
-                    SPUtil.put(MainActivity.this, "isSignin", false);
+                if (isSignin) {
+                    SPUtil.put(MainActivity.this, "isSignin", Boolean.FALSE);
                 }
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivityForResult(intent, REQUESTCODE_FROM_LOGIN);
@@ -136,27 +136,29 @@ public class MainActivity extends AppCompatActivity
         initDate();
 
     }
+
     /*
-    * 更改语言
-    *
-    * */
+     * 更改语言
+     *
+     * */
     private void changeLanguage() {
         Configuration config = this.getResources().getConfiguration();
-        if ("US".equals(config.getLocales())) {
+        if ("US".equals(config.getLocales().toString())) {
             config.setLocale(Locale.ENGLISH);
-        }else {
+        } else {
             config.setLocale(Locale.CHINA);
         }
     }
+
     public void initDate() {
         HashMap<String, String> map = new HashMap<String, String>();
         saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
         savepasswd = (String) SPUtil.get(MainActivity.this, "passwd", "");
-        SPUtil.put(MainActivity.this, "isSignin", true);
-        isSignin = (Boolean) SPUtil.get(MainActivity.this, "isSignin", Boolean.FALSE);
+        SPUtil.put(MainActivity.this, "isSignin", Boolean.TRUE);
+        isSignin = (boolean) SPUtil.get(MainActivity.this, "isSignin", Boolean.FALSE);
 
         Log.d(TAG, "initDate: " + saveusername + " " + savepasswd + " " + isSignin);
-        if (isSignin != null && isSignin) {
+        if (isSignin) {
             Log.d(TAG, "isSignin: " + isSignin);
             map.put("username", saveusername);
             map.put("pageNum", pageNum);
@@ -186,7 +188,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void logged(Boolean flag) {
+    private void logged(boolean flag) {
         if (flag) {
             signinState.setText("退出登录");
             headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_check_black),
@@ -279,28 +281,30 @@ public class MainActivity extends AppCompatActivity
         builder = new AlertDialog.Builder(this).setIcon(R.drawable.ic_delete_sweep).setTitle("删除信息")
                 .setMessage("你要删除哪些数据？").setNeutralButton("全部",
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("username", saveusername);
-                        map.put("passwd", savepasswd);
-                        myVolley.Post(infodeleteAll_url, map, new volleyInterface() {
                             @Override
-                            public void ResponseResult(String jsonObject) {
-                                if (jsonObject.equals("true")) {
-                                    Toast.makeText(MainActivity.this, "成功", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_LONG).show();
-                                }
-                            }
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("username", saveusername);
+                                map.put("passwd", savepasswd);
+                                myVolley.Post(infodeleteAll_url, map, new volleyInterface() {
+                                    @Override
+                                    public void ResponseResult(String jsonObject) {
+                                        if (jsonObject.equals("true")) {
+                                            Toast.makeText(MainActivity.this, "成功",
+                                                    Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "失败",
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    }
 
-                            @Override
-                            public void ResponError(VolleyError volleyError) {
+                                    @Override
+                                    public void ResponError(VolleyError volleyError) {
+                                    }
+                                });
                             }
-                        });
-                    }
-                    //ToDo: 你想做的事情
-                }).setNegativeButton("一个月前(无效)", new DialogInterface.OnClickListener() {
+                            //ToDo: 你想做的事情
+                        }).setNegativeButton("一个月前(无效)", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(MainActivity.this, "一个月前", Toast.LENGTH_LONG).show();
@@ -349,11 +353,11 @@ public class MainActivity extends AppCompatActivity
         if (mode == Configuration.UI_MODE_NIGHT_YES) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //            NightTheme.setIcon(R.drawable.ic_theme_night);
-            SPUtil.put(MainActivity.this, "nightTheme", false);
+            SPUtil.put(MainActivity.this, "nightTheme", Boolean.FALSE);
         } else if (mode == Configuration.UI_MODE_NIGHT_NO) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 //            NightTheme.setIcon(R.drawable.ic_theme_day);
-            SPUtil.put(MainActivity.this, "nightTheme", true);
+            SPUtil.put(MainActivity.this, "nightTheme", Boolean.TRUE);
         }
 //        recreate();
         finish();

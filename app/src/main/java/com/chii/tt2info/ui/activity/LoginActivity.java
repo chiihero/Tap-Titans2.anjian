@@ -51,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
     User user = new User();
     public static String TAG = "LoginActivity";
     private String username, passwd;
-    Boolean isSignin = false;
-    static Boolean encrypt = false;
+    boolean isSignin = false;
+    static boolean encrypt = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,9 +68,9 @@ public class LoginActivity extends AppCompatActivity {
 
         String saveusername = (String) SPUtil.get(LoginActivity.this, "username", "");
         String savepasswd = (String) SPUtil.get(LoginActivity.this, "passwd", "");
-        isSignin = (Boolean) SPUtil.get(LoginActivity.this, "isSignin", Boolean.FALSE);
+        isSignin = (boolean) SPUtil.get(LoginActivity.this, "isSignin", Boolean.FALSE);
         Log.d(TAG, "onCreate: " + saveusername + " " + savepasswd);
-        if (isSignin != null && isSignin) {
+        if (isSignin) {
             initDate(saveusername, savepasswd);
         } else if (saveusername != null && savepasswd != null) {
             usernameEditText.setText(saveusername);
@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
                     Log.d(TAG, "登录成功");
-                    SPUtil.put(LoginActivity.this, "isSignin", true);
+                    SPUtil.put(LoginActivity.this, "isSignin", Boolean.TRUE);
                     SPUtil.put(LoginActivity.this, "username", username);
                     SPUtil.put(LoginActivity.this, "passwd", passwd);
                     Intent intent = new Intent();
