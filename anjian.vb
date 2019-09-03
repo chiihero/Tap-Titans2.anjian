@@ -1,4 +1,4 @@
-//2019年9月2日13:09:38
+//2019年9月3日20:36:35
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -169,6 +169,9 @@ TracePrint shanhai.iif(rest_bool, "2点到7点暂停运行:开启", "2点到7点
 //低电量关屏暂停运行
 Dim electricity_bool = ReadUIConfig("electricity",false)
 TracePrint shanhai.iif(electricity_bool, "低电量关屏暂停运行:开启", "低电量关屏暂停运行:关闭")
+//电量管理60%~40%
+Dim electricity_set_bool = ReadUIConfig("electricity_set",false)
+TracePrint shanhai.iif(electricity_set_bool, "电量管理60%~40%:开启", "电量管理60%~40%:关闭")
 //数据开关
 Dim data_bool = ReadUIConfig("data",false)
 TracePrint shanhai.iif(data_bool, "数据开关:开启", "数据开关:关闭")
@@ -320,6 +323,7 @@ Function main
         If TickCount() - timing_task > 20000 Then 
             Call check_status()//运行状态
             Call prestige_check()//层数处理
+            Call electricity_manage()//电量相关管理
             //判断界面部落boss
             If CmpColorEx("201|56|A5B6E9-111111", 1) = 1 Then 
                 Call tribe()//部落任务
@@ -336,33 +340,49 @@ Function main
         Call info_layer_add(ocrchar_layer)//邮件内容记录
 
         Call close_occlusion()
-        //2点到7点暂停运行
-        If rest_bool And DateTime.Hour() > 02 And DateTime.Hour() < 06 Then 
-            TracePrint "2点到7点暂停运行"
-            While DateTime.Hour() > 02 And DateTime.Hour() < 06
-                KeyPress "Home"
-                Delay 1800000
-            Wend
-            mistake_reboot = TickCount()
-            RunApp "com.gamehivecorp.taptitans2"
-            Delay 5000
-        End If
-        //电量不足关屏充电
-        If electricity_bool And Sys.GetBatteryLevel() < 30 Then 
-            While Sys.GetBatteryLevel() < 80
-                KeyPress "Home"
-                Delay 10000
-            Wend
-            While Device.IsLock()
-                Device.UnLock()
-                Delay 5000
-            Wend
-            mistake_reboot = TickCount()
-            RunApp "com.gamehivecorp.taptitans2"
-            Delay 5000
-        End If
+		
     Loop
 End Function
+
+//电量相关管理
+Function electricity_manage()
+	//2点到7点暂停运行
+    If rest_bool And DateTime.Hour() > 02 And DateTime.Hour() < 06 Then 
+        TracePrint "2点到7点暂停运行"
+        While DateTime.Hour() > 02 And DateTime.Hour() < 06
+            KeyPress "Home"
+            Delay 1800000
+        Wend
+        mistake_reboot = TickCount()
+        RunApp "com.gamehivecorp.taptitans2"
+        Delay 5000
+    End If
+    //电量不足关屏充电
+    If electricity_bool And Sys.GetBatteryLevel() < 30 Then 
+        While Sys.GetBatteryLevel() < 80
+            KeyPress "Home"
+            Delay 10000
+        Wend
+        While Device.IsLock()
+            Device.UnLock()
+            Delay 5000
+        Wend
+        mistake_reboot = TickCount()
+        RunApp "com.gamehivecorp.taptitans2"
+        Delay 5000
+    End If
+	//电量管理60%~40%
+    If electricity_set_bool Then 
+    	If Sys.GetBatteryLevel() > 60 Then 
+    		//设置断开充电（Android 6.0以上）
+			Call shanhai.Execute("dumpsys battery unplug")
+		ElseIf Sys.GetBatteryLevel() < 40 Then 
+			//复位，恢复实际状态
+			Call shanhai.Execute("dumpsys battery reset")
+    	End If
+    End If
+End Function
+
 //判断应用存在
 Function check_status()
     Dim intX, intY
@@ -629,7 +649,7 @@ Function skill_one(intX, intY,max_error, skill_true, error)
     If CmpColorEx(cmpColors, 1) = 0 And skill_true = True Then 
         //		TracePrint "x="&intX&"y="&intY
         Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
-        Delay RndEx(40, 100)
+        Delay RndEx(100, 200)
         If CmpColorEx(cmpColors, 1) = 0 Then 
             TracePrint "技能没有点击到"
             Touch RndEx(intX-30, intX+30), RndEx(intY+30, intY+100),RndEx(50, 55)
