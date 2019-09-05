@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, "hello" + position, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, infoList.get(position).getTitle(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.putExtra("mid", infoList.get(position).getMid());
                 intent.setClass(MainActivity.this, InfosActivity.class);
