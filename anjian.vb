@@ -1,4 +1,4 @@
-//2019年9月3日20:36:35
+//2019年9月8日12:54:52
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -144,23 +144,23 @@ Select Case log_level
 Case 0
     log_debug_bool = True
     log_info_bool = True
-	log_warn_bool = True
-	log_error_bool = True
+    log_warn_bool = True
+    log_error_bool = True
 Case 1
     log_debug_bool = False
     log_info_bool = True
-	log_warn_bool = True
-	log_error_bool = True
+    log_warn_bool = True
+    log_error_bool = True
 Case 2
     log_debug_bool = False
     log_info_bool = False
-	log_warn_bool = True
-	log_error_bool = True
+    log_warn_bool = True
+    log_error_bool = True
 Case Else
-	log_debug_bool = False
+    log_debug_bool = False
     log_info_bool = False
-	log_warn_bool = False
-	log_error_bool = True
+    log_warn_bool = False
+    log_error_bool = True
 End Select
 TracePrint "日志等级:",log_level
 //2点到7点暂停运行
@@ -235,7 +235,7 @@ Touch 500, 500, 200
 //关闭面板
 Call close_occlusion()
 //===================测试区=======================//
- 
+// Call tribe()
 //===================测试区结束=======================//
 Call main()
 
@@ -346,7 +346,7 @@ End Function
 
 //电量相关管理
 Function electricity_manage()
-	//2点到7点暂停运行
+    //2点到7点暂停运行
     If rest_bool And DateTime.Hour() > 02 And DateTime.Hour() < 06 Then 
         TracePrint "2点到7点暂停运行"
         While DateTime.Hour() > 02 And DateTime.Hour() < 06
@@ -356,6 +356,16 @@ Function electricity_manage()
         mistake_reboot = TickCount()
         RunApp "com.gamehivecorp.taptitans2"
         Delay 5000
+    End If
+    //电量管理60%~40%
+    If electricity_set_bool Then 
+        If Sys.GetBatteryLevel() > 60 Then 
+            //设置断开充电（Android 6.0以上）
+            Call shanhai.Execute("dumpsys battery unplug")
+        ElseIf Sys.GetBatteryLevel() < 40 Then 
+            //复位，恢复实际状态
+            Call shanhai.Execute("dumpsys battery reset")
+        End If
     End If
     //电量不足关屏充电
     If electricity_bool And Sys.GetBatteryLevel() < 30 Then 
@@ -371,16 +381,7 @@ Function electricity_manage()
         RunApp "com.gamehivecorp.taptitans2"
         Delay 5000
     End If
-	//电量管理60%~40%
-    If electricity_set_bool Then 
-    	If Sys.GetBatteryLevel() > 60 Then 
-    		//设置断开充电（Android 6.0以上）
-			Call shanhai.Execute("dumpsys battery unplug")
-		ElseIf Sys.GetBatteryLevel() < 40 Then 
-			//复位，恢复实际状态
-			Call shanhai.Execute("dumpsys battery reset")
-    	End If
-    End If
+	
 End Function
 
 //判断应用存在
@@ -397,8 +398,11 @@ Function check_status()
     Wend
     //错误提示
     If CmpColorEx("127|650|0842EF",1) = 1 Then
-        info_notes_add("错误提示")
-        Touch 485,1259, 200
+        info_notes_add ("错误提示")
+        postmessage ("服务器维修")
+        EndScript
+        
+        //        Touch 485,1259, 200
     End If
     //出错重启
     If TickCount() - mistake_reboot > (30 * 60 * 1000) Then 
@@ -1202,7 +1206,6 @@ Function tribe()
             Exit Function
         End If
     Loop While CmpColorEx("724|1244|C3AF00", 0.9) = 0
-    i = i - 1//使i为当前位置
     //战队突袭—战斗2
     error_time =0
     Do
@@ -1224,29 +1227,18 @@ Function tribe()
     TracePrint "循环点击35秒"
     Dim boss_x,boss_y
     Dim timing_task= TickCount()
-    
-    Select Case (i)
-    Case 0
-        boss_x = 535
-        boss_y = 750
-    Case 1
-        boss_x = 535
-        boss_y = 961
-    End Select
-    //写死
-    i=3
-    TouchDown RndEx(250, 750), RndEx(600, 1200),1
+
+    TouchDown RndEx(250, 750), RndEx(600, 1200), 1
+    Delay RndEx(200, 800)
     While TickCount() - timing_task < 32000
-        TracePrint "第"&i&"部分 x="&boss_x&"y="&boss_y
+        TracePrint "x="&boss_x&"y="&boss_y
         //点击延迟
-        Select Case (i)
-        Case 0, 1
-            TouchMove RndEx(boss_x-10, boss_x+10), RndEx(boss_y-10, boss_y+10),1,RndEx(100,200)
-        Case 2, 3
-            TouchMove RndEx(173, 942), RndEx(667, 1365),1,RndEx(100,200)
-        End Select
-        
+        TouchMove RndEx(173, 942), RndEx(667, 1365),1,RndEx(100,200)
         Delay delay_x(RndEx(60, 80))
+        If TickCount() - timing_task > 5000 And TickCount() - timing_task < 8000 Then 
+            TouchDown RndEx(250, 750), RndEx(600, 1200), 1
+            Delay RndEx(200, 500)
+        End If
     Wend    
     TouchUp 1
 
@@ -1766,8 +1758,12 @@ Function achievement()
                 Exit While
             End If
         Wend
+        //成就广告
+    	If CmpColorEx("763|1375|916C07-111111",1) = 1 Then
+        	Call watch_advideo(763,1375,0)
+    	End If
         //确认成就领取
-        FindColor 691, 388, 843, 1210, "0430AC-111111", 0, 0.9, intX, intY
+        FindColor 691, 388, 843, 1500, "0430AC-111111", 0, 0.9, intX, intY
         error_time =0
         While intX > -1 And intY > -1
             TracePrint "领取成就"
@@ -1775,7 +1771,7 @@ Function achievement()
             Delay delay_x(2000)
             Call close_thing()
             Delay delay_x(2000)
-            FindColor 691,388,843,1210,"0430AC-111111",0,0.9,intX,intY
+            FindColor 691,388,843,1500,"0430AC-111111",0,0.9,intX,intY
             error_time = error_time + 1
             If error_time > 5 Then 
                 TracePrint"出错"
@@ -1783,7 +1779,7 @@ Function achievement()
             End If
         Wend
     End If
-	
+    
     Call close_occlusion()//广告
 End Function
 //比赛
@@ -1934,7 +1930,7 @@ Function little_fairy()
     End If
     If fairy_1_bool = True And CmpColorEx("827|721|712AD7",1) = 1 Then //消费狂潮
         TracePrint"消费狂潮"
-        Call little_fairy_watch(0)
+        Call watch_advideo(887,1420,0)
         //点击收集字符
         Call little_fairy_rec()
         Call Navbar_main("mercenary",2)//升级佣兵
@@ -1942,13 +1938,13 @@ Function little_fairy()
         Exit Function
     ElseIf fairy_2_bool = True And CmpColorEx("162|1174|FFFF6C",0.9) = 1 Then //钻石
         TracePrint"钻石"
-        Call little_fairy_watch(0)
+        Call watch_advideo(887,1420,0)
     ElseIf fairy_3_bool = True And CmpColorEx("744|662|000077",0.9) = 1 Then //技能
         TracePrint"技能"
-        Call little_fairy_watch(0)
+        Call watch_advideo(887,1420,0)
     ElseIf fairy_4_bool = True And CmpColorEx("169|1230|EFD528",0.9) = 1 Then //法力
         TracePrint"法力"
-        Call little_fairy_watch(0)
+        Call watch_advideo(887,1420,0)
     Else 
         Touch 281, 1420, 200//点击不用了
         TracePrint "不用了"
@@ -1958,21 +1954,20 @@ Function little_fairy()
     //点击收集字符
     Call little_fairy_rec()
 End Function
-
-//观看小仙女视频
-Function little_fairy_watch(t)
+//观看广告视频
+Function watch_advideo(tap_x,tap_y,t)
     //最多观看4次
     If t>4 Then 
         Exit Function
     End If
-    Touch 804,1420, 200//点击观看
+    Touch tap_x,tap_y, 200//点击观看
     TracePrint "等待观看"
     ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
     Delay delay_x(1000)
     //确认已点击观看
     Dim error_time =0
-    While CmpColorEx("162|1174|FFFF6C",0.9) = 1
-        Touch 804, 1420, 200
+    While CmpColorEx(tap_x&"|"&tap_y&"|CBA128-111111",0.9) = 1
+        Touch tap_x, tap_y, 200
         Delay delay_x(1000)
         error_time = error_time + 1
         If error_time > 20 Then 
@@ -1993,6 +1988,62 @@ Function little_fairy_watch(t)
         End If
     Wend
     //判断收集字符出现
+    error_time = 0
+
+    While CmpColorEx("1015|58|FFFFFF,991|86|FFFFFF,989|58|FFFFFF,1015|89|FFFFFF",1) = 1
+        KeyPress "Back"
+        TracePrint "等待收集"
+        Delay 5000
+        //观看失效重新看
+        If CmpColorEx("908|1399|CFA528-111111",0.9) = 1 Then 
+            Call watch_advideo(887,1420,t+1)
+            Exit Function
+        End If
+//        Call close_window()
+        error_time = error_time + 1
+        If error_time > 60 Then 
+            TracePrint"出错"
+            Exit While
+        End If
+    Wend
+    Delay delay_x(500)
+End Function
+
+//观看小仙女视频//todel
+Function little_fairy_watch_old(t)
+    //最多观看4次
+    If t>4 Then 
+        Exit Function
+    End If
+    Touch 804,1420, 200//点击观看
+    TracePrint "等待观看"
+    ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
+    Delay delay_x(1000)
+    //确认已点击观看
+    Dim error_time =0
+    While CmpColorEx("162|1174|FFFF6C",0.9) = 1
+        Touch 804, 1420, 200
+        Delay delay_x(1000)
+        error_time = error_time + 1
+        If error_time > 20 Then 
+            TracePrint"出错"
+            Exit While
+        End If
+    Wend
+    EndScript//todel
+    TracePrint"已点击观看"
+    Delay 30000
+    //判断时间内页面有误变化
+    error_time =0
+    While shanhai.IsDisplayChange(227, 534, 729, 1024, 5, 1)
+        Delay delay_x(5000)
+        error_time = error_time + 1
+        If error_time > 10 Then 
+            TracePrint"出错"
+            Exit While
+        End If
+    Wend
+    //判断收集字符出现
     error_time =0
     While CmpColorEx("536|1458|C29926",1) = 0
         KeyPress "Back"
@@ -2000,7 +2051,7 @@ Function little_fairy_watch(t)
         Delay 10000
         //观看失效重新看
         If CmpColorEx("908|1399|CFA528-111111",0.9) = 1 Then 
-            Call little_fairy_watch(t+1)
+            Call little_fairy_watch_old(t+1)
             Exit Function
         End If
         Call close_window()
@@ -2162,24 +2213,24 @@ Function delay_x(delay_t)
 End Function
 //log输出
 Function logd(msg)
-If log_debug_bool = true Then
-    TracePrint msg
-End If
+    If log_debug_bool = true Then
+        TracePrint msg
+    End If
 End Function
 Function logi(msg)
-If log_info_bool = true Then
-    TracePrint msg
-End If
+    If log_info_bool = true Then
+        TracePrint msg
+    End If
 End Function
 Function logw(msg)
-If log_warn_bool = true Then
-    TracePrint msg
-End If
+    If log_warn_bool = true Then
+        TracePrint msg
+    End If
 End Function
 Function loge(msg)
-If log_error_bool = true Then
-    TracePrint msg
-End If
+    If log_error_bool = true Then
+        TracePrint msg
+    End If
 End Function
 //while超时跳出
 //Function while_over(error_max)
@@ -2211,5 +2262,7 @@ Function OnScriptExit()
     KeepScreen False
     Log.Close 
     Device.SetBacklightLevel(BacklightLevel)//设置亮度
+    //复位，恢复实际状态
+    Call shanhai.Execute("dumpsys battery reset")
 End Function
 
