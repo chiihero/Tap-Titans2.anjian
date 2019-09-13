@@ -1759,9 +1759,9 @@ Function achievement()
             End If
         Wend
         //成就广告
-    	If CmpColorEx("763|1375|916C07-111111",1) = 1 Then
-        	Call watch_advideo(763,1375,0)
-    	End If
+//    	If CmpColorEx("763|1375|916C07-111111",1) = 1 Then
+//        	Call watch_advideo(763,1375,0)
+//    	End If
         //确认成就领取
         FindColor 691, 388, 843, 1500, "0430AC-111111", 0, 0.9, intX, intY
         error_time =0
