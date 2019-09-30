@@ -49,8 +49,9 @@
     <string name="tt2info">tt2info</string>
     <string name="action_about">关于</string>
     <string name="Github">GITHUB</string>
-    <string name="version_code">1.0.2</string>
+    <string name="version_code">0.1.4</string>
     <string name="title_activity_login">登录</string>
     <string name="menu_about">关于</string>
+    <string name="forgot_password">Forgot Password?</string>
 
 </resources>

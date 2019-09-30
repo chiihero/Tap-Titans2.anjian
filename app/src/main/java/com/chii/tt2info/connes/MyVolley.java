@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MyVolley {
-//        private static String server_rul= "http://192.168.124.172:8088";
+//    private static String server_rul= "http://192.168.124.172:8088";
     private static String server_rul = "http://www.chiinas.club:8088";
 
     //    public static String infolist_url = server_rul+"/info/getinfolist";

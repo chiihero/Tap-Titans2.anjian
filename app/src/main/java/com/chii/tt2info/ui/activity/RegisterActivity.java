@@ -12,7 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.chii.tt2info.R;
@@ -22,6 +25,8 @@ import com.chii.tt2info.pojo.User;
 import com.chii.tt2info.util.Md5;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -30,7 +35,10 @@ import butterknife.ButterKnife;
 import static com.chii.tt2info.connes.MyVolley.register_url;
 
 public class RegisterActivity extends AppCompatActivity {
-
+    @BindView(R.id.register_imageView)
+    ImageView register_imageView;
+    @BindView(R.id.register_morning)
+    TextView register_morning;
     @BindView(R.id.register_username)
     EditText usernameEditText;
     @BindView(R.id.register_email)
@@ -39,8 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText passwordEditText;
     @BindView(R.id.register)
     Button registerButton;
-    @BindView(R.id.register_loading)
-    ProgressBar loadingProgressBar;
+
     MyVolley myVolley;
     private Gson gson = new Gson();
     User user = new User();
@@ -57,10 +64,17 @@ public class RegisterActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        if (getCurrentTime()){
+            Toast.makeText(this,"晚上",Toast.LENGTH_SHORT).show();
+            register_imageView.setImageResource(R.drawable.good_night_img);
+            register_morning.setText("Night");
+        }else {
+            Toast.makeText(this,"白天",Toast.LENGTH_SHORT).show();
+            register_imageView.setImageResource(R.drawable.good_morning_img);
+        }
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
                 String username = usernameEditText.getText().toString();
                 String email = emailEditText.getText().toString();
                 String passwd = passwordEditText.getText().toString();
@@ -69,6 +83,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+    }
+    public boolean getCurrentTime(){
+        SimpleDateFormat sdf = new SimpleDateFormat("HH");
+        String hour= sdf.format(new Date());
+        int k  = Integer.parseInt(hour)  ;
+        return (k >= 0 && k < 6) || (k >= 18 && k < 24);
     }
 
     private void initDate(final String username, final String email, final String passwd) {
@@ -82,7 +102,6 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d(TAG, "ResponseResult: " + jsonObject);
                 if (jsonObject.equals("false")) {
                     Log.d(TAG, "注册失败");
-                    loadingProgressBar.setVisibility(View.GONE);
                 } else if (jsonObject.equals("true")) {
                     Log.d(TAG, "注册成功");
                     Intent intent = new Intent();

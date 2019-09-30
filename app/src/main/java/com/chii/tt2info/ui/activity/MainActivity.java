@@ -123,13 +123,14 @@ public class MainActivity extends AppCompatActivity
         signinState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSignin) {
-                    SPUtil.put(MainActivity.this, "isSignin", Boolean.FALSE);
-                }
+//                if (isSignin) {
+//                    SPUtil.put(MainActivity.this, "isSignin", Boolean.FALSE);
+//                }
+                SPUtil.put(MainActivity.this, "isSignin", Boolean.FALSE);
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivityForResult(intent, REQUESTCODE_FROM_LOGIN);
                 logged(false);
-                Toast.makeText(context, "hello", Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "点击登录", Toast.LENGTH_LONG).show();
             }
         });
         initList();
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         HashMap<String, String> map = new HashMap<String, String>();
         saveusername = (String) SPUtil.get(MainActivity.this, "username", "");
         savepasswd = (String) SPUtil.get(MainActivity.this, "passwd", "");
-        SPUtil.put(MainActivity.this, "isSignin", Boolean.TRUE);
+//        SPUtil.put(MainActivity.this, "isSignin", Boolean.TRUE);
         isSignin = (boolean) SPUtil.get(MainActivity.this, "isSignin", Boolean.FALSE);
 
         Log.d(TAG, "initDate: " + saveusername + " " + savepasswd + " " + isSignin);
@@ -189,7 +190,7 @@ public class MainActivity extends AppCompatActivity
 
     private void logged(boolean flag) {
         if (flag) {
-            signinState.setText("退出登录");
+            signinState.setText(saveusername+",退出登录");
             headImage.setImageDrawable(getResources().getDrawable((R.drawable.ic_check_black),
                     null));
         } else {

@@ -12,10 +12,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.chii.tt2info.R;
@@ -26,6 +30,8 @@ import com.chii.tt2info.util.Md5;
 import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -35,7 +41,10 @@ import static com.chii.tt2info.ui.activity.MainActivity.REQUESTCODE_FROM_REGISTE
 import static com.chii.tt2info.connes.MyVolley.signin_url;
 
 public class LoginActivity extends AppCompatActivity {
-
+    @BindView(R.id.login_imageView)
+    ImageView login_imageView;
+    @BindView(R.id.login_morning)
+    TextView login_morning;
     @BindView(R.id.username)
     EditText usernameEditText;
     @BindView(R.id.password)
@@ -44,8 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     Button toregisterButton;
     @BindView(R.id.login)
     Button loginButton;
-    @BindView(R.id.loading)
-    ProgressBar loadingProgressBar;
+
     MyVolley myVolley;
     private Gson gson = new Gson();
     User user = new User();
@@ -65,7 +73,14 @@ public class LoginActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
+        if (getCurrentTime()) {
+            Toast.makeText(this, "晚上", Toast.LENGTH_SHORT).show();
+            login_imageView.setImageResource(R.drawable.good_night_img);
+            login_morning.setText("Night");
+        } else {
+            Toast.makeText(this, "白天", Toast.LENGTH_SHORT).show();
+            login_imageView.setImageResource(R.drawable.good_morning_img);
+        }
         String saveusername = (String) SPUtil.get(LoginActivity.this, "username", "");
         String savepasswd = (String) SPUtil.get(LoginActivity.this, "passwd", "");
         isSignin = (boolean) SPUtil.get(LoginActivity.this, "isSignin", Boolean.FALSE);
@@ -80,12 +95,10 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -96,7 +109,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
                 String username = usernameEditText.getText().toString();
                 String passwd = passwordEditText.getText().toString();
                 if (!encrypt) passwd = Md5.safepasswd(passwd, 1024);
@@ -113,6 +125,13 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public boolean getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH");
+        String hour = sdf.format(new Date());
+        int k = Integer.parseInt(hour);
+        return (k >= 0 && k < 6) || (k >= 18 && k < 24);
+    }
+
     private void initDate(final String username, final String passwd) {
         Log.d(TAG, "initDate: " + passwd);
         HashMap<String, String> map = new HashMap<String, String>();
@@ -124,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "ResponseResult: " + jsonObject);
                 if (jsonObject.equals("")) {
                     Log.d(TAG, "登录失败");
-                    loadingProgressBar.setVisibility(View.GONE);
 
                 } else {
                     Log.d(TAG, "登录成功");
