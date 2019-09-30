@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.chii.tt2info.pojo.PageBean;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -44,7 +45,6 @@ import com.chii.tt2info.ui.adapter.InfoListViewAdapter;
 import com.chii.tt2info.connes.MyVolley;
 import com.chii.tt2info.connes.volleyInterface;
 import com.chii.tt2info.pojo.Info;
-import com.chii.tt2info.pojo.Page;
 import com.chii.tt2info.util.SPUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity
     private MyVolley myVolley;
     public final static int REQUESTCODE_FROM_LOGIN = 1;
     public final static int REQUESTCODE_FROM_REGISTER = 2;
-    private static String pageNum = "1";
-    private static String pageSize = "100";
+    private static String current = "1";
+    private static String rowCount = "100";
     private AlertDialog.Builder builder;
     private String saveusername, savepasswd;
 
@@ -160,9 +160,9 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "initDate: " + saveusername + " " + savepasswd + " " + isSignin);
         if (isSignin) {
             Log.d(TAG, "isSignin: " + isSignin);
-            map.put("username", saveusername);
-            map.put("pageNum", pageNum);
-            map.put("pageSize", pageSize);
+            map.put("searchPhrase", saveusername);
+            map.put("current", current);
+            map.put("rowCount", rowCount);
             logged(true);//已经登录处理
             getinfoList(map);
         }
@@ -173,13 +173,12 @@ public class MainActivity extends AppCompatActivity
         myVolley.Get(infopage_url, map, new volleyInterface() {
             @Override
             public void ResponseResult(String jsonObject) {
-                Type type = new TypeToken<Page<Info>>() {
+                Type type = new TypeToken<PageBean<Info>>() {
                 }.getType();
-                Page<Info> list = gson.fromJson(jsonObject, type);
-                infoList.addAll(list.getList());
+                PageBean<Info> list = gson.fromJson(jsonObject, type);
+                infoList.addAll(list.getRows());
                 mAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void ResponError(VolleyError volleyError) {
                 Log.d(TAG, "GET请求失败" + volleyError.toString());
@@ -254,15 +253,15 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_show_100:
                 Log.d(TAG, "onOptionsItemSelected: action_show_100");
-                pageSize = "100";
+                rowCount = "100";
                 break;
             case R.id.action_show_1000:
                 Log.d(TAG, "onOptionsItemSelected: action_show_1000");
-                pageSize = "1000";
+                rowCount = "1000";
                 break;
             case R.id.action_show_all:
                 Log.d(TAG, "onOptionsItemSelected: action_show_all");
-                pageSize = "0";
+                rowCount = "0";
                 break;
             case R.id.action_clear:
                 Log.d(TAG, "onOptionsItemSelected: action_clear");

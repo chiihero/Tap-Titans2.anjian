@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MyVolley {
-    //    private static String server_rul= "http://192.168.2.144:8088";
+//        private static String server_rul= "http://192.168.124.172:8088";
     private static String server_rul = "http://www.chiinas.club:8088";
 
     //    public static String infolist_url = server_rul+"/info/getinfolist";
@@ -30,6 +30,7 @@ public class MyVolley {
     public static String signin_url = server_rul + "/signin";
     public static String register_url = server_rul + "/register";
 
+    public static String TAG = "MyVolley";
 
     private static RequestQueue requestQueue = null;
     private static MyVolley volleyHelper;
@@ -123,6 +124,7 @@ public class MyVolley {
             }
             /** 把一个字符串 从 0 一直截取到 字符串减一个长度处 */
             params = params.substring(0, params.length() - 1);
+            Log.d(TAG, "paramsCastUrl: "+params);
             return url + params;
         }
         return url;
