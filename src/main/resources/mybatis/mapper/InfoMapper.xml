@@ -27,6 +27,8 @@
         <include refid="Base_Column_List"/>
         from info
         where username = #{username,jdbcType=VARCHAR}
+        ORDER BY
+        mid DESC
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete

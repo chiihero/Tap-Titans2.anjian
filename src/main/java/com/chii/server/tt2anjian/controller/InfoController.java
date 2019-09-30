@@ -3,14 +3,12 @@ package com.chii.server.tt2anjian.controller;
 
 import com.chii.server.tt2anjian.Tt2anjianApplication;
 import com.chii.server.tt2anjian.Utils.SafePasswd;
-import com.chii.server.tt2anjian.pojo.Info;
-import com.chii.server.tt2anjian.pojo.Infos;
-import com.chii.server.tt2anjian.pojo.User;
-import com.chii.server.tt2anjian.pojo.postlist;
+import com.chii.server.tt2anjian.pojo.*;
 
 import com.chii.server.tt2anjian.service.InfoService;
 import com.chii.server.tt2anjian.service.InfosService;
 import com.chii.server.tt2anjian.service.UserService;
+import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,17 +31,26 @@ public class InfoController {
 
     private static final Logger logger = LoggerFactory.getLogger(Tt2anjianApplication.class);
 
-    @GetMapping("/getinfolist")
-    public List<Info> getInfoByUsername(@ModelAttribute("username") String username) {
-        List<Info> infoList = infoService.getInfoInfoByUsername(username);
-        logger.info(new Gson().toJson(infoList));
-        return infoList;
+//    @GetMapping("/getinfolist2")
+//    public List<Info> getInfoByUsername2(@ModelAttribute("username") String username) {
+//        List<Info> infoList = infoService.getInfoInfoByUsername(username);
+//        logger.info(new Gson().toJson(infoList));
+//        return infoList;
+//    }
+    @GetMapping("/getinfopage")
+    public PageBean getInfoByUsername(PageBean page) {
+        PageInfo<Info> infoList = infoService.getInfoInfoByUsername(page);
+//        logger.info(new Gson().toJson(infoList));
+        page.setCurrent(page.getCurrent());
+        page.setRowCount(page.getRowCount());
+        page.setRows(infoList.getList());
+        page.setTotal(infoList.getTotal());
+        return page;
     }
-
     @GetMapping("/getinfos")
     public List<Infos> getInfosByMid(@ModelAttribute("mid") int mid) {
         List<Infos> infos = infosService.getInfosByMid(mid);
-        logger.info(new Gson().toJson(infos));
+//        logger.info(new Gson().toJson(infos));
         return infos;
     }
 
@@ -55,7 +62,7 @@ public class InfoController {
         Infos infos = new Infos();
 
         postlist postlist = gson.fromJson(json, postlist.class);
-        logger.info(new Gson().toJson(postlist));
+//        logger.info(new Gson().toJson(postlist));
 
         //验证身份
         User user = userService.getUserInfoByUsername(postlist.getUsername());
