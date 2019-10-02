@@ -1,4 +1,4 @@
-//2019年9月8日12:54:52
+//2019年10月2日19:03:15
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -210,13 +210,6 @@ Dim info_layer_number_last
 Dim screenX = GetScreenX()
 Dim screenY = GetScreenY()
 Dim tribe_task = TickCount()
-TracePrint "初始化结束"
-//========================================初始化结束=================================================//
-If delay_time > 0 Then 
-    Delay delay_x(delay_time)
-    //	RunApp "com.gamehivecorp.taptitans2"
-    //	Delay 120000
-End If
 If data_bool Then 
     //开启流量
     Call shanhai.ControlData(true)
@@ -224,6 +217,13 @@ End If
 If wifi_bool Then 
     //开启wifi
     Call shanhai.ControlWifi(true)
+End If
+TracePrint "初始化结束"
+//========================================初始化结束=================================================//
+If delay_time > 0 Then 
+    Delay delay_x(delay_time)
+    //	RunApp "com.gamehivecorp.taptitans2"
+    //	Delay 120000
 End If
 Call Screen()//屏幕适配 
 Call check_status()//检测状态
@@ -234,6 +234,7 @@ Delay delay_x(500)
 Touch 500, 500, 200
 //关闭面板
 Call close_occlusion()
+//TracePrint "开始测试"
 //===================测试区=======================//
 // Call tribe()
 //===================测试区结束=======================//
@@ -325,8 +326,8 @@ Function main
             Call prestige_check()//层数处理
             Call electricity_manage()//电量相关管理
             //判断界面部落boss
-            If CmpColorEx("201|56|A5B6E9-111111", 1) = 1 Then 
-                Call tribe()//部落任务
+            If CmpColorEx("201|56|A7B7E9-111111", 1) = 1 Then 
+                Call tribe()//部落突袭
             End If
             timing_task = TickCount()
         End If
@@ -748,7 +749,7 @@ Function Navbar_main(navbar_name,flat)
         End If
     End If
     //关闭面板
-    If CmpColorEx("864|30|303845", 1) = 1 Then
+    If CmpColorEx("864|30|2D2C2E", 1) = 1 Then
         Touch 1009, 32, 200
     End If
     Delay delay_x(2000)
@@ -796,7 +797,7 @@ Function Navbar_one_check(num)
     If CmpColorEx(cmpColors,1) = 0 Then //识别已打开
         TracePrint	message_open
         //展开人物栏
-        If CmpColorEx("864|1061|303845", 0.9) = 1 Then 
+        If CmpColorEx("864|1061|2D2C2E", 0.9) = 1 Then 
             TracePrint "展开人物栏"
             Touch 864, 1061, 200
             Delay delay_x(500)
@@ -817,17 +818,17 @@ Function update(flat,update_type)
     FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
     Do
         //物品栏下箭头高
-        If CmpColorEx("864|28|303845", 1) = 0 Then 
+        If CmpColorEx("864|28|2D2C2E", 1) = 0 Then 
             TracePrint "物品栏下箭头"
             //物品栏下箭头矮
-            If CmpColorEx("1009|1068|303845",1) = 1 Then 
+            If CmpColorEx("1009|1068|2D2C2E",1) = 1 Then 
                 Touch 1009,1068,200//升高物品栏
             Else
                 Call close_window()//广告
                 Delay delay_x(2000)
             End If
             //物品栏下箭头高
-            If CmpColorEx("864|28|303845",1) = 0 Then 
+            If CmpColorEx("864|28|2D2C2E",1) = 0 Then 
                 box_flat =1
             End If 
         End If
@@ -1140,15 +1141,15 @@ Function tribe()
         Touch 517,1644, 150
         Delay delay_x(1000)
     End If
-    //部落聊天界面检测
+    //部落界面检测
     Dim error_time = 0
-    While CmpColorEx("889|305|EFD555",1) = 0//部落聊天
+    While CmpColorEx("122|123|416BE0-111111",1) = 0//部落
         //判断部落欢迎界面
         If CmpColorEx("517|1611|C3AF00", 0.9) = 1 Then 
             Touch 517,1644, 150
             Delay delay_x(1000)
         End If
-        TracePrint "部落聊天界面检测"
+        TracePrint "部落界面检测"
         Touch 188, 79, 150
         Delay delay_x(1000)
         //识别小仙女
@@ -1162,20 +1163,21 @@ Function tribe()
         End If
     Wend
     Delay delay_x(1000)
-    Touch 204, 1749, 150
+    Touch 235,221, 150
     Delay delay_x(4000)
-    //部落任务界面检测
+    //部落突袭界面检测
     error_time = 0
-    While CmpColorEx("916|1005|BEA318-111111",0.9) = 0  //部落任务
-        TracePrint"部落任务界面检测"
-        Touch 204, 1749, 150
-        Delay delay_x(2000)
+    While CmpColorEx("390|1128|7F6363-111111",0.9) = 0  //部落突袭
+        TracePrint"部落突袭界面检测"
+        Touch 188,1744, 150
+        Delay delay_x(10000)
         error_time = error_time + 1
         If error_time > 30 Then 
             TracePrint"出错"
             Exit While
         End If
     Wend
+    Touch 232,276, 150
     Delay delay_x(2000)
     //判断没有任务
     If CmpColorEx("777|1662|C3AF00", 0.9) = 0 Then 
@@ -1225,19 +1227,19 @@ Function tribe()
     //点击部落boss
     //第一次打boss35秒
     TracePrint "循环点击35秒"
-    Dim boss_x,boss_y
     Dim timing_task= TickCount()
 
     TouchDown RndEx(250, 750), RndEx(600, 1200), 1
     Delay RndEx(200, 800)
+    Dim tap_starttime = TickCount()//定时重新滑动功能
     While TickCount() - timing_task < 32000
-        TracePrint "x="&boss_x&"y="&boss_y
         //点击延迟
         TouchMove RndEx(173, 942), RndEx(667, 1365),1,RndEx(100,200)
         Delay delay_x(RndEx(60, 80))
-        If TickCount() - timing_task > 5000 And TickCount() - timing_task < 8000 Then 
+        If TickCount() - tap_starttime > 5000 Then 
+        	tap_starttime = TickCount()
             TouchDown RndEx(250, 750), RndEx(600, 1200), 1
-            Delay RndEx(200, 500)
+            Delay RndEx(200, 300)
         End If
     Wend    
     TouchUp 1
@@ -1709,17 +1711,17 @@ Function achievement()
     While checkX = -1 And checkY = -1
         TracePrint "物品栏识别"
         //物品栏下箭头高
-        If CmpColorEx("864|28|303845", 1) = 0 Then 
+        If CmpColorEx("864|28|2D2C2E", 1) = 0 Then 
             TracePrint "物品栏下箭头"
             //物品栏下箭头矮
-            If CmpColorEx("1009|1068|303845",1) = 1 Then 
+            If CmpColorEx("1009|1068|2D2C2E",1) = 1 Then 
                 Touch 1009,1068,200//升高物品栏
             Else
                 Call close_occlusion()//广告
             End If
             Delay delay_x(2000)
             //物品栏下箭头高
-            If CmpColorEx("864|28|303845", 1) = 0 Then 
+            If CmpColorEx("864|28|2D2C2E", 1) = 0 Then 
                 TracePrint "error.achievement"
                 Exit Function
             End If
@@ -1779,8 +1781,8 @@ Function achievement()
             End If
         Wend
     End If
-    
-    Call close_occlusion()//广告
+    Call close_window()//普通弹窗
+//    Call close_occlusion()//广告
 End Function
 //比赛
 Function competition()
@@ -1790,7 +1792,7 @@ Function competition()
     TracePrint "比赛"
     Dim intX,intY,error_numail_one = 0
     //识别比赛图标
-    If CmpColorEx("67|171|12BFFF",1) = 1 Then
+    If CmpColorEx("72|136|947721-111111",1) = 1 Then
         Touch 67, 171, 100
         //等待加入按键
         FindColor 511, 1577, 556, 1754, "D7AB28-111111", 0, 0.9, intX, intY
@@ -2009,60 +2011,6 @@ Function watch_advideo(tap_x,tap_y,t)
     Delay delay_x(500)
 End Function
 
-//观看小仙女视频//todel
-Function little_fairy_watch_old(t)
-    //最多观看4次
-    If t>4 Then 
-        Exit Function
-    End If
-    Touch 804,1420, 200//点击观看
-    TracePrint "等待观看"
-    ShowMessage "等待观看", 1500,screenX/2-150,screenY/4-200
-    Delay delay_x(1000)
-    //确认已点击观看
-    Dim error_time =0
-    While CmpColorEx("162|1174|FFFF6C",0.9) = 1
-        Touch 804, 1420, 200
-        Delay delay_x(1000)
-        error_time = error_time + 1
-        If error_time > 20 Then 
-            TracePrint"出错"
-            Exit While
-        End If
-    Wend
-    EndScript//todel
-    TracePrint"已点击观看"
-    Delay 30000
-    //判断时间内页面有误变化
-    error_time =0
-    While shanhai.IsDisplayChange(227, 534, 729, 1024, 5, 1)
-        Delay delay_x(5000)
-        error_time = error_time + 1
-        If error_time > 10 Then 
-            TracePrint"出错"
-            Exit While
-        End If
-    Wend
-    //判断收集字符出现
-    error_time =0
-    While CmpColorEx("536|1458|C29926",1) = 0
-        KeyPress "Back"
-        TracePrint "等待收集"
-        Delay 10000
-        //观看失效重新看
-        If CmpColorEx("908|1399|CFA528-111111",0.9) = 1 Then 
-            Call little_fairy_watch_old(t+1)
-            Exit Function
-        End If
-        Call close_window()
-        error_time = error_time + 1
-        If error_time > 60 Then 
-            TracePrint"出错"
-            Exit While
-        End If
-    Wend
-    Delay delay_x(500)
-End Function
 //点击收集字符 
 Function little_fairy_rec()
     Dim intX,intY
@@ -2109,7 +2057,7 @@ End Function
 Function close_window()
     TracePrint "关闭窗口"
     Dim closeX, closeY
-    FindColor 879, 80, 1000, 650, "303843|303845", 4, 1, closeX, closeY
+    FindColor 879, 80, 1000, 650, "37373A", 4, 1, closeX, closeY
     Dim error_time =0
     While closeX > -1
         ShowMessage "关闭窗口", 1000, screenX / 2 - 150, screenY / 4 - 200
@@ -2118,7 +2066,7 @@ Function close_window()
         If CmpColorEx("327|1262|0B81FA", 0.9) = 1 Then 
             Touch 327, 1262, 30
         End If
-        FindColor 879, 80, 1000, 640, "303843|303845", 4, 1, closeX, closeY
+        FindColor 879, 80, 1000, 640, "37373A", 4, 1, closeX, closeY
         error_time = error_time + 1
         If error_time > 7 Then 
             TracePrint"出错"
@@ -2130,11 +2078,12 @@ End Function
 
 //关闭面板
 Function close_navbar()
-    If CmpColorEx("1009|32|303845", 1) = 1 Then 
+	TracePrint "关闭面板"
+    If CmpColorEx("1012|29|2D2C2E", 1) = 1 Then 
         TracePrint "关闭高面板"
         Touch 1009,32, 50
         Delay delay_x(500)
-    ElseIf CmpColorEx("1009|1068|303845", 1) = 1 Then
+    ElseIf CmpColorEx("1009|1068|2D2C2E", 1) = 1 Then
         TracePrint "关闭低面板"
         Touch 1009,1068, 50
         Delay delay_x(500)
