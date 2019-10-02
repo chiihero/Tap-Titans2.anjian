@@ -237,6 +237,7 @@ Call close_occlusion()
 //TracePrint "开始测试"
 //===================测试区=======================//
 // Call tribe()
+Call Navbar_main("hero",1)//升级本人与技能
 //===================测试区结束=======================//
 Call main()
 
@@ -818,17 +819,17 @@ Function update(flat,update_type)
     FindColor 759,115,821,344,"525241",0,1, checkX, checkY//识别物品栏
     Do
         //物品栏下箭头高
-        If CmpColorEx("864|28|2D2C2E", 1) = 0 Then 
+        If CmpColorEx("864|28|2C2B2D", 1) = 0 Then 
             TracePrint "物品栏下箭头"
             //物品栏下箭头矮
-            If CmpColorEx("1009|1068|2D2C2E",1) = 1 Then 
+            If CmpColorEx("1009|1068|2C2B2D",1) = 1 Then 
                 Touch 1009,1068,200//升高物品栏
             Else
                 Call close_window()//广告
                 Delay delay_x(2000)
             End If
             //物品栏下箭头高
-            If CmpColorEx("864|28|2D2C2E",1) = 0 Then 
+            If CmpColorEx("864|28|2C2B2D",1) = 0 Then 
                 box_flat =1
             End If 
         End If
@@ -1711,17 +1712,17 @@ Function achievement()
     While checkX = -1 And checkY = -1
         TracePrint "物品栏识别"
         //物品栏下箭头高
-        If CmpColorEx("864|28|2D2C2E", 1) = 0 Then 
+        If CmpColorEx("864|28|2C2B2D", 1) = 0 Then 
             TracePrint "物品栏下箭头"
             //物品栏下箭头矮
-            If CmpColorEx("1009|1068|2D2C2E",1) = 1 Then 
+            If CmpColorEx("1009|1068|2C2B2D",1) = 1 Then 
                 Touch 1009,1068,200//升高物品栏
             Else
                 Call close_occlusion()//广告
             End If
             Delay delay_x(2000)
             //物品栏下箭头高
-            If CmpColorEx("864|28|2D2C2E", 1) = 0 Then 
+            If CmpColorEx("864|28|2C2B2D", 1) = 0 Then 
                 TracePrint "error.achievement"
                 Exit Function
             End If
@@ -2057,7 +2058,7 @@ End Function
 Function close_window()
     TracePrint "关闭窗口"
     Dim closeX, closeY
-    FindColor 879, 80, 1000, 650, "37373A", 4, 1, closeX, closeY
+    FindColor 879, 80, 1000, 650, "37373A|192F46", 4, 1, closeX, closeY
     Dim error_time =0
     While closeX > -1
         ShowMessage "关闭窗口", 1000, screenX / 2 - 150, screenY / 4 - 200
@@ -2066,7 +2067,7 @@ Function close_window()
         If CmpColorEx("327|1262|0B81FA", 0.9) = 1 Then 
             Touch 327, 1262, 30
         End If
-        FindColor 879, 80, 1000, 640, "37373A", 4, 1, closeX, closeY
+        FindColor 879, 80, 1000, 640, "37373A|192F46", 4, 1, closeX, closeY
         error_time = error_time + 1
         If error_time > 7 Then 
             TracePrint"出错"
