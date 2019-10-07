@@ -1,4 +1,4 @@
-//2019年10月2日19:03:15
+//2019年10月7日21:39:46
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -1793,7 +1793,7 @@ Function competition()
     TracePrint "比赛"
     Dim intX,intY,error_numail_one = 0
     //识别比赛图标
-    If CmpColorEx("72|136|947721-111111",1) = 1 Then
+    If CmpColorEx("70|134|2F35D3-111111,72|136|947721-111111",1) = 1 Then
         Touch 67, 171, 100
         //等待加入按键
         FindColor 511, 1577, 556, 1754, "D7AB28-111111", 0, 0.9, intX, intY
@@ -2058,7 +2058,7 @@ End Function
 Function close_window()
     TracePrint "关闭窗口"
     Dim closeX, closeY
-    FindColor 879, 80, 1000, 650, "37373A|192F46", 4, 1, closeX, closeY
+    FindColor 879, 80, 1000, 650, "38383A|37373A|192F46", 4, 1, closeX, closeY
     Dim error_time =0
     While closeX > -1
         ShowMessage "关闭窗口", 1000, screenX / 2 - 150, screenY / 4 - 200
@@ -2067,7 +2067,7 @@ Function close_window()
         If CmpColorEx("327|1262|0B81FA", 0.9) = 1 Then 
             Touch 327, 1262, 30
         End If
-        FindColor 879, 80, 1000, 640, "37373A|192F46", 4, 1, closeX, closeY
+        FindColor 879, 80, 1000, 640, "38383A|37373A|192F46", 4, 1, closeX, closeY
         error_time = error_time + 1
         If error_time > 7 Then 
             TracePrint"出错"
