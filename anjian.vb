@@ -1169,7 +1169,7 @@ Function tribe()
     Delay delay_x(4000)
     //部落突袭界面检测
     error_time = 0
-    While CmpColorEx("390|1128|7F6363-111111",0.9) = 0  //部落突袭
+    While CmpColorEx("390|1128|7F6363",1) = 0  //部落突袭
         TracePrint"部落突袭界面检测"
         Touch 188,1744, 150
         Delay delay_x(10000)
@@ -1241,7 +1241,7 @@ Function tribe()
         If TickCount() - tap_starttime > 5000 Then 
         	tap_starttime = TickCount()
             TouchDown RndEx(250, 750), RndEx(600, 1200), 1
-            Delay RndEx(200, 300)
+            Delay RndEx(300, 500)
         End If
     Wend    
     TouchUp 1
