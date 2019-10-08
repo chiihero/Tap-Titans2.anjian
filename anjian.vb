@@ -1,4 +1,4 @@
-//2019年10月7日21:39:46
+//2019年10月8日10:52:39
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -237,7 +237,8 @@ Call close_occlusion()
 //TracePrint "开始测试"
 //===================测试区=======================//
 // Call tribe()
-Call Navbar_main("hero",1)//升级本人与技能
+//Call competition()
+//Call Navbar_main("hero",1)//升级本人与技能
 //===================测试区结束=======================//
 Call main()
 
@@ -1791,9 +1792,9 @@ Function competition()
         Exit Function
     End If
     TracePrint "比赛"
-    Dim intX,intY,error_numail_one = 0
+    Dim intX,intY
     //识别比赛图标
-    If CmpColorEx("70|134|2F35D3-111111,72|136|947721-111111",1) = 1 Then
+    If CmpColorEx("74|136|2D34D5-111111",1) = 1 or CmpColorEx("72|136|947721-111111",1) = 1 Then
         Touch 67, 171, 100
         //等待加入按键
         FindColor 511, 1577, 556, 1754, "D7AB28-111111", 0, 0.9, intX, intY
