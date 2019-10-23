@@ -1,4 +1,4 @@
-//2019年10月8日10:52:39
+//2019年10月23日13:03:51
 //========================================初始化开始=================================================//
 Import "shanhai.lua"
 
@@ -237,7 +237,7 @@ Call close_occlusion()
 //TracePrint "开始测试"
 //===================测试区=======================//
 // Call tribe()
-//Call competition()
+Call Navbar_main("hero",1)
 //Call Navbar_main("hero",1)//升级本人与技能
 //===================测试区结束=======================//
 Call main()
@@ -1767,7 +1767,7 @@ Function achievement()
 //        	Call watch_advideo(763,1375,0)
 //    	End If
         //确认成就领取
-        FindColor 691, 388, 843, 1500, "0430AC-111111", 0, 0.9, intX, intY
+        FindColor 770, 388, 830, 1500, "0430AC-111111", 0, 0.9, intX, intY
         error_time =0
         While intX > -1 And intY > -1
             TracePrint "领取成就"
@@ -1775,7 +1775,7 @@ Function achievement()
             Delay delay_x(2000)
             Call close_thing()
             Delay delay_x(2000)
-            FindColor 691,388,843,1500,"0430AC-111111",0,0.9,intX,intY
+            FindColor 770, 388, 830, 1500,"0430AC-111111",0,0.9,intX,intY
             error_time = error_time + 1
             If error_time > 5 Then 
                 TracePrint"出错"
