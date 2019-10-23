@@ -237,7 +237,7 @@ Call close_occlusion()
 //TracePrint "开始测试"
 //===================测试区=======================//
 // Call tribe()
-Call Navbar_main("hero",1)
+//Call Navbar_main("hero",1)
 //Call Navbar_main("hero",1)//升级本人与技能
 //===================测试区结束=======================//
 Call main()
