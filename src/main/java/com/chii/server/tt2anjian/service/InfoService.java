@@ -15,4 +15,6 @@ public interface InfoService {
 
     void deleteInfo(int mid);
 
+    void deleteAllInfoByUser(String username);
+
 }

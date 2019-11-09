@@ -10,6 +10,8 @@ import java.util.List;
 public interface InfoMapper {
     int deleteByPrimaryKey(Integer mid);
 
+    int deleteByUserName(String username);
+
     int insert(Info record);
 
     int insertSelective(Info record);
@@ -21,4 +23,5 @@ public interface InfoMapper {
     int updateByPrimaryKeySelective(Info record);
 
     int updateByPrimaryKey(Info record);
+
 }

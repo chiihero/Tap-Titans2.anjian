@@ -34,4 +34,9 @@ public class InfoServiceImpl implements InfoService {
     public void deleteInfo(int mid) {
         infoMapper.deleteByPrimaryKey(mid);
     }
+
+    @Override
+    public void deleteAllInfoByUser(String username) {
+        infoMapper.deleteByUserName(username);
+    }
 }

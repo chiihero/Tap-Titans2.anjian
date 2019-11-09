@@ -11,6 +11,8 @@ import com.chii.server.tt2anjian.pojo.postlist;
 import com.chii.server.tt2anjian.service.InfoService;
 import com.chii.server.tt2anjian.service.InfosService;
 import com.chii.server.tt2anjian.service.UserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,14 @@ public class InfoController {
         logger.info(new Gson().toJson(infoList));
         return infoList;
     }
+    @GetMapping("/getinfopage")
+    public PageInfo<Info> getInfoByUsernamepage(@ModelAttribute("username") String username,@ModelAttribute("pageNum") String pageNum,@ModelAttribute("pageSize") String pageSize) {
 
+        PageHelper.startPage(Integer.valueOf(pageNum),Integer.valueOf(pageSize));
+        List<Info> infoList = infoService.getInfoInfoByUsername(username);
+        logger.info(new Gson().toJson(infoList));
+        return new PageInfo<>(infoList);
+    }
     @GetMapping("/getinfos")
     public List<Infos> getInfosByMid(@ModelAttribute("mid") int mid) {
         List<Infos> infos = infosService.getInfosByMid(mid);
@@ -56,7 +65,6 @@ public class InfoController {
 
         postlist postlist = gson.fromJson(json, postlist.class);
         logger.info(new Gson().toJson(postlist));
-
         //验证身份
         User user = userService.getUserInfoByUsername(postlist.getUsername());
         String passwd = SafePasswd.safe_password(postlist.getPasswd(), postlist.getUsername(), 10);
@@ -80,9 +88,23 @@ public class InfoController {
             infosService.insertInfos(infos);
         }
     }
+    @PostMapping("/deleteAll")
+    public String deleteAll(@ModelAttribute("username") String username, @ModelAttribute("passwd") String passwd) {
+        User user = userService.getUserInfoByUsername(username);
+        if (user != null) {
+            passwd = SafePasswd.safe_password(passwd, username, 10);
+            if (user.getPasswd().equals(passwd)) {
+                logger.info("deleteAll login success");
+                infoService.deleteAllInfoByUser(username);
+                return "true";
+            }
+        }
+        return "false";
 
+    }
     @PostMapping("/delete")
-    public void delete(@ModelAttribute("mid") int mid) {
+    public String delete(@ModelAttribute("username") int username, @ModelAttribute("passwd") String passwd,@ModelAttribute("mid") int mid) {
         infoService.deleteInfo(mid);
+        return "true";
     }
 }

@@ -27,11 +27,18 @@
         <include refid="Base_Column_List"/>
         from info
         where username = #{username,jdbcType=VARCHAR}
+        ORDER BY
+        info.mid DESC
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from info
         where mid = #{mid,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByUserName" parameterType="java.lang.String">
+        delete
+        from info
+        where username = #{username,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" useGeneratedKeys="true" keyProperty="mid" parameterType="com.chii.server.tt2anjian.pojo.Info">
         insert into info (mid, title, notes, layer_set, update_all, update_mini, time, username)
