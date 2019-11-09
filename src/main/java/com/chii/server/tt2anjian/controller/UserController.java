@@ -16,7 +16,6 @@ import java.util.Date;
 
 
 @RestController
-//@RequestMapping("/test")
 public class UserController {
     @Autowired
     private UserService userService;

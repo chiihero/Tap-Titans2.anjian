@@ -35,11 +35,21 @@ public class InfoController {
 
     private static final Logger logger = LoggerFactory.getLogger(Tt2anjianApplication.class);
 
-    @GetMapping("/getinfolist")
-    public List<Info> getInfoByUsername(@ModelAttribute("username") String username) {
-        List<Info> infoList = infoService.getInfoInfoByUsername(username);
-        logger.info(new Gson().toJson(infoList));
-        return infoList;
+//    @GetMapping("/getinfolist2")
+//    public List<Info> getInfoByUsername2(@ModelAttribute("username") String username) {
+//        List<Info> infoList = infoService.getInfoInfoByUsername(username);
+//        logger.info(new Gson().toJson(infoList));
+//        return infoList;
+//    }
+    @GetMapping("/getinfopage")
+    public PageBean getInfoByUsername(PageBean page) {
+        PageInfo<Info> infoList = infoService.getInfoInfoByUsername(page);
+//        logger.info(new Gson().toJson(infoList));
+        page.setCurrent(page.getCurrent());
+        page.setRowCount(page.getRowCount());
+        page.setRows(infoList.getList());
+        page.setTotal(infoList.getTotal());
+        return page;
     }
     @GetMapping("/getinfopage")
     public PageInfo<Info> getInfoByUsernamepage(@ModelAttribute("username") String username,@ModelAttribute("pageNum") String pageNum,@ModelAttribute("pageSize") String pageSize) {
@@ -52,7 +62,7 @@ public class InfoController {
     @GetMapping("/getinfos")
     public List<Infos> getInfosByMid(@ModelAttribute("mid") int mid) {
         List<Infos> infos = infosService.getInfosByMid(mid);
-        logger.info(new Gson().toJson(infos));
+//        logger.info(new Gson().toJson(infos));
         return infos;
     }
 

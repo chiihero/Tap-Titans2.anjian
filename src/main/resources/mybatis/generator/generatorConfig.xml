@@ -19,9 +19,9 @@
         <!--jdbc的数据库连接 -->
         <jdbcConnection
                 driverClass="com.mysql.jdbc.Driver"
-                connectionURL="jdbc:mysql://139.199.11.57:3306/tt2anjian"
-                userId="tt2anjian"
-                password="h6JhSewGwiCrJ6zx">
+                connectionURL="jdbc:mysql://localhost:3306/tt2anjian"
+                userId="root"
+                password="123456">
         </jdbcConnection>
         <!-- java模型创建器，是必须要的元素
             负责：1，key类（见context的defaultModelType）；2，java类；3，查询类
