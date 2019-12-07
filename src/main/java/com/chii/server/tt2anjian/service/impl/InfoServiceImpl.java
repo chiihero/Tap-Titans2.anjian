@@ -10,6 +10,7 @@ import com.chii.server.tt2anjian.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,11 +25,11 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
+    @Cacheable(value = "redisDemo",key = "#pageBean.current")
     public PageInfo<Info> getInfoInfoByUsername(PageBean pageBean) {
         PageHelper.startPage(pageBean.getCurrent(), pageBean.getRowCount());
         List<Info> infoList = infoMapper.selectByUserName(pageBean.getSearchPhrase());
-        PageInfo<Info> pi = new PageInfo<>(infoList);
-        return pi;
+        return new PageInfo<>(infoList);
     }
 
     @Override

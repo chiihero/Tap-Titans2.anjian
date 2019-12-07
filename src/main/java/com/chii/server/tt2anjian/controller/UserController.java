@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -19,18 +20,19 @@ import java.util.Date;
 public class UserController {
     @Autowired
     private UserService userService;
-
     private static final Logger logger = LoggerFactory.getLogger(Tt2anjianApplication.class);
 
     @GetMapping("/hello")
-    public String hello() {
-        logger.info("hello chii" + new Date());
-        return "hello chii";
+    @Cacheable(value = "redisDemo",key = "#username")
+    public String hello(String username) {
+//        redisOperations.opsForValue().set("key_33","value33");
+        logger.info("hello "+username + new Date());
+        return "hello "+username;
     }
 
     @GetMapping("/user")
     public User userinfo(@ModelAttribute("username") String username) {
-        System.out.println(username);
+//        System.out.println(username);
         User user = userService.getUserInfoByUsername(username);
         if (user != null) {
             logger.info(new Gson().toJson(user));

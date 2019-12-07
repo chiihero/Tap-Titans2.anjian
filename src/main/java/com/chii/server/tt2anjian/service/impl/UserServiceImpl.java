@@ -4,6 +4,9 @@ import com.chii.server.tt2anjian.mapper.UserMapper;
 import com.chii.server.tt2anjian.pojo.User;
 import com.chii.server.tt2anjian.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +19,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "redisDemo",key = "#username")
     public User getUserInfoByUsername(String username) {
         return  userMapper.selectByPrimaryKey(username);
     }

@@ -3,10 +3,7 @@ package com.chii.server.tt2anjian.controller;
 
 import com.chii.server.tt2anjian.Tt2anjianApplication;
 import com.chii.server.tt2anjian.Utils.SafePasswd;
-import com.chii.server.tt2anjian.pojo.Info;
-import com.chii.server.tt2anjian.pojo.Infos;
-import com.chii.server.tt2anjian.pojo.User;
-import com.chii.server.tt2anjian.pojo.postlist;
+import com.chii.server.tt2anjian.pojo.*;
 
 import com.chii.server.tt2anjian.service.InfoService;
 import com.chii.server.tt2anjian.service.InfosService;
@@ -51,14 +48,14 @@ public class InfoController {
         page.setTotal(infoList.getTotal());
         return page;
     }
-    @GetMapping("/getinfopage")
-    public PageInfo<Info> getInfoByUsernamepage(@ModelAttribute("username") String username,@ModelAttribute("pageNum") String pageNum,@ModelAttribute("pageSize") String pageSize) {
-
-        PageHelper.startPage(Integer.valueOf(pageNum),Integer.valueOf(pageSize));
-        List<Info> infoList = infoService.getInfoInfoByUsername(username);
-        logger.info(new Gson().toJson(infoList));
-        return new PageInfo<>(infoList);
-    }
+//    @GetMapping("/getinfopage")
+//    public PageInfo<Info> getInfoByUsernamepage(@ModelAttribute("username") String username,@ModelAttribute("pageNum") String pageNum,@ModelAttribute("pageSize") String pageSize) {
+//
+//        PageHelper.startPage(Integer.valueOf(pageNum),Integer.valueOf(pageSize));
+//        List<Info> infoList = infoService.getInfoInfoByUsername(username);
+//        logger.info(new Gson().toJson(infoList));
+//        return new PageInfo<>(infoList);
+//    }
     @GetMapping("/getinfos")
     public List<Infos> getInfosByMid(@ModelAttribute("mid") int mid) {
         List<Infos> infos = infosService.getInfosByMid(mid);
